@@ -1,10 +1,9 @@
-﻿namespace EasyExcelGenerator.Models
+﻿namespace EasyExcelGenerator.Models;
+
+public enum TextAlign
 {
-    public enum TextAlign
-    {
-        Right = 0,
-        Left = 1,
-        Center = 2,
-        Justify = 3
-    }
+    Right = 0,
+    Left = 1,
+    Center = 2,
+    Justify = 3
 }

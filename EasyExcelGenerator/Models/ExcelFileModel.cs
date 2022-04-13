@@ -19,10 +19,10 @@ namespace EasyExcelGenerator.Models
         /// <summary>
         /// Set the default IsLocked value for all Sheets
         /// </summary>
-        public bool SheetsDefaultIsLocked { get; set; } = false;
+        public bool SheetsAreLocked { get; set; } = false;
 
         /// <summary>
-        /// Excel Sheets model
+        /// Excel Sheets data and configurations
         /// </summary>
         public List<Sheet> Sheets { get; set; } = new();
     }
