@@ -2,9 +2,12 @@
 using ClosedXML.Report.Utils;
 using EasyExcelGenerator.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace EasyExcelGenerator.Service;
 
@@ -14,11 +17,11 @@ public static class EasyExcelService
     /// <summary>
     /// Generate Excel file into file result
     /// </summary>
-    /// <param name="easyExcelModel"></param>
+    /// <param name="easyExcelBuilder"></param>
     /// <returns></returns>
-    public static GeneratedExcelFile GenerateExcel(EasyExcelModel easyExcelModel)
+    public static GeneratedExcelFile GenerateExcel(EasyExcelBuilder easyExcelBuilder)
     {
-        using var xlWorkbook = ClosedXmlEngine(easyExcelModel);
+        using var xlWorkbook = ClosedXmlEngine(easyExcelBuilder);
 
         // Save
         using var stream = new MemoryStream();
@@ -33,15 +36,14 @@ public static class EasyExcelService
     /// <summary>
     /// Generate Excel file and save it in path and return the saved url
     /// </summary>
-    /// <param name="easyExcelFileModel"></param>
+    /// <param name="easyExcelBuilderFile"></param>
     /// <param name="savePath"></param>
-    /// <param name="excelFileNameWithoutXlsxExtension"></param>
     /// <returns></returns>
-    public static string GenerateExcel(EasyExcelModel easyExcelFileModel, string savePath, string excelFileNameWithoutXlsxExtension)
+    public static string GenerateExcel(EasyExcelBuilder easyExcelBuilderFile, string savePath)
     {
-        using var xlWorkbook = ClosedXmlEngine(easyExcelFileModel);
+        using var xlWorkbook = ClosedXmlEngine(easyExcelBuilderFile);
 
-        var saveUrl = $"{savePath}\\{excelFileNameWithoutXlsxExtension}.xlsx";
+        var saveUrl = $"{savePath}\\{easyExcelBuilderFile.FileName}.xlsx";
 
         // Save
         xlWorkbook.SaveAs(saveUrl);
@@ -49,24 +51,53 @@ public static class EasyExcelService
         return saveUrl;
     }
 
-    private static XLWorkbook ClosedXmlEngine(EasyExcelModel easyExcelModel)
+    /// <summary>
+    /// Generate Simple Grid Excel file from special model configured options with EasyExcel attributes
+    /// </summary>
+    /// <param name="easyGridExcelBuilder"></param>
+    /// <returns></returns>
+    public static GeneratedExcelFile GenerateGridExcel(EasyGridExcelBuilder easyGridExcelBuilder)
     {
+        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+
+        return GenerateExcel(easyExcelBuilder);
+    }
+
+    /// <summary>
+    /// Generate Simple Grid Excel file from special model configured options with EasyExcel attributes
+    /// Save it in path and return the saved url
+    /// </summary>
+    /// <param name="easyGridExcelBuilder"></param>
+    /// <param name="savePath"></param>
+    /// <returns></returns>
+    public static string GenerateGridExcel(EasyGridExcelBuilder easyGridExcelBuilder, string savePath)
+    {
+        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+
+        return GenerateExcel(easyExcelBuilder, savePath);
+    }
+
+    private static XLWorkbook ClosedXmlEngine(EasyExcelBuilder easyExcelBuilder)
+    {
+        if (easyExcelBuilder.FileName.IsNullOrWhiteSpace())
+            easyExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+
         //-------------------------------------------
         //  Create Workbook (integrated with using statement)
         //-------------------------------------------
         var xlWorkbook = new XLWorkbook
         {
-            RightToLeft = easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
-            ColumnWidth = easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
-            RowHeight = easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
+            RightToLeft = easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
+            ColumnWidth = easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
+            RowHeight = easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
         };
 
         // Check any sheet available
-        if (easyExcelModel.Sheets.Count == 0)
+        if (easyExcelBuilder.Sheets.Count == 0)
             throw new Exception("No sheet is available to create Excel workbook");
 
         // Check sheet names are unique
-        var sheetNames = easyExcelModel.Sheets
+        var sheetNames = easyExcelBuilder.Sheets
             .Where(s => s.SheetName.IsNullOrWhiteSpace() is false)
             .Select(s => s.SheetName)
             .ToList();
@@ -79,7 +110,7 @@ public static class EasyExcelService
         // Auto naming for sheets
 
         int i = 1;
-        foreach (Sheet sheet in easyExcelModel.Sheets)
+        foreach (Sheet sheet in easyExcelBuilder.Sheets)
         {
             if (sheet.SheetName.IsNullOrWhiteSpace())
             {
@@ -89,7 +120,7 @@ public static class EasyExcelService
                 {
                     var possibleName = $"Sheet{i}";
 
-                    isNameOk = easyExcelModel.Sheets.Any(s => s.SheetName == possibleName) is false;
+                    isNameOk = easyExcelBuilder.Sheets.Any(s => s.SheetName == possibleName) is false;
 
                     if (isNameOk)
                         sheet.SheetName = possibleName;
@@ -102,7 +133,7 @@ public static class EasyExcelService
         //-------------------------------------------
         //  Add Sheets one by one to ClosedXML Workbook instance
         //-------------------------------------------
-        foreach (var sheet in easyExcelModel.Sheets)
+        foreach (var sheet in easyExcelBuilder.Sheets)
         {
             // Set name
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
@@ -161,7 +192,7 @@ public static class EasyExcelService
             };
 
             // Set TextAlign
-            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
+            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
 
             xlSheet.Columns().Style.Alignment.Horizontal = textAlign switch
             {
@@ -213,7 +244,7 @@ public static class EasyExcelService
             {
                 foreach (var tableRow in table.TableRows)
                 {
-                    xlSheet.ConfigureRow(tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelModel.AreSheetsLockedByDefault);
+                    xlSheet.ConfigureRow(tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelBuilder.AreSheetsLockedByDefault);
                 }
 
                 var tableRange = xlSheet.Range(table.StartCellLocation.Y,
@@ -251,7 +282,7 @@ public static class EasyExcelService
             //-------------------------------------------
             foreach (var sheetRow in sheet.SheetRows)
             {
-                xlSheet.ConfigureRow(sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelModel.AreSheetsLockedByDefault);
+                xlSheet.ConfigureRow(sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelBuilder.AreSheetsLockedByDefault);
             }
 
             //-------------------------------------------
@@ -262,7 +293,7 @@ public static class EasyExcelService
                 if (cell.IsCellVisible is false)
                     continue;
 
-                xlSheet.ConfigureCell(cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelModel.AreSheetsLockedByDefault);
+                xlSheet.ConfigureCell(cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelBuilder.AreSheetsLockedByDefault);
             }
 
             // Apply sheet merges here
@@ -279,6 +310,101 @@ public static class EasyExcelService
         }
 
         return xlWorkbook;
+    }
+
+    private static EasyExcelBuilder ConvertEasyGridExcelBuilderToEasyExcelBuilder(this EasyGridExcelBuilder easyGridExcelBuilder)
+    {
+        var easyExcelBuilder = new EasyExcelBuilder();
+
+        foreach (var gridExcelSheet in easyGridExcelBuilder.Sheets)
+        {
+            if (gridExcelSheet.DataList is IEnumerable records)
+            {
+                var headerRow = new Row();
+
+                var dataRows = new List<Row>();
+
+                // Get Header 
+
+                bool headerCalculated = false;
+
+                int yLocation = 1;
+
+                string? sheetName = null;
+
+                foreach (var record in records)
+                {
+                    var easyExcelSheetAttribute = record.GetType().GetCustomAttribute<EasyExcelGridSheetAttribute>();
+
+                    sheetName = easyExcelSheetAttribute?.SheetName;
+
+                    PropertyInfo[] properties = record.GetType().GetProperties();
+
+                    int xLocation = 1;
+
+                    var recordRow = new Row();
+
+                    foreach (var prop in properties)
+                    {
+                        var easyExcelColumnAttribute = (EasyExcelGridColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is EasyExcelGridColumnAttribute);
+
+                        // Header
+                        if (headerCalculated is false)
+                        {
+                            headerRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation))
+                            {
+                                Value = easyExcelColumnAttribute?.HeaderName ?? prop.Name,
+                                CellType = CellType.Text
+                            });
+
+                            headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight;
+
+                            headerRow.BackgroundColor = easyExcelSheetAttribute?.HeaderBackgroundColor ?? Color.Transparent;
+                        }
+
+                        // Data
+                        recordRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation + 1))
+                        {
+                            Value = prop.GetValue(record),
+                            CellType = easyExcelColumnAttribute?.ExcelDataType ?? CellType.Text
+                        });
+
+                        xLocation++;
+                    }
+
+                    dataRows.Add(recordRow);
+
+                    yLocation++;
+
+                    headerCalculated = true;
+                }
+
+                easyExcelBuilder.Sheets.Add(new Sheet
+                {
+                    SheetName = sheetName,
+
+                    // Header Row
+                    SheetRows = new List<Row> { headerRow },
+
+                    // Table Data
+                    SheetTables = new List<Table>
+                    {
+                        new()
+                        {
+                            TableRows = dataRows,
+                            InlineBorder = new Border { BorderLineStyle = LineStyle.Thin },
+                            OutsideBorder = new Border { BorderLineStyle = LineStyle.Thin }
+                        }
+                    }
+                });
+            }
+            else
+            {
+                throw new Exception("GridExcelSheet object should be IEnumerable");
+            }
+        }
+
+        return easyExcelBuilder;
     }
 
     private static void ConfigureCell(this IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)

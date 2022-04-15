@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace EasyExcelGenerator.Models;
 
-public class EasyExcelModel
+public class EasyExcelBuilder
 {
     /// <summary>
-    /// Excel file will be generated with this file name
+    /// Excel file name without .Xlsx extension. Excel file will be generated with this file name
     /// </summary>
-    [Required(ErrorMessage = "FileName is required")]
     public string? FileName { get; set; }
 
     /// <summary>

@@ -12,8 +12,10 @@ public class ExcelController : ControllerBase
     [HttpGet("export-excel-from-easy-excel-model")]
     public IActionResult ExportExcelFromEasyExcelModel()
     {
-        var easyExcelModel = new EasyExcelModel
+        var easyExcelModel = new EasyExcelBuilder
         {
+            // FileName = "From-Model",
+
             Sheets = new List<Sheet>
             {
                 new Sheet
@@ -149,6 +151,20 @@ public class ExcelController : ControllerBase
             }
         };
 
-        return Ok(EasyExcelService.GenerateExcel(easyExcelModel, @"C:\GeneratedExcelSamples", $"FromModel-{DateTime.Now.Minute}"));
+        return Ok(EasyExcelService.GenerateExcel(easyExcelModel, @"C:\GeneratedExcelSamples"));
+    }
+
+    [HttpGet("export-grid-excel")]
+    public IActionResult ExportGridExcel()
+    {
+        var fetchDataFromDb = new List<AppExcelReportModel>
+        {
+            new() {Id = 1, FullName = "فرشاد داودی رئیس آبادی", PersonnelCode = "980923"},
+            new() {Id = 2, FullName = "سمیه ابراهیمی", PersonnelCode = "991126"}
+        };
+
+        var easyGridExcelBuilder = new EasyGridExcelBuilder(fetchDataFromDb);
+
+        return Ok(EasyExcelService.GenerateGridExcel(easyGridExcelBuilder, @"C:\GeneratedExcelSamples"));
     }
 }

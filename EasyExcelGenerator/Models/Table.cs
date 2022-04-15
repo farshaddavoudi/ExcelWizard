@@ -9,13 +9,7 @@ public class Table : IValidatableObject
 {
     public List<Row> TableRows { get; set; } = new();
 
-    public CellLocation StartCellLocation
-    {
-        get
-        {
-            return TableRows.FirstOrDefault().StartCellLocation;
-        }
-    }  //TODO: Discuss with Shahab. The Rows has StartLocation itself, which one should be considered?
+    public CellLocation? StartCellLocation => TableRows.FirstOrDefault()?.StartCellLocation; //TODO: Discuss with Shahab. The Rows has StartLocation itself, which one should be considered?
     //TODO: StartLocation and EndLocation for Table model are critical and should exist and be exact to create desired result
 
     public CellLocation EndLocation
