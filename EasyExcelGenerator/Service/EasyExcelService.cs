@@ -3,6 +3,7 @@ using ClosedXML.Report.Utils;
 using EasyExcelGenerator.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace EasyExcelGenerator.Service;
@@ -10,6 +11,44 @@ namespace EasyExcelGenerator.Service;
 // TODO: Remove static and make them work with DI
 public static class EasyExcelService
 {
+    /// <summary>
+    /// Generate Excel file into file result
+    /// </summary>
+    /// <param name="excelModel"></param>
+    /// <returns></returns>
+    public static GeneratedExcelFile GenerateExcel(ExcelModel excelModel)
+    {
+        using var xlWorkbook = ClosedXmlEngine(excelModel);
+
+        // Save
+        using var stream = new MemoryStream();
+
+        xlWorkbook.SaveAs(stream);
+
+        var content = stream.ToArray();
+
+        return new GeneratedExcelFile { Content = content };
+    }
+
+    /// <summary>
+    /// Generate Excel file and save it in path and return the saved url
+    /// </summary>
+    /// <param name="excelFileModel"></param>
+    /// <param name="savePath"></param>
+    /// <param name="excelFileNameWithoutXlsxExtension"></param>
+    /// <returns></returns>
+    public static string GenerateExcel(ExcelModel excelFileModel, string savePath, string excelFileNameWithoutXlsxExtension)
+    {
+        using var xlWorkbook = ClosedXmlEngine(excelFileModel);
+
+        var saveUrl = $"{savePath}\\{excelFileNameWithoutXlsxExtension}.xlsx";
+
+        // Save
+        xlWorkbook.SaveAs(saveUrl);
+
+        return saveUrl;
+    }
+
     private static XLWorkbook ClosedXmlEngine(ExcelModel excelModel)
     {
         //-------------------------------------------
