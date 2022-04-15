@@ -13,7 +13,7 @@ public class Cell
 
     internal Type? Type { get; set; }
 
-    public object? Value { get; set; }
+    public object Value { get; set; }
 
     public CellLocation CellLocation { get; set; }
 

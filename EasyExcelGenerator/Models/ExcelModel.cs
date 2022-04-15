@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EasyExcelGenerator.Models
 {
-    public class ExcelFileModel
+    public class ExcelModel
     {
         /// <summary>
         /// Excel file will be generated with this file name
@@ -14,12 +14,12 @@ namespace EasyExcelGenerator.Models
         /// <summary>
         /// Sheets shared default styles including default ColumnWidth, default RowHeight and sheets language Direction
         /// </summary>
-        public SheetsDefaultStyles SheetsDefaultStyles { get; set; } = new();
+        public AllSheetsDefaultStyle AllSheetsDefaultStyle { get; set; } = new();
 
         /// <summary>
         /// Set the default IsLocked value for all Sheets
         /// </summary>
-        public bool SheetsAreLocked { get; set; } = false;
+        public bool AreSheetsLockedByDefault { get; set; } = false;
 
         /// <summary>
         /// Excel Sheets data and configurations

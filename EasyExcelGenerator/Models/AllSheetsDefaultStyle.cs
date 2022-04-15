@@ -1,21 +1,21 @@
 ﻿namespace EasyExcelGenerator.Models
 {
-    public class SheetsDefaultStyles
+    public class AllSheetsDefaultStyle
     {
-        public SheetDirection Direction { get; set; } = SheetDirection.RightToLeft;
+        public SheetDirection AllSheetsDefaultDirection { get; set; } = SheetDirection.RightToLeft;
 
-        public TextAlign TextAlign { get; set; } = TextAlign.Right;
+        public TextAlign AllSheetsDefaultTextAlign { get; set; } = TextAlign.Right;
 
         /// <summary>
         /// Default column width for the workbook.
         /// <para>All new worksheets will use this column width.</para>
         /// </summary>
-        public double ColumnsWidth { get; set; } = 20;
+        public double AllSheetsDefaultColumnWidth { get; set; } = 20;
 
         /// <summary>
         /// Default row height for the workbook.
         /// <para>All new worksheets will use this row height.</para>
         /// </summary>
-        public double RowsHeight { get; set; } = 15;
+        public double AllSheetsDefaultRowHeight { get; set; } = 15;
     }
 }

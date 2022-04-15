@@ -10,15 +10,15 @@ public class ColumnStyle : IValidatableObject
 
     public ColumnWidth? ColumnWidth { get; set; } = null; //If not specified, default would be considered
 
-    public TextAlign TextAlign { get; set; } = TextAlign.Right; //Default RTL direction
+    public TextAlign ColumnTextAlign { get; set; } = TextAlign.Right; //Default RTL direction
 
-    public bool IsHidden { get; set; } = false;
+    public bool IsColumnHidden { get; set; } = false;
 
     // TODO: Add MergedCells for Columns property
 
     public bool AutoFit { get; set; } = false; //TODO: has same concept with Width class (duplicate)
 
-    public bool? IsLocked { get; set; } = null; //Default is null, and it gets Sheet "IsLocked" property value in this case, but if specified, it will override it
+    public bool? IsColumnLocked { get; set; } = null; //Default is null, and it gets Sheet "IsLocked" property value in this case, but if specified, it will override it
 
     // Validations
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

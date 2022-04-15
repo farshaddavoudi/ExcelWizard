@@ -19,4 +19,9 @@
 		<PackageReference Include="ClosedXML.Report" Version="0.2.4" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Templates\" />
+	  <Folder Include="Service\" />
+	</ItemGroup>
+
 </Project>
