@@ -36,7 +36,7 @@ public class Sheet
     /// Sheet specific Columns style like the Column Width, TextAlign, IsHidden, IsLocked, etc
     /// </summary>
     // TODO: Merge it with SheetStyle property (above). They can be mixed
-    public List<ColumnStyle> SheetColumnsStyleList { get; set; } = new();
+    public List<ColumnStyle> SheetColumnsStyle { get; set; } = new();
 
     /// <summary>
     /// Merged Cells in the Sheet e.g. new List { "L16:L18" } will merge starting from L16 Cell until L18 Cell (MergeStartCell:MergeEndCell)

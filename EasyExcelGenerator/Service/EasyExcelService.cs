@@ -14,11 +14,11 @@ public static class EasyExcelService
     /// <summary>
     /// Generate Excel file into file result
     /// </summary>
-    /// <param name="excelModel"></param>
+    /// <param name="easyExcelModel"></param>
     /// <returns></returns>
-    public static GeneratedExcelFile GenerateExcel(ExcelModel excelModel)
+    public static GeneratedExcelFile GenerateExcel(EasyExcelModel easyExcelModel)
     {
-        using var xlWorkbook = ClosedXmlEngine(excelModel);
+        using var xlWorkbook = ClosedXmlEngine(easyExcelModel);
 
         // Save
         using var stream = new MemoryStream();
@@ -33,13 +33,13 @@ public static class EasyExcelService
     /// <summary>
     /// Generate Excel file and save it in path and return the saved url
     /// </summary>
-    /// <param name="excelFileModel"></param>
+    /// <param name="easyExcelFileModel"></param>
     /// <param name="savePath"></param>
     /// <param name="excelFileNameWithoutXlsxExtension"></param>
     /// <returns></returns>
-    public static string GenerateExcel(ExcelModel excelFileModel, string savePath, string excelFileNameWithoutXlsxExtension)
+    public static string GenerateExcel(EasyExcelModel easyExcelFileModel, string savePath, string excelFileNameWithoutXlsxExtension)
     {
-        using var xlWorkbook = ClosedXmlEngine(excelFileModel);
+        using var xlWorkbook = ClosedXmlEngine(easyExcelFileModel);
 
         var saveUrl = $"{savePath}\\{excelFileNameWithoutXlsxExtension}.xlsx";
 
@@ -49,24 +49,24 @@ public static class EasyExcelService
         return saveUrl;
     }
 
-    private static XLWorkbook ClosedXmlEngine(ExcelModel excelModel)
+    private static XLWorkbook ClosedXmlEngine(EasyExcelModel easyExcelModel)
     {
         //-------------------------------------------
         //  Create Workbook (integrated with using statement)
         //-------------------------------------------
         var xlWorkbook = new XLWorkbook
         {
-            RightToLeft = excelModel.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
-            ColumnWidth = excelModel.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
-            RowHeight = excelModel.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
+            RightToLeft = easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
+            ColumnWidth = easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
+            RowHeight = easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
         };
 
         // Check any sheet available
-        if (excelModel.Sheets.Count == 0)
+        if (easyExcelModel.Sheets.Count == 0)
             throw new Exception("No sheet is available to create Excel workbook");
 
         // Check sheet names are unique
-        var sheetNames = excelModel.Sheets
+        var sheetNames = easyExcelModel.Sheets
             .Where(s => s.SheetName.IsNullOrWhiteSpace() is false)
             .Select(s => s.SheetName)
             .ToList();
@@ -79,7 +79,7 @@ public static class EasyExcelService
         // Auto naming for sheets
 
         int i = 1;
-        foreach (Sheet sheet in excelModel.Sheets)
+        foreach (Sheet sheet in easyExcelModel.Sheets)
         {
             if (sheet.SheetName.IsNullOrWhiteSpace())
             {
@@ -89,7 +89,7 @@ public static class EasyExcelService
                 {
                     var possibleName = $"Sheet{i}";
 
-                    isNameOk = excelModel.Sheets.Any(s => s.SheetName == possibleName) is false;
+                    isNameOk = easyExcelModel.Sheets.Any(s => s.SheetName == possibleName) is false;
 
                     if (isNameOk)
                         sheet.SheetName = possibleName;
@@ -102,7 +102,7 @@ public static class EasyExcelService
         //-------------------------------------------
         //  Add Sheets one by one to ClosedXML Workbook instance
         //-------------------------------------------
-        foreach (var sheet in excelModel.Sheets)
+        foreach (var sheet in easyExcelModel.Sheets)
         {
             // Set name
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
@@ -161,7 +161,7 @@ public static class EasyExcelService
             };
 
             // Set TextAlign
-            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? excelModel.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
+            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? easyExcelModel.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
 
             xlSheet.Columns().Style.Alignment.Horizontal = textAlign switch
             {
@@ -175,7 +175,7 @@ public static class EasyExcelService
             //-------------------------------------------
             //  Columns properties
             //-------------------------------------------
-            foreach (var columnStyle in sheet.SheetColumnsStyleList)
+            foreach (var columnStyle in sheet.SheetColumnsStyle)
             {
                 // Infer XLAlignment from "ColumnProp"
                 var columnAlignmentHorizontalValue = columnStyle.ColumnTextAlign switch
@@ -213,7 +213,7 @@ public static class EasyExcelService
             {
                 foreach (var tableRow in table.TableRows)
                 {
-                    xlSheet.ConfigureRow(tableRow, sheet.SheetColumnsStyleList, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
+                    xlSheet.ConfigureRow(tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelModel.AreSheetsLockedByDefault);
                 }
 
                 var tableRange = xlSheet.Range(table.StartCellLocation.Y,
@@ -251,7 +251,7 @@ public static class EasyExcelService
             //-------------------------------------------
             foreach (var sheetRow in sheet.SheetRows)
             {
-                xlSheet.ConfigureRow(sheetRow, sheet.SheetColumnsStyleList, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
+                xlSheet.ConfigureRow(sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelModel.AreSheetsLockedByDefault);
             }
 
             //-------------------------------------------
@@ -259,10 +259,10 @@ public static class EasyExcelService
             //-------------------------------------------
             foreach (var cell in sheet.SheetCells)
             {
-                if (cell.Visible is false)
+                if (cell.IsCellVisible is false)
                     continue;
 
-                xlSheet.ConfigureCell(cell, sheet.SheetColumnsStyleList, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
+                xlSheet.ConfigureCell(cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelModel.AreSheetsLockedByDefault);
             }
 
             // Apply sheet merges here
@@ -321,7 +321,7 @@ public static class EasyExcelService
         }
 
         // Infer XLAlignment from "cell"
-        XLAlignmentHorizontalValues? cellAlignmentHorizontalValue = cell.TextAlign switch
+        XLAlignmentHorizontalValues? cellAlignmentHorizontalValue = cell.CellTextAlign switch
         {
             TextAlign.Center => XLAlignmentHorizontalValues.Center,
             TextAlign.Left => XLAlignmentHorizontalValues.Left,
@@ -331,7 +331,7 @@ public static class EasyExcelService
         };
 
         // Get IsLocked property based on Sheet and Cell "IsLocked" prop
-        bool? isLocked = cell.IsLocked;
+        bool? isLocked = cell.IsCellLocked;
 
         if (isLocked is null)
         { // Get from ColumnProps level
@@ -373,7 +373,7 @@ public static class EasyExcelService
     {
         foreach (var rowCell in row.Cells)
         {
-            if (rowCell.Visible is false)
+            if (rowCell.IsCellVisible is false)
                 continue;
 
             xlSheet.ConfigureCell(rowCell, columnsStyleList, isSheetLocked);
