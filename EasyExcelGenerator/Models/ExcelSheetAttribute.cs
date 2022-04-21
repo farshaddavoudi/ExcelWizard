@@ -10,6 +10,11 @@ namespace EasyExcelGenerator.Models;
 public class ExcelSheetAttribute : Attribute
 {
     /// <summary>
+    /// Sheet direction 
+    /// </summary>
+    public SheetDirection SheetDirection { get; set; } = SheetDirection.RightToLeft;
+
+    /// <summary>
     /// Sheet name of generated Excel that contains the Class data. The default is Sheet1, Sheet2, etc..
     /// </summary>
     public string? SheetName { get; set; }

@@ -1,9 +1,8 @@
-﻿namespace EasyExcelGenerator.Models
-{
-    public enum SheetDirection
-    {
-        LeftToRight,
+﻿namespace EasyExcelGenerator.Models;
 
-        RightToLeft
-    }
+public enum SheetDirection
+{
+    LeftToRight,
+
+    RightToLeft
 }

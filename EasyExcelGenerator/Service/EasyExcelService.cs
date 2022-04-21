@@ -356,6 +356,8 @@ public static class EasyExcelService
 
                 var columnsStyle = new List<ColumnStyle>();
 
+                SheetDirection sheetDirection = SheetDirection.RightToLeft;
+
                 bool isSheetLocked = false;
 
                 ProtectionLevel sheetProtectionLevel = new();
@@ -367,6 +369,8 @@ public static class EasyExcelService
                     var easyExcelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
 
                     sheetName = easyExcelSheetAttribute?.SheetName;
+
+                    sheetDirection = easyExcelSheetAttribute?.SheetDirection ?? SheetDirection.RightToLeft;
 
                     isSheetLocked = easyExcelSheetAttribute?.IsSheetLocked ?? false;
 
@@ -453,6 +457,8 @@ public static class EasyExcelService
                 easyExcelBuilder.Sheets.Add(new Sheet
                 {
                     SheetName = sheetName,
+
+                    SheetStyle = new SheetStyle { SheetDirection = sheetDirection },
 
                     IsSheetLocked = isSheetLocked,
 

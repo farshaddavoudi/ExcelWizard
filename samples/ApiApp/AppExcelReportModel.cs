@@ -4,7 +4,7 @@ using System.Drawing;
 namespace ApiApp;
 
 [ExcelSheet(SheetName = "MyReport", DefaultTextAlign = TextAlign.Center, HeaderBackgroundColor = KnownColor.LightBlue, HeaderHeight = 40,
-    BorderType = LineStyle.DashDotDot, DataBackgroundColor = KnownColor.Bisque, DataRowHeight = 25, IsSheetLocked = true)]
+    BorderType = LineStyle.DashDotDot, DataBackgroundColor = KnownColor.Bisque, DataRowHeight = 25, IsSheetLocked = true, SheetDirection = SheetDirection.RightToLeft)]
 public class AppExcelReportModel
 {
     [ExcelColumn(HeaderName = "شناسه", HeaderTextAlign = TextAlign.Right, DataTextAlign = TextAlign.Right)]
