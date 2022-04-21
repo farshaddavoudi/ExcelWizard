@@ -163,7 +163,7 @@ public class ExcelController : ControllerBase
             new() {Id = 2, FullName = "سمیه ابراهیمی", PersonnelCode = "991126"}
         };
 
-        var result = EasyExcelService.GenerateGridExcel(new EasyGridExcelBuilder(fetchDataFromDb), @"C:\GeneratedExcelSamples");
+        var result = EasyExcelService.GenerateSingleSheetGridExcel(fetchDataFromDb, @"C:\GeneratedExcelSamples");
 
         return Ok(result);
     }

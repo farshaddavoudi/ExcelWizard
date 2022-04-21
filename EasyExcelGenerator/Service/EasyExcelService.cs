@@ -59,8 +59,22 @@ public static class EasyExcelService
     /// </summary>
     /// <param name="easyGridExcelBuilder"></param>
     /// <returns></returns>
-    public static GeneratedExcelFile GenerateGridExcel(EasyGridExcelBuilder easyGridExcelBuilder)
+    public static GeneratedExcelFile GenerateMultiSheetsGridExcel(EasyGridExcelBuilder easyGridExcelBuilder)
     {
+        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+
+        return GenerateExcel(easyExcelBuilder);
+    }
+
+    /// <summary>
+    /// Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
+    /// </summary>
+    /// <param name="singleSheetDataList"> List of data (should be something like List<Person>()) which you want to show as Excel Report </param>
+    /// <returns></returns>
+    public static GeneratedExcelFile GenerateSingleSheetGridExcel(object singleSheetDataList)
+    {
+        var easyGridExcelBuilder = new EasyGridExcelBuilder(singleSheetDataList);
+
         var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
 
         return GenerateExcel(easyExcelBuilder);
@@ -73,8 +87,23 @@ public static class EasyExcelService
     /// <param name="easyGridExcelBuilder"></param>
     /// <param name="savePath"></param>
     /// <returns></returns>
-    public static string GenerateGridExcel(EasyGridExcelBuilder easyGridExcelBuilder, string savePath)
+    public static string GenerateMultiSheetsGridExcel(EasyGridExcelBuilder easyGridExcelBuilder, string savePath)
     {
+        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+
+        return GenerateExcel(easyExcelBuilder, savePath);
+    }
+
+    /// <summary>
+    /// Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
+    /// Save it in path and return the saved url
+    /// </summary>
+    /// <param name="singleSheetDataList"> List of data (should be something like List<Person>()) which you want to show as Excel Report </param>
+    /// <returns></returns>
+    public static string GenerateSingleSheetGridExcel(object singleSheetDataList, string savePath)
+    {
+        var easyGridExcelBuilder = new EasyGridExcelBuilder(singleSheetDataList);
+
         var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
 
         return GenerateExcel(easyExcelBuilder, savePath);
