@@ -453,7 +453,7 @@ public static class EasyExcelService
                                 ColumnWidth = new ColumnWidth
                                 {
                                     Width = easyExcelColumnAttribute?.ColumnWidth == 0 ? null : easyExcelColumnAttribute?.ColumnWidth,
-                                    WidthCalculationType = easyExcelColumnAttribute?.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
+                                    WidthCalculationType = easyExcelColumnAttribute is null || easyExcelColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
                                 }
                             });
                         }

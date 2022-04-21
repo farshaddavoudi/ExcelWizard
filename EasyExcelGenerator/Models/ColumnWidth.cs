@@ -5,7 +5,7 @@ namespace EasyExcelGenerator.Models;
 
 public class ColumnWidth : IValidatableObject
 {
-    public ColumnWidthCalculationType WidthCalculationType { get; set; } = ColumnWidthCalculationType.ExplicitValue;
+    public ColumnWidthCalculationType WidthCalculationType { get; set; } = ColumnWidthCalculationType.AdjustToContents;
 
     /// <summary>
     /// Width value of the Column. In case of ColumnWidthCalculationType.AdjustToContents it should be left null
