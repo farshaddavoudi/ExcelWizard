@@ -161,13 +161,14 @@ public class ExcelController : ControllerBase
         return Ok(_easyExcelService.GenerateCompoundExcel(easyExcelModel, @"C:\GeneratedExcelSamples"));
     }
 
+
     [HttpGet("export-grid-excel")]
     public IActionResult ExportGridExcel()
     {
         var fetchDataFromDb = new List<AppExcelReportModel>
-        {
-            new() {Id = 1, FullName = "فرشاد داودی ", PersonnelCode = "980923"},
-            new() {Id = 2, FullName = "سمیه ابراهیمی", PersonnelCode = "991126"}
+        { 
+            new() { Id = 1, FullName = "کریس رونالدو ", PersonnelCode = "980923" },
+            new() { Id = 2, FullName = "روبرتو کارلس", PersonnelCode = "991126" }
         };
 
         var result = _easyExcelService.GenerateGridLayoutExcel(fetchDataFromDb, @"C:\GeneratedExcelSamples");

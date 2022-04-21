@@ -8,6 +8,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using BlazorDownloadFile;
 using Border = EasyExcelGenerator.Models.Border;
 using Color = System.Drawing.Color;
 using Table = EasyExcelGenerator.Models.Table;
@@ -16,6 +18,17 @@ namespace EasyExcelGenerator.Service;
 
 public class EasyExcelService : IEasyExcelService
 {
+    private readonly IBlazorDownloadFileService _blazorDownloadFileService;
+
+    #region Constructor Injection
+
+    public EasyExcelService(IBlazorDownloadFileService blazorDownloadFileService)
+    {
+        _blazorDownloadFileService = blazorDownloadFileService;
+    }
+
+    #endregion
+
     public GeneratedExcelFile GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
     {
         using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
@@ -27,14 +40,20 @@ public class EasyExcelService : IEasyExcelService
 
         var content = stream.ToArray();
 
-        return new GeneratedExcelFile { Content = content };
+        if (compoundExcelBuilder.FileName.IsNullOrWhiteSpace())
+            compoundExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+
+        return new GeneratedExcelFile { FileName = compoundExcelBuilder.FileName, Content = content };
     }
 
-    public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilderFile, string savePath)
+    public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder, string savePath)
     {
-        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilderFile);
+        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
 
-        var saveUrl = $"{savePath}\\{compoundExcelBuilderFile.FileName}.xlsx";
+        if (compoundExcelBuilder.FileName.IsNullOrWhiteSpace())
+            compoundExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+
+        var saveUrl = $"{savePath}\\{compoundExcelBuilder.FileName}.xlsx";
 
         // Save
         xlWorkbook.SaveAs(saveUrl);
@@ -74,14 +93,32 @@ public class EasyExcelService : IEasyExcelService
         return GenerateCompoundExcel(compoundExcelBuilder, savePath);
     }
 
+    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
+    {
+        var generatedFile = GenerateGridLayoutExcel(multiSheetsGridLayoutExcelBuilder);
+
+        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
+    }
+
+    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList)
+    {
+        var generatedFile = GenerateGridLayoutExcel(singleSheetDataList);
+
+        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
+    }
+
+    public async Task<DownloadFileResult> BlazorDownloadCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
+    {
+        var generatedFile = GenerateCompoundExcel(compoundExcelBuilder);
+
+        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
+    }
+
 
     #region Private Methods
 
     private XLWorkbook ClosedXmlEngine(CompoundExcelBuilder compoundExcelBuilder)
     {
-        if (compoundExcelBuilder.FileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
-
         //-------------------------------------------
         //  Create Workbook (integrated with using statement)
         //-------------------------------------------

@@ -2,9 +2,11 @@
 
 public class GeneratedExcelFile
 {
+    public string? FileName { get; set; }
+
     public byte[]? Content { get; set; }
 
-    public const string MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public string MimeType => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    public const string Extension = "xlsx";
+    public string Extension => "xlsx";
 }

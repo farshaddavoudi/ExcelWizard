@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using EasyExcelGenerator.Service
+@using BlazorDownloadFile
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +9,23 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+
+<button @onclick="GenerateExcelReport"> Export Excel </button>
+
+@code {
+
+    [Inject] private IEasyExcelService EasyExcelService { get; set; } = default!;
+
+    private Task<DownloadFileResult> GenerateExcelReport()
+    {
+        var fetchDataFromApi = new List<AppExcelReportModel>
+        { 
+            new() { Id = 1, FullName = "کریس رونالدو ", PersonnelCode = "980923" },
+            new() { Id = 2, FullName = "روبرتو کارلس", PersonnelCode = "991126" },
+            new() { Id = 3, FullName = "مارسل دسایی", PersonnelCode = "941126" }
+        };
+
+        return EasyExcelService.BlazorDownloadGridLayoutExcel(fetchDataFromApi);
+    }
+}
