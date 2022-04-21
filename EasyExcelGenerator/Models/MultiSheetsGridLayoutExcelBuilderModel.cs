@@ -2,9 +2,9 @@
 
 namespace EasyExcelGenerator.Models;
 
-public class EasyGridExcelBuilder
+public class GridLayoutExcelBuilder
 {
-    public EasyGridExcelBuilder()
+    public GridLayoutExcelBuilder()
     {
         Sheets = new();
     }
@@ -13,7 +13,7 @@ public class EasyGridExcelBuilder
     /// For faster and easier use in case of single Sheet Excel to be generated
     /// </summary>
     /// <param name="singleSheetDataList"></param>
-    public EasyGridExcelBuilder(object singleSheetDataList)
+    public GridLayoutExcelBuilder(object singleSheetDataList)
     {
         Sheets = new List<GridExcelSheet>
         {

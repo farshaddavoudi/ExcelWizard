@@ -14,17 +14,11 @@ using Table = EasyExcelGenerator.Models.Table;
 
 namespace EasyExcelGenerator.Service;
 
-// TODO: Remove static and make them work with DI
-public static class EasyExcelService
+public class EasyExcelService : IEasyExcelService
 {
-    /// <summary>
-    /// Generate Excel file into file result
-    /// </summary>
-    /// <param name="easyExcelBuilder"></param>
-    /// <returns></returns>
-    public static GeneratedExcelFile GenerateExcel(EasyExcelBuilder easyExcelBuilder)
+    public GeneratedExcelFile GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
     {
-        using var xlWorkbook = ClosedXmlEngine(easyExcelBuilder);
+        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
 
         // Save
         using var stream = new MemoryStream();
@@ -36,17 +30,11 @@ public static class EasyExcelService
         return new GeneratedExcelFile { Content = content };
     }
 
-    /// <summary>
-    /// Generate Excel file and save it in path and return the saved url
-    /// </summary>
-    /// <param name="easyExcelBuilderFile"></param>
-    /// <param name="savePath"></param>
-    /// <returns></returns>
-    public static string GenerateExcel(EasyExcelBuilder easyExcelBuilderFile, string savePath)
+    public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilderFile, string savePath)
     {
-        using var xlWorkbook = ClosedXmlEngine(easyExcelBuilderFile);
+        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilderFile);
 
-        var saveUrl = $"{savePath}\\{easyExcelBuilderFile.FileName}.xlsx";
+        var saveUrl = $"{savePath}\\{compoundExcelBuilderFile.FileName}.xlsx";
 
         // Save
         xlWorkbook.SaveAs(saveUrl);
@@ -54,82 +42,62 @@ public static class EasyExcelService
         return saveUrl;
     }
 
-    /// <summary>
-    /// Generate Simple Grid Excel file from special model configured options with EasyExcel attributes
-    /// </summary>
-    /// <param name="easyGridExcelBuilder"></param>
-    /// <returns></returns>
-    public static GeneratedExcelFile GenerateMultiSheetsGridExcel(EasyGridExcelBuilder easyGridExcelBuilder)
+    public GeneratedExcelFile GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
     {
-        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(multiSheetsGridLayoutExcelBuilder);
 
-        return GenerateExcel(easyExcelBuilder);
+        return GenerateCompoundExcel(compoundExcelBuilder);
     }
 
-    /// <summary>
-    /// Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
-    /// </summary>
-    /// <param name="singleSheetDataList"> List of data (should be something like List<Person>()) which you want to show as Excel Report </param>
-    /// <returns></returns>
-    public static GeneratedExcelFile GenerateSingleSheetGridExcel(object singleSheetDataList)
+    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList)
     {
-        var easyGridExcelBuilder = new EasyGridExcelBuilder(singleSheetDataList);
+        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder(singleSheetDataList);
 
-        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(gridLayoutExcelBuilder);
 
-        return GenerateExcel(easyExcelBuilder);
+        return GenerateCompoundExcel(compoundExcelBuilder);
     }
 
-    /// <summary>
-    /// Generate Simple Grid Excel file from special model configured options with EasyExcel attributes
-    /// Save it in path and return the saved url
-    /// </summary>
-    /// <param name="easyGridExcelBuilder"></param>
-    /// <param name="savePath"></param>
-    /// <returns></returns>
-    public static string GenerateMultiSheetsGridExcel(EasyGridExcelBuilder easyGridExcelBuilder, string savePath)
+    public string GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder, string savePath)
     {
-        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(multiSheetsGridLayoutExcelBuilder);
 
-        return GenerateExcel(easyExcelBuilder, savePath);
+        return GenerateCompoundExcel(compoundExcelBuilder, savePath);
     }
 
-    /// <summary>
-    /// Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
-    /// Save it in path and return the saved url
-    /// </summary>
-    /// <param name="singleSheetDataList"> List of data (should be something like List<Person>()) which you want to show as Excel Report </param>
-    /// <returns></returns>
-    public static string GenerateSingleSheetGridExcel(object singleSheetDataList, string savePath)
+    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath)
     {
-        var easyGridExcelBuilder = new EasyGridExcelBuilder(singleSheetDataList);
+        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder(singleSheetDataList);
 
-        var easyExcelBuilder = easyGridExcelBuilder.ConvertEasyGridExcelBuilderToEasyExcelBuilder();
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(gridLayoutExcelBuilder);
 
-        return GenerateExcel(easyExcelBuilder, savePath);
+        return GenerateCompoundExcel(compoundExcelBuilder, savePath);
     }
 
-    private static XLWorkbook ClosedXmlEngine(EasyExcelBuilder easyExcelBuilder)
+
+    #region Private Methods
+
+    private XLWorkbook ClosedXmlEngine(CompoundExcelBuilder compoundExcelBuilder)
     {
-        if (easyExcelBuilder.FileName.IsNullOrWhiteSpace())
-            easyExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        if (compoundExcelBuilder.FileName.IsNullOrWhiteSpace())
+            compoundExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
         //-------------------------------------------
         //  Create Workbook (integrated with using statement)
         //-------------------------------------------
         var xlWorkbook = new XLWorkbook
         {
-            RightToLeft = easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
-            ColumnWidth = easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
-            RowHeight = easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
+            RightToLeft = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
+            ColumnWidth = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
+            RowHeight = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
         };
 
         // Check any sheet available
-        if (easyExcelBuilder.Sheets.Count == 0)
+        if (compoundExcelBuilder.Sheets.Count == 0)
             throw new Exception("No sheet is available to create Excel workbook");
 
         // Check sheet names are unique
-        var sheetNames = easyExcelBuilder.Sheets
+        var sheetNames = compoundExcelBuilder.Sheets
             .Where(s => s.SheetName.IsNullOrWhiteSpace() is false)
             .Select(s => s.SheetName)
             .ToList();
@@ -142,7 +110,7 @@ public static class EasyExcelService
         // Auto naming for sheets
 
         int i = 1;
-        foreach (Sheet sheet in easyExcelBuilder.Sheets)
+        foreach (Sheet sheet in compoundExcelBuilder.Sheets)
         {
             if (sheet.SheetName.IsNullOrWhiteSpace())
             {
@@ -152,7 +120,7 @@ public static class EasyExcelService
                 {
                     var possibleName = $"Sheet{i}";
 
-                    isNameOk = easyExcelBuilder.Sheets.Any(s => s.SheetName == possibleName) is false;
+                    isNameOk = compoundExcelBuilder.Sheets.Any(s => s.SheetName == possibleName) is false;
 
                     if (isNameOk)
                         sheet.SheetName = possibleName;
@@ -165,7 +133,7 @@ public static class EasyExcelService
         //-------------------------------------------
         //  Add Sheets one by one to ClosedXML Workbook instance
         //-------------------------------------------
-        foreach (var sheet in easyExcelBuilder.Sheets)
+        foreach (var sheet in compoundExcelBuilder.Sheets)
         {
             // Set name
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
@@ -242,7 +210,7 @@ public static class EasyExcelService
             };
 
             // Set TextAlign
-            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? easyExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
+            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
 
             xlSheet.Columns().Style.Alignment.Horizontal = textAlign switch
             {
@@ -294,7 +262,7 @@ public static class EasyExcelService
             {
                 foreach (var tableRow in table.TableRows)
                 {
-                    xlSheet.ConfigureRow(tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelBuilder.AreSheetsLockedByDefault);
+                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
                 }
 
                 var tableRange = xlSheet.Range(table.StartCellLocation.Y,
@@ -332,7 +300,7 @@ public static class EasyExcelService
             //-------------------------------------------
             foreach (var sheetRow in sheet.SheetRows)
             {
-                xlSheet.ConfigureRow(sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureRow(xlSheet, sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
             }
 
             //-------------------------------------------
@@ -343,7 +311,7 @@ public static class EasyExcelService
                 if (cell.IsCellVisible is false)
                     continue;
 
-                xlSheet.ConfigureCell(cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? easyExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureCell(xlSheet, cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
             }
 
             // Apply sheet merges here
@@ -362,11 +330,11 @@ public static class EasyExcelService
         return xlWorkbook;
     }
 
-    private static EasyExcelBuilder ConvertEasyGridExcelBuilderToEasyExcelBuilder(this EasyGridExcelBuilder easyGridExcelBuilder)
+    private CompoundExcelBuilder ConvertEasyGridExcelBuilderToEasyExcelBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
     {
-        var easyExcelBuilder = new EasyExcelBuilder();
+        var easyExcelBuilder = new CompoundExcelBuilder();
 
-        foreach (var gridExcelSheet in easyGridExcelBuilder.Sheets)
+        foreach (var gridExcelSheet in gridLayoutExcelBuilder.Sheets)
         {
             if (gridExcelSheet.DataList is IEnumerable records)
             {
@@ -543,7 +511,7 @@ public static class EasyExcelService
         return easyExcelBuilder;
     }
 
-    private static void ConfigureCell(this IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)
+    private void ConfigureCell(IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)
     {
         // Infer XLDataType and value from "cell" CellType
         XLDataType? xlDataType;
@@ -561,7 +529,7 @@ public static class EasyExcelService
 
             case CellType.Currency:
                 xlDataType = XLDataType.Number;
-                if (cellValue.IsNumber() is false)
+                if (IsNumber(cellValue) is false)
                     throw new Exception("Cell with Currency CellType should be Number type");
                 cellValue = Convert.ToDecimal(cellValue).ToString("##,###");
                 break;
@@ -646,14 +614,14 @@ public static class EasyExcelService
             locationCell.Style.Font.SetFontName(cell.Font.FontName);
     }
 
-    private static void ConfigureRow(this IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
+    private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
     {
         foreach (var rowCell in row.Cells)
         {
             if (rowCell.IsCellVisible is false)
                 continue;
 
-            xlSheet.ConfigureCell(rowCell, columnsStyleList, isSheetLocked);
+            ConfigureCell(xlSheet, rowCell, columnsStyleList, isSheetLocked);
         }
 
         // Configure merged cells in the row
@@ -730,7 +698,7 @@ public static class EasyExcelService
         }
     }
 
-    private static XLBorderStyleValues? GetXlBorderLineStyle(LineStyle borderLineStyle)
+    private XLBorderStyleValues? GetXlBorderLineStyle(LineStyle borderLineStyle)
     {
         return borderLineStyle switch
         {
@@ -747,7 +715,7 @@ public static class EasyExcelService
         };
     }
 
-    private static bool IsNumber(this object value)
+    private bool IsNumber(object value)
     {
         return value is sbyte
                || value is byte
@@ -761,4 +729,6 @@ public static class EasyExcelService
                || value is double
                || value is decimal;
     }
+
+    #endregion
 }

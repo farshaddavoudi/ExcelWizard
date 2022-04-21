@@ -2,7 +2,7 @@
 
 namespace EasyExcelGenerator.Models;
 
-public class EasyExcelBuilder
+public class CompoundExcelBuilder
 {
     /// <summary>
     /// Excel file name without .Xlsx extension. Excel file will be generated with this file name
