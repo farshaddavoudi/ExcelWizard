@@ -3,15 +3,16 @@ using System.Drawing;
 
 namespace ApiApp;
 
-[ExcelSheet("MyReport", headerBackgroundColor: KnownColor.LightBlue, headerHeight: 40, borderType: LineStyle.DashDot, dataBackgroundColor: KnownColor.Bisque, dataRowHeight: 30)]
+[ExcelSheet(SheetName = "MyReport", DefaultTextAlign = TextAlign.Center, HeaderBackgroundColor = KnownColor.LightBlue, HeaderHeight = 40,
+    BorderType = LineStyle.DashDotDot, DataBackgroundColor = KnownColor.Bisque, DataRowHeight = 25, IsSheetLocked = true)]
 public class AppExcelReportModel
 {
-    [ExcelColumn("شناسه", TextAlign.Right, TextAlign.Right)]
+    [ExcelColumn(HeaderName = "شناسه", HeaderTextAlign = TextAlign.Right, DataTextAlign = TextAlign.Right)]
     public int Id { get; set; }
 
-    [ExcelColumn("Name", TextAlign.Left, columnWidthCalculationType: ColumnWidthCalculationType.ExplicitValue, columnWidth: 400)]
+    [ExcelColumn(HeaderName = "Name", HeaderTextAlign = TextAlign.Left)]
     public string? FullName { get; set; }
 
-    [ExcelColumn("شماره پرسنلی", dataTextAlign: TextAlign.Left)]
+    [ExcelColumn(HeaderName = "شماره پرسنلی", HeaderTextAlign = TextAlign.Left, ColumnWidth = 50)]
     public string? PersonnelCode { get; set; }
 }

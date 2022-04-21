@@ -141,37 +141,55 @@ public static class EasyExcelService
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
 
             // Set protection level
-            var protection = xlSheet.Protect(sheet.SheetProtectionLevels.Password);
-            if (sheet.SheetProtectionLevels.DeleteColumns)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.DeleteColumns;
-            if (sheet.SheetProtectionLevels.EditObjects)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.EditObjects;
-            if (sheet.SheetProtectionLevels.FormatCells)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.FormatCells;
-            if (sheet.SheetProtectionLevels.FormatColumns)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.FormatColumns;
-            if (sheet.SheetProtectionLevels.FormatRows)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.FormatRows;
-            if (sheet.SheetProtectionLevels.InsertColumns)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.InsertColumns;
-            if (sheet.SheetProtectionLevels.InsertHyperLinks)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.InsertHyperlinks;
-            if (sheet.SheetProtectionLevels.InsertRows)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.InsertRows;
-            if (sheet.SheetProtectionLevels.SelectLockedCells)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.SelectLockedCells;
-            if (sheet.SheetProtectionLevels.DeleteRows)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.DeleteRows;
-            if (sheet.SheetProtectionLevels.EditScenarios)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.EditScenarios;
-            if (sheet.SheetProtectionLevels.SelectUnlockedCells)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.SelectUnlockedCells;
-            if (sheet.SheetProtectionLevels.Sort)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.Sort;
-            if (sheet.SheetProtectionLevels.UseAutoFilter)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.AutoFilter;
-            if (sheet.SheetProtectionLevels.UsePivotTableReports)
-                protection.Protect().AllowedElements = XLSheetProtectionElements.PivotTables;
+            var protection = xlSheet.Protect(sheet.SheetProtectionLevel.Password);
+
+            var atLeastOneItemAdded = false;
+
+            // Local function to add to flag
+            XLSheetProtectionElements AddToFlag(XLSheetProtectionElements allowedElements, XLSheetProtectionElements toAdd)
+            {
+                atLeastOneItemAdded = true;
+
+                return allowedElements | toAdd;
+            }
+
+            XLSheetProtectionElements allowedElements = XLSheetProtectionElements.None;
+
+            if (sheet.SheetProtectionLevel.DeleteColumns && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.DeleteColumns);
+            if (sheet.SheetProtectionLevel.EditObjects && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.EditObjects);
+            if (sheet.SheetProtectionLevel.FormatCells && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatCells);
+            if (sheet.SheetProtectionLevel.FormatColumns && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatColumns);
+            if (sheet.SheetProtectionLevel.FormatRows && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatRows);
+            if (sheet.SheetProtectionLevel.InsertColumns && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertColumns);
+            if (sheet.SheetProtectionLevel.InsertHyperLinks && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertHyperlinks);
+            if (sheet.SheetProtectionLevel.InsertRows && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertRows);
+            if (sheet.SheetProtectionLevel.SelectLockedCells && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.SelectLockedCells);
+            if (sheet.SheetProtectionLevel.DeleteRows && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.DeleteRows);
+            if (sheet.SheetProtectionLevel.EditScenarios && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.EditScenarios);
+            if (sheet.SheetProtectionLevel.SelectUnlockedCells && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.SelectUnlockedCells);
+            if (sheet.SheetProtectionLevel.Sort && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.Sort);
+            if (sheet.SheetProtectionLevel.UseAutoFilter && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.AutoFilter);
+            if (sheet.SheetProtectionLevel.UsePivotTableReports && !sheet.SheetProtectionLevel.HardProtect)
+                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.PivotTables);
+
+            if (atLeastOneItemAdded)
+                protection.AllowedElements = allowedElements;
+            else
+                protection.AllowNone();
 
             // Set direction
             if (sheet.SheetStyle.SheetDirection is not null)
@@ -336,11 +354,26 @@ public static class EasyExcelService
 
                 var borderType = LineStyle.Thin;
 
+                var columnsStyle = new List<ColumnStyle>();
+
+                bool isSheetLocked = false;
+
+                ProtectionLevel sheetProtectionLevel = new();
+
                 foreach (var record in records)
                 {
+                    // Each record is an entire row of Excel
+
                     var easyExcelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
 
                     sheetName = easyExcelSheetAttribute?.SheetName;
+
+                    isSheetLocked = easyExcelSheetAttribute?.IsSheetLocked ?? false;
+
+                    var isSheetHardProtected = easyExcelSheetAttribute?.IsSheetHardProtected ?? false;
+
+                    if (isSheetHardProtected)
+                        sheetProtectionLevel.HardProtect = true;
 
                     borderType = easyExcelSheetAttribute?.BorderType ?? LineStyle.Thin;
 
@@ -352,8 +385,8 @@ public static class EasyExcelService
 
                     var recordRow = new Row
                     {
-                        RowHeight = easyExcelSheetAttribute?.DataRowHeight,
-                        BackgroundColor = easyExcelSheetAttribute?.DataBackgroundColor ?? Color.Transparent
+                        RowHeight = easyExcelSheetAttribute?.DataRowHeight == 0 ? null : easyExcelSheetAttribute?.DataRowHeight,
+                        BackgroundColor = easyExcelSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(easyExcelSheetAttribute.DataBackgroundColor) : Color.Transparent,
                     };
 
                     foreach (var prop in properties)
@@ -379,13 +412,24 @@ public static class EasyExcelService
                                 CellType = CellType.Text
                             });
 
-                            headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight;
+                            headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight == 0 ? null : easyExcelSheetAttribute?.HeaderHeight;
 
-                            headerRow.BackgroundColor = easyExcelSheetAttribute?.HeaderBackgroundColor ?? Color.Transparent;
+                            headerRow.BackgroundColor = easyExcelSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(easyExcelSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
 
                             headerRow.OutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
                             headerRow.InsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+
+                            // Calculate Columns style
+                            columnsStyle.Add(new ColumnStyle
+                            {
+                                ColumnNo = xLocation,
+                                ColumnWidth = new ColumnWidth
+                                {
+                                    Width = easyExcelColumnAttribute?.ColumnWidth == 0 ? null : easyExcelColumnAttribute?.ColumnWidth,
+                                    WidthCalculationType = easyExcelColumnAttribute?.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
+                                }
+                            });
                         }
 
                         // Data
@@ -410,6 +454,10 @@ public static class EasyExcelService
                 {
                     SheetName = sheetName,
 
+                    IsSheetLocked = isSheetLocked,
+
+                    SheetProtectionLevel = sheetProtectionLevel,
+
                     // Header Row
                     SheetRows = new List<Row> { headerRow },
 
@@ -422,7 +470,10 @@ public static class EasyExcelService
                             InlineBorder = new Border { BorderLineStyle = borderType },
                             OutsideBorder = new Border { BorderLineStyle = borderType }
                         }
-                    }
+                    },
+
+                    // Columns
+                    SheetColumnsStyle = columnsStyle
                 });
             }
             else
@@ -516,7 +567,7 @@ public static class EasyExcelService
         locationCell.Style
             .Alignment.SetWrapText(cell.Wordwrap);
 
-        locationCell.Style.Protection.SetLocked((bool)isLocked!);
+        locationCell.Style.Protection.Locked = (bool)isLocked;
 
         if (cellAlignmentHorizontalValue is not null)
             locationCell.Style.Alignment.SetHorizontal((XLAlignmentHorizontalValues)cellAlignmentHorizontalValue);

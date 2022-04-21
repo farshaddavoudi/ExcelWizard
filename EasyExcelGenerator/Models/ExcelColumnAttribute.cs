@@ -2,50 +2,34 @@
 
 namespace EasyExcelGenerator.Models;
 
+/// <summary>
+/// Configure the Excel Column mapped to this property
+/// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class ExcelColumnAttribute : Attribute
 {
-    #region Constructor
-
     /// <summary>
-    /// 
+    /// Column Header Name 
     /// </summary>
-    /// <param name="headerName"></param>
-    /// <param name="headerTextAlign"></param>
-    /// <param name="dataTextAlign"></param>
-    /// <param name="excelDataType"></param>
-    /// <param name="columnWidthCalculationType"></param>
-    /// <param name="columnWidth"></param>
-    public ExcelColumnAttribute
-    (
-        string? headerName = null,
-        TextAlign headerTextAlign = TextAlign.Inherit,
-        TextAlign dataTextAlign = TextAlign.Inherit,
-        CellType excelDataType = CellType.Text,
-        ColumnWidthCalculationType columnWidthCalculationType = ColumnWidthCalculationType.AdjustToContents,
-        int columnWidth = 0
-    )
-    {
-        HeaderName = headerName;
-        HeaderTextAlign = headerTextAlign;
-        DataTextAlign = dataTextAlign;
-        ExcelDataType = excelDataType;
-        ColumnWidth = new ColumnWidth
-        {
-            Width = columnWidthCalculationType == ColumnWidthCalculationType.AdjustToContents ? null : columnWidth,
-            WidthCalculationType = columnWidthCalculationType
-        };
-    }
-
-    #endregion
-
     public string? HeaderName { get; set; }
 
-    public TextAlign? HeaderTextAlign { get; set; }
+    /// <summary>
+    /// Header Text Align. Will override default one
+    /// </summary>
+    public TextAlign HeaderTextAlign { get; set; } = TextAlign.Inherit;
 
-    public TextAlign? DataTextAlign { get; set; }
+    /// <summary>
+    /// Data Cells Text Align for the Column. Will override the default one
+    /// </summary>
+    public TextAlign DataTextAlign { get; set; } = TextAlign.Inherit;
 
-    public CellType ExcelDataType { get; set; }
+    /// <summary>
+    ///  Excel Data Type. Default is Text type
+    /// </summary>
+    public CellType ExcelDataType { get; set; } = CellType.Text;
 
-    public ColumnWidth? ColumnWidth { get; set; } //TODO: this property don't work!!!
+    /// <summary>
+    /// Column Width. If 0 it means Width automatically set to AdjustToContents
+    /// </summary>
+    public int ColumnWidth { get; set; }
 }

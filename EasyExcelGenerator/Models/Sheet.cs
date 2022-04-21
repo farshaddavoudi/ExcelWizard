@@ -51,5 +51,5 @@ public class Sheet
     /// <summary>
     /// Set Sheet protection level
     /// </summary>
-    public ProtectionLevels SheetProtectionLevels { get; set; } = new();
+    public ProtectionLevel SheetProtectionLevel { get; set; } = new();
 }
