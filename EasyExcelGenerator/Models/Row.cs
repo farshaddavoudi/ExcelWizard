@@ -30,9 +30,9 @@ public class Row : IValidatableObject
 
     public List<string> MergedCellsList { get; set; } = new();
 
-    public Border OutsideBorder { get; set; } = new(); // TODO: I think it is not working. 
+    public Border InsideBorder { get; set; } = new();
 
-    // TODO: Rows should have InlineBorders like Table too.
+    public Border OutsideBorder { get; set; } = new();
 
     public string? Formulas { get; set; }
 

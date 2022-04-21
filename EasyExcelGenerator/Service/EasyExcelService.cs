@@ -4,10 +4,12 @@ using EasyExcelGenerator.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Border = EasyExcelGenerator.Models.Border;
+using Color = System.Drawing.Color;
+using Table = EasyExcelGenerator.Models.Table;
 
 namespace EasyExcelGenerator.Service;
 
@@ -332,21 +334,40 @@ public static class EasyExcelService
 
                 string? sheetName = null;
 
+                var borderType = LineStyle.Thin;
+
                 foreach (var record in records)
                 {
-                    var easyExcelSheetAttribute = record.GetType().GetCustomAttribute<EasyExcelGridSheetAttribute>();
+                    var easyExcelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
 
                     sheetName = easyExcelSheetAttribute?.SheetName;
+
+                    borderType = easyExcelSheetAttribute?.BorderType ?? LineStyle.Thin;
+
+                    var defaultTextAlign = easyExcelSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
 
                     PropertyInfo[] properties = record.GetType().GetProperties();
 
                     int xLocation = 1;
 
-                    var recordRow = new Row();
+                    var recordRow = new Row
+                    {
+                        RowHeight = easyExcelSheetAttribute?.DataRowHeight,
+                        BackgroundColor = easyExcelSheetAttribute?.DataBackgroundColor ?? Color.Transparent
+                    };
 
                     foreach (var prop in properties)
                     {
-                        var easyExcelColumnAttribute = (EasyExcelGridColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is EasyExcelGridColumnAttribute);
+                        var easyExcelColumnAttribute = (ExcelColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelColumnAttribute);
+
+                        TextAlign GetCellTextAlign(TextAlign defaultAlign, TextAlign? headerOrDataTextAlign)
+                        {
+                            return headerOrDataTextAlign switch
+                            {
+                                TextAlign.Inherit => defaultAlign,
+                                _ => headerOrDataTextAlign ?? defaultAlign
+                            };
+                        }
 
                         // Header
                         if (headerCalculated is false)
@@ -354,19 +375,25 @@ public static class EasyExcelService
                             headerRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation))
                             {
                                 Value = easyExcelColumnAttribute?.HeaderName ?? prop.Name,
+                                CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.HeaderTextAlign),
                                 CellType = CellType.Text
                             });
 
                             headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight;
 
                             headerRow.BackgroundColor = easyExcelSheetAttribute?.HeaderBackgroundColor ?? Color.Transparent;
+
+                            headerRow.OutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+
+                            headerRow.InsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
                         }
 
                         // Data
                         recordRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation + 1))
                         {
                             Value = prop.GetValue(record),
-                            CellType = easyExcelColumnAttribute?.ExcelDataType ?? CellType.Text
+                            CellType = easyExcelColumnAttribute?.ExcelDataType ?? CellType.Text,
+                            CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.DataTextAlign)
                         });
 
                         xLocation++;
@@ -392,8 +419,8 @@ public static class EasyExcelService
                         new()
                         {
                             TableRows = dataRows,
-                            InlineBorder = new Border { BorderLineStyle = LineStyle.Thin },
-                            OutsideBorder = new Border { BorderLineStyle = LineStyle.Thin }
+                            InlineBorder = new Border { BorderLineStyle = borderType },
+                            OutsideBorder = new Border { BorderLineStyle = borderType }
                         }
                     }
                 });
@@ -492,7 +519,10 @@ public static class EasyExcelService
         locationCell.Style.Protection.SetLocked((bool)isLocked!);
 
         if (cellAlignmentHorizontalValue is not null)
-            locationCell.Style.Alignment.SetHorizontal((XLAlignmentHorizontalValues)cellAlignmentHorizontalValue!);
+            locationCell.Style.Alignment.SetHorizontal((XLAlignmentHorizontalValues)cellAlignmentHorizontalValue);
+
+        // Set Vertical Middle Align
+        locationCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
     }
 
     private static void ConfigureRow(this IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
@@ -520,7 +550,9 @@ public static class EasyExcelService
                 if (row.RowHeight is not null)
                     xlRow.Height = (double)row.RowHeight;
 
-                var xlRowRange = xlSheet.Range(row.StartCellLocation.Y, row.StartCellLocation.X, row.EndCellLocation.Y,
+                var xlRowRange = xlSheet.Range(row.StartCellLocation.Y,
+                    row.StartCellLocation.X,
+                    row.EndCellLocation.Y,
                     row.EndCellLocation.X);
                 xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.FontColor));
                 xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.BackgroundColor));
@@ -530,11 +562,16 @@ public static class EasyExcelService
                 if (outsideBorder is not null)
                 {
                     xlRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
-                    xlRowRange.Style.Border.SetOutsideBorderColor(
-                        XLColor.FromColor(row.OutsideBorder.BorderColor));
+                    xlRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(row.OutsideBorder.BorderColor));
                 }
 
-                // TODO: For Inside border, the row should be considered as Ranged (like Table). I persume it is not important for this phase
+                XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(row.InsideBorder.BorderLineStyle);
+
+                if (insideBorder is not null)
+                {
+                    xlRowRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
+                    xlRowRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(row.InsideBorder.BorderColor));
+                }
             }
             else
             {

@@ -3,15 +3,15 @@ using System.Drawing;
 
 namespace ApiApp;
 
-[EasyExcelGridSheet(sheetName: "MyReport", headerBackgroundColor: KnownColor.LightBlue, headerHeight: 20)]
+[ExcelSheet("MyReport", headerBackgroundColor: KnownColor.LightBlue, headerHeight: 40, borderType: LineStyle.DashDot, dataBackgroundColor: KnownColor.Bisque, dataRowHeight: 30)]
 public class AppExcelReportModel
 {
-    [EasyExcelGridColumn("شناسه")]
+    [ExcelColumn("شناسه", TextAlign.Right, TextAlign.Right)]
     public int Id { get; set; }
 
-    [EasyExcelGridColumn("نام کامل", columnWidthCalculationType: ColumnWidthCalculationType.ExplicitValue, columnWidth: 400)]
+    [ExcelColumn("Name", TextAlign.Left, columnWidthCalculationType: ColumnWidthCalculationType.ExplicitValue, columnWidth: 400)]
     public string? FullName { get; set; }
 
-    [EasyExcelGridColumn("شماره پرسنلی")]
+    [ExcelColumn("شماره پرسنلی", dataTextAlign: TextAlign.Left)]
     public string? PersonnelCode { get; set; }
 }

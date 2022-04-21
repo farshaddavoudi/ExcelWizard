@@ -3,15 +3,32 @@
 namespace EasyExcelGenerator.Models;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class EasyExcelGridColumnAttribute : Attribute
+public class ExcelColumnAttribute : Attribute
 {
-    public EasyExcelGridColumnAttribute(string? headerName = null,
+    #region Constructor
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="headerName"></param>
+    /// <param name="headerTextAlign"></param>
+    /// <param name="dataTextAlign"></param>
+    /// <param name="excelDataType"></param>
+    /// <param name="columnWidthCalculationType"></param>
+    /// <param name="columnWidth"></param>
+    public ExcelColumnAttribute
+    (
+        string? headerName = null,
+        TextAlign headerTextAlign = TextAlign.Inherit,
+        TextAlign dataTextAlign = TextAlign.Inherit,
         CellType excelDataType = CellType.Text,
         ColumnWidthCalculationType columnWidthCalculationType = ColumnWidthCalculationType.AdjustToContents,
         int columnWidth = 0
-        )
+    )
     {
         HeaderName = headerName;
+        HeaderTextAlign = headerTextAlign;
+        DataTextAlign = dataTextAlign;
         ExcelDataType = excelDataType;
         ColumnWidth = new ColumnWidth
         {
@@ -20,7 +37,13 @@ public class EasyExcelGridColumnAttribute : Attribute
         };
     }
 
+    #endregion
+
     public string? HeaderName { get; set; }
+
+    public TextAlign? HeaderTextAlign { get; set; }
+
+    public TextAlign? DataTextAlign { get; set; }
 
     public CellType ExcelDataType { get; set; }
 
