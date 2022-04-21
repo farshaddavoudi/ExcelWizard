@@ -40,7 +40,7 @@ public class ExcelController : ControllerBase
                                         MergedCellsList = new(){"C5:D5"},
                                         //StartLocation = new Location(3,5),
                                         //EndLocation = new Location(4,5),
-                                        FontColor = Color.DarkGreen,
+                                        Font = new TextFont{FontColor = Color.DarkGreen},
                                         BackgroundColor = Color.Aqua,
                                         OutsideBorder = new Border
                                         {
@@ -62,7 +62,7 @@ public class ExcelController : ControllerBase
                                         MergedCellsList = new(){"C6:D6"},
                                         //StartLocation = new Location(3,6),
                                         //EndLocation = new Location(4,6),
-                                        FontColor = Color.DarkGreen,
+                                        Font = new TextFont{FontColor = Color.DarkGreen},
                                         BackgroundColor = Color.Aqua,
                                         OutsideBorder = new Border
                                         {
@@ -84,7 +84,7 @@ public class ExcelController : ControllerBase
                                         MergedCellsList = new(){"C7:D7"},
                                         //StartLocation = new Location(3,7),
                                         //EndLocation = new Location(4,7),
-                                        FontColor = Color.DarkGreen,
+                                        Font = new TextFont{FontColor = Color.DarkGreen},
                                         BackgroundColor = Color.Aqua,
                                         OutsideBorder = new Border()
                                     }
@@ -121,7 +121,7 @@ public class ExcelController : ControllerBase
                             MergedCellsList = new(){"C2:D2"},
                             //StartLocation = new Location(2,2),
                             //EndLocation = new Location(4,2),
-                            FontColor = Color.BlueViolet,
+                            Font = new TextFont{FontColor = Color.DarkGreen},
                             BackgroundColor = Color.AliceBlue,
                             OutsideBorder = new Border()
                         }

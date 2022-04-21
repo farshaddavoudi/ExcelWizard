@@ -4,6 +4,7 @@ using EasyExcelGenerator.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -372,6 +373,14 @@ public static class EasyExcelService
 
                     sheetDirection = easyExcelSheetAttribute?.SheetDirection ?? SheetDirection.RightToLeft;
 
+                    var defaultFont = new TextFont
+                    {
+                        FontName = easyExcelSheetAttribute?.FontName,
+                        FontSize = easyExcelSheetAttribute?.FontSize == 0 ? null : easyExcelSheetAttribute?.FontSize,
+                        FontColor = Color.FromKnownColor(easyExcelSheetAttribute?.FontColor ?? KnownColor.Black),
+                        IsBold = easyExcelSheetAttribute?.IsFontBold
+                    };
+
                     isSheetLocked = easyExcelSheetAttribute?.IsSheetLocked ?? false;
 
                     var isSheetHardProtected = easyExcelSheetAttribute?.IsSheetHardProtected ?? false;
@@ -406,6 +415,18 @@ public static class EasyExcelService
                             };
                         }
 
+                        var finalFont = new TextFont
+                        {
+                            FontName = easyExcelColumnAttribute?.FontName ?? defaultFont.FontName,
+                            FontSize = easyExcelColumnAttribute?.FontSize is null || easyExcelColumnAttribute.FontSize == 0 ? defaultFont.FontSize : easyExcelColumnAttribute.FontSize,
+                            FontColor = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontColor == KnownColor.Transparent
+                            ? defaultFont.FontColor.Value
+                            : Color.FromKnownColor(easyExcelColumnAttribute.FontColor),
+                            IsBold = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontWeight == FontWeight.Inherit
+                            ? defaultFont.IsBold
+                            : easyExcelColumnAttribute.FontWeight == FontWeight.Bold
+                        };
+
                         // Header
                         if (headerCalculated is false)
                         {
@@ -413,7 +434,8 @@ public static class EasyExcelService
                             {
                                 Value = easyExcelColumnAttribute?.HeaderName ?? prop.Name,
                                 CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.HeaderTextAlign),
-                                CellType = CellType.Text
+                                CellType = CellType.Text,
+                                Font = finalFont
                             });
 
                             headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight == 0 ? null : easyExcelSheetAttribute?.HeaderHeight;
@@ -441,7 +463,8 @@ public static class EasyExcelService
                         {
                             Value = prop.GetValue(record),
                             CellType = easyExcelColumnAttribute?.ExcelDataType ?? CellType.Text,
-                            CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.DataTextAlign)
+                            CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.DataTextAlign),
+                            Font = finalFont
                         });
 
                         xLocation++;
@@ -570,8 +593,7 @@ public static class EasyExcelService
         else
             locationCell.SetValue(cellValue);
 
-        locationCell.Style
-            .Alignment.SetWrapText(cell.Wordwrap);
+        locationCell.Style.Alignment.SetWrapText(cell.Wordwrap);
 
         locationCell.Style.Protection.Locked = (bool)isLocked;
 
@@ -580,6 +602,19 @@ public static class EasyExcelService
 
         // Set Vertical Middle Align
         locationCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+        // Set Font
+        if (cell.Font.FontColor is not null)
+            locationCell.Style.Font.SetFontColor(XLColor.FromColor(cell.Font.FontColor.Value));
+
+        if (cell.Font.FontSize is not null)
+            locationCell.Style.Font.SetFontSize(cell.Font.FontSize.Value);
+
+        if (cell.Font.IsBold is not null)
+            locationCell.Style.Font.SetBold(cell.Font.IsBold.Value);
+
+        if (cell.Font.FontName.IsNullOrWhiteSpace() is false)
+            locationCell.Style.Font.SetFontName(cell.Font.FontName);
     }
 
     private static void ConfigureRow(this IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
@@ -611,7 +646,19 @@ public static class EasyExcelService
                     row.StartCellLocation.X,
                     row.EndCellLocation.Y,
                     row.EndCellLocation.X);
-                xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.FontColor));
+
+                if (row.Font.FontColor is not null)
+                    xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.Font.FontColor.Value));
+
+                if (row.Font.FontSize is not null)
+                    xlRowRange.Style.Font.SetFontSize(row.Font.FontSize.Value);
+
+                if (row.Font.IsBold is not null)
+                    xlRowRange.Style.Font.SetBold(row.Font.IsBold.Value);
+
+                if (row.Font.FontName.IsNullOrWhiteSpace() is false)
+                    xlRowRange.Style.Font.SetFontName(row.Font.FontName);
+
                 xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.BackgroundColor));
 
                 XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(row.OutsideBorder.BorderLineStyle);
@@ -635,7 +682,16 @@ public static class EasyExcelService
                 var xlRow = xlSheet.Row(row.Cells.First().CellLocation.Y);
                 if (row.RowHeight is not null)
                     xlRow.Height = (double)row.RowHeight;
-                xlRow.Style.Font.SetFontColor(XLColor.FromColor(row.FontColor));
+
+                if (row.Font.FontColor is not null)
+                    xlRow.Style.Font.SetFontColor(XLColor.FromColor(row.Font.FontColor.Value));
+                if (row.Font.FontSize is not null)
+                    xlRow.Style.Font.SetFontSize(row.Font.FontSize.Value);
+                if (row.Font.IsBold is not null)
+                    xlRow.Style.Font.SetBold(row.Font.IsBold.Value);
+                if (row.Font.FontName.IsNullOrWhiteSpace() is false)
+                    xlRow.Style.Font.SetFontName(row.Font.FontName);
+
                 xlRow.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.BackgroundColor));
                 xlRow.Style.Border.SetOutsideBorder(XLBorderStyleValues.Dotted);
                 xlRow.Style.Border.SetInsideBorder(XLBorderStyleValues.Thick);

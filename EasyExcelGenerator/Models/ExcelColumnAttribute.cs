@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace EasyExcelGenerator.Models;
 
@@ -32,4 +33,24 @@ public class ExcelColumnAttribute : Attribute
     /// Column Width. If 0 it means Width automatically set to AdjustToContents
     /// </summary>
     public int ColumnWidth { get; set; }
+
+    /// <summary>
+    /// Column FontFamily Name
+    /// </summary>
+    public string? FontName { get; set; }
+
+    /// <summary>
+    /// Column FontColor. Transparent color means reverting back to Sheet FontColor
+    /// </summary>
+    public KnownColor FontColor { get; set; } = KnownColor.Transparent;
+
+    /// <summary>
+    /// Column FontSize. If 0 it means default FontSize
+    /// </summary>
+    public int FontSize { get; set; }
+
+    /// <summary>
+    /// Is Column Font Bold. Inherit means revert back to Sheet Font Weight (IsBold property)
+    /// </summary>
+    public FontWeight FontWeight { get; set; } = FontWeight.Inherit;
 }

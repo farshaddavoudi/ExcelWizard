@@ -22,9 +22,7 @@ public class Row : IValidatableObject
 
     public Color BackgroundColor { get; set; } = Color.White;
 
-    public Color FontColor { get; set; } = Color.Black;
-
-    // TODO: Add other props including: Bold, FontName, FontSize, Italic, Shadow, StrikeThrough
+    public TextFont Font { get; set; } = new();
 
     public double? RowHeight { get; set; }
 

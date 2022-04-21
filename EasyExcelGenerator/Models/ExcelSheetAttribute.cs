@@ -40,6 +40,26 @@ public class ExcelSheetAttribute : Attribute
     public int DataRowHeight { get; set; }
 
     /// <summary>
+    /// Sheet Cells FontFamily Name
+    /// </summary>
+    public string? FontName { get; set; }
+
+    /// <summary>
+    /// Sheet Cells FontColor
+    /// </summary>
+    public KnownColor FontColor { get; set; } = KnownColor.Black;
+
+    /// <summary>
+    /// Sheets Cells FontSize. If 0 it means default FontSize
+    /// </summary>
+    public int FontSize { get; set; }
+
+    /// <summary>
+    /// Is Font Bold
+    /// </summary>
+    public bool IsFontBold { get; set; }
+
+    /// <summary>
     /// Sheet All Data Cells Background
     /// </summary>
     public KnownColor DataBackgroundColor { get; set; } = KnownColor.Transparent;

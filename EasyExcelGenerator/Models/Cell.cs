@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EasyExcelGenerator.Models;
+﻿namespace EasyExcelGenerator.Models;
 
 public class Cell
 {
@@ -11,11 +9,11 @@ public class Cell
 
     public string? Name { get; set; } //TODO: Add Name property somehow as column (cell) identifier
 
-    internal Type? Type { get; set; }
-
     public object Value { get; set; }
 
     public CellLocation CellLocation { get; set; }
+
+    public TextFont Font { get; set; } = new();
 
     public bool Wordwrap { get; set; }
 
