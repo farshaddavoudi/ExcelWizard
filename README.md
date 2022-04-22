@@ -5,9 +5,10 @@ Easily generate Excel file based on a C# model dynamically in a very simple and 
 # How to Use
 1- Register EasyExcelGenerator Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
 ```
-// Has a `isBlazorApp` argument (default is `false`). In case of using in Blazor application, pass the true value to register necessary services.
+// Has a `isBlazorApp` argument (default is `false`). In case of using in Blazor application
+// For Blazor, pass the true value to register necessary services.
 // Has an optional argument for ServiceLifeTime. The default lifetime is Scoped.
-builder.Services.AddEasyExcelServices();
+builder.Services.AddEasyExcelServices(isBlazorApp: false);
 ```
 
 2- Inject `IEasyExcelService` into your class and enjoy it!
@@ -28,7 +29,7 @@ public class User
 	public int Id { get; set; }
 	public string? FullName { get; set; }
 	public string? PersonnelCode { get; set; }
-    public string? Nationality { get; set; }
+     public string? Nationality { get; set; }
 }
 ```
 
@@ -97,7 +98,7 @@ In IndexPage.razor:
 }
 ```
 
-# Concepts Short Explanations
+# Concepts
 
 The Excel you want can be two types: 
 
