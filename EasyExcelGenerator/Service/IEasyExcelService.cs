@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using BlazorDownloadFile;
+﻿using BlazorDownloadFile;
 using EasyExcelGenerator.Models;
+using System.Threading.Tasks;
 
 namespace EasyExcelGenerator.Service;
 
@@ -17,8 +17,9 @@ public interface IEasyExcelService
     /// Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
     /// </summary>
     /// <param name="singleSheetDataList"> List of data (should be something like List{Person}()) </param>
+    /// <param name="generatedFileName"> Generated file name. If leave empty, automatically will have a name like EasyExcelGeneratedFile_2022-04-22 14-06-29 </param>
     /// <returns></returns>
-    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList);
+    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null);
 
     /// <summary>
     /// Generate Grid Layout Excel having multiple Sheets from special model configured options with EasyExcel attributes
@@ -35,8 +36,9 @@ public interface IEasyExcelService
     /// </summary>
     /// <param name="singleSheetDataList"> List of data (should be something like List{Person}()) </param>
     /// <param name="savePath"></param>
+    /// <param name="generatedFileName"> Generated file name. If leave empty string, automatically will have a name like EasyExcelGeneratedFile_2022-04-22 14-06-29 </param>
     /// <returns></returns>
-    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath);
+    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath, string generatedFileName);
 
     /// <summary>
     /// Generate Compound Excel consisting multiple parts like some Rows, Tables, Special Cells, etc each in different Excel Location
@@ -66,9 +68,10 @@ public interface IEasyExcelService
     /// <summary>
     /// [Blazor only] Generate and Download instantly from Browser the Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes in Blazor apps
     /// </summary>
-    /// <param name="singleSheetDataList">  List of data (should be something like List{Person}()) </param>
+    /// <param name="singleSheetDataList"> List of data (should be something like List{Person}()) </param>
+    /// <param name="generatedFileName"> Generated file name. If leave empty, automatically will have a name like EasyExcelGeneratedFile_2022-04-22 14-06-29 </param>
     /// <returns></returns>
-    public Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList);
+    public Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null);
 
     /// <summary>
     /// [Blazor only] Generate and Download instantly from Browser the Compound Excel consisting multiple parts like some Rows, Tables, Special Cells, etc each in different Excel Location in Blazor apps

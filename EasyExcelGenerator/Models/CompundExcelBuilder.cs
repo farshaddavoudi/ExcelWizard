@@ -7,7 +7,7 @@ public class CompoundExcelBuilder
     /// <summary>
     /// Excel file name without .Xlsx extension. Excel file will be generated with this file name
     /// </summary>
-    public string? FileName { get; set; }
+    public string? GeneratedFileName { get; set; }
 
     /// <summary>
     /// Sheets shared default styles including default ColumnWidth, default RowHeight and sheets language Direction

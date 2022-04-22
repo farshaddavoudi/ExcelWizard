@@ -26,6 +26,6 @@ Welcome to your new app.
             new() { Id = 3, FullName = "مارسل دسایی", PersonnelCode = "941126" }
         };
 
-        return EasyExcelService.BlazorDownloadGridLayoutExcel(fetchDataFromApi);
+        return EasyExcelService.BlazorDownloadGridLayoutExcel(fetchDataFromApi, "my-custom-report");
     }
 }

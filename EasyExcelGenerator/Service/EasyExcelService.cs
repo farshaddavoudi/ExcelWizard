@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using BlazorDownloadFile;
+using ClosedXML.Excel;
 using ClosedXML.Report.Utils;
 using EasyExcelGenerator.Models;
 using System;
@@ -9,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using BlazorDownloadFile;
 using Border = EasyExcelGenerator.Models.Border;
 using Color = System.Drawing.Color;
 using Table = EasyExcelGenerator.Models.Table;
@@ -40,20 +40,20 @@ public class EasyExcelService : IEasyExcelService
 
         var content = stream.ToArray();
 
-        if (compoundExcelBuilder.FileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
+            compoundExcelBuilder.GeneratedFileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
-        return new GeneratedExcelFile { FileName = compoundExcelBuilder.FileName, Content = content };
+        return new GeneratedExcelFile { FileName = compoundExcelBuilder.GeneratedFileName, Content = content };
     }
 
     public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder, string savePath)
     {
         using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
 
-        if (compoundExcelBuilder.FileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.FileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
+            compoundExcelBuilder.GeneratedFileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
-        var saveUrl = $"{savePath}\\{compoundExcelBuilder.FileName}.xlsx";
+        var saveUrl = $"{savePath}\\{compoundExcelBuilder.GeneratedFileName}.xlsx";
 
         // Save
         xlWorkbook.SaveAs(saveUrl);
@@ -68,9 +68,14 @@ public class EasyExcelService : IEasyExcelService
         return GenerateCompoundExcel(compoundExcelBuilder);
     }
 
-    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList)
+    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList, string? generatedFileName)
     {
-        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder(singleSheetDataList);
+        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder
+        {
+            GeneratedFileName = generatedFileName,
+
+            Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
+        };
 
         var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(gridLayoutExcelBuilder);
 
@@ -84,9 +89,14 @@ public class EasyExcelService : IEasyExcelService
         return GenerateCompoundExcel(compoundExcelBuilder, savePath);
     }
 
-    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath)
+    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath, string generatedFileName)
     {
-        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder(singleSheetDataList);
+        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder
+        {
+            GeneratedFileName = generatedFileName,
+
+            Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
+        };
 
         var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(gridLayoutExcelBuilder);
 
@@ -100,9 +110,9 @@ public class EasyExcelService : IEasyExcelService
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
 
-    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList)
+    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null)
     {
-        var generatedFile = GenerateGridLayoutExcel(singleSheetDataList);
+        var generatedFile = GenerateGridLayoutExcel(singleSheetDataList, generatedFileName);
 
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
@@ -370,6 +380,9 @@ public class EasyExcelService : IEasyExcelService
     private CompoundExcelBuilder ConvertEasyGridExcelBuilderToEasyExcelBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
     {
         var easyExcelBuilder = new CompoundExcelBuilder();
+
+        if (gridLayoutExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace() is false)
+            easyExcelBuilder.GeneratedFileName = gridLayoutExcelBuilder.GeneratedFileName;
 
         foreach (var gridExcelSheet in gridLayoutExcelBuilder.Sheets)
         {
