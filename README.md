@@ -94,12 +94,14 @@ In IndexPage.razor:
     }
 }
 ```
+
 # Concepts Short Explanations
 
 The Excel you want can be two types: 
 
 1- Grid layout like data; meaning you have list of data (again like `myUsers`) and you want easily export it to Excel. The Excel would be 
 relativly simple, having table like layout, a header and data. The first examples in the doc was from this type.
+https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-1.png
 
 2- Compound Excel; meaning more complex than the previous Grid layout one. This Excel can includes some different Rows, Tables, special Cells each placed
 in different Excel locations. Clearly, the first type is easier and most straight-forward and this type have different Excel build scenario (Using `GenerateCompoundExcel` method of `IEasyExcelService`).
