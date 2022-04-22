@@ -55,9 +55,9 @@ public class ExcelSheetAttribute : Attribute
     public int FontSize { get; set; }
 
     /// <summary>
-    /// Is Font Bold
+    /// Font Weight for entire Sheet. Inherit is equal to default here which is bold for Header and normal for Cells
     /// </summary>
-    public bool IsFontBold { get; set; }
+    public FontWeight FontWeight { get; set; } = FontWeight.Inherit;
 
     /// <summary>
     /// Sheet All Data Cells Background

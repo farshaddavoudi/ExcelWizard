@@ -20,7 +20,7 @@ builder.Services.AddEasyExcelServices(isBlazorApp: false);
 Assuming you have a collection of a model e.g. `var users = List<User>()` which you normally get it from a database and show them in a Grid or something. Now, 
 you decided to have a live Excel report from it anytime you want.
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-1.png">
+<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png">
 
 The Model:
 
@@ -172,7 +172,7 @@ For single sheet Grid layout Excel, it is as easy as passing the data (collectio
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
 simple Excel filled with data without any Excel customization. 
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-1.png">
+<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png">
 
 You see the example in how much is it simple section.
 

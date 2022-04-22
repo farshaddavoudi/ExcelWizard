@@ -421,12 +421,14 @@ internal class EasyExcelService : IEasyExcelService
 
                     sheetDirection = easyExcelSheetAttribute?.SheetDirection ?? SheetDirection.RightToLeft;
 
+                    var defaultFontWeight = easyExcelSheetAttribute?.FontWeight;
+
                     var defaultFont = new TextFont
                     {
                         FontName = easyExcelSheetAttribute?.FontName,
                         FontSize = easyExcelSheetAttribute?.FontSize == 0 ? null : easyExcelSheetAttribute?.FontSize,
                         FontColor = Color.FromKnownColor(easyExcelSheetAttribute?.FontColor ?? KnownColor.Black),
-                        IsBold = easyExcelSheetAttribute?.IsFontBold
+                        IsBold = defaultFontWeight == FontWeight.Bold
                     };
 
                     isSheetLocked = easyExcelSheetAttribute?.IsSheetLocked ?? false;
@@ -481,7 +483,7 @@ internal class EasyExcelService : IEasyExcelService
                             var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
 
                             headerFont.IsBold = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontWeight == FontWeight.Inherit
-                                ? easyExcelSheetAttribute?.IsFontBold ?? true
+                                ? defaultFontWeight != FontWeight.Normal
                                 : easyExcelColumnAttribute.FontWeight == FontWeight.Bold;
 
                             headerRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation))
