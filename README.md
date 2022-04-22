@@ -17,6 +17,8 @@ builder.Services.AddEasyExcelServices();
 Assuming you have collection of a model e.g. `var users = List<User>()` which you normally get it from database and show them in a Grid or something. Now, 
 you decided to have a live Excel report from it anytime you want.
 
+https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-1.png
+
 The Model:
 
 ```
@@ -101,10 +103,11 @@ The Excel you want can be two types:
 
 1- Grid layout like data; meaning you have list of data (again like `myUsers`) and you want easily export it to Excel. The Excel would be 
 relativly simple, having table like layout, a header and data. The first examples in the doc was from this type.
-https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-1.png
+https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-3.png
 
 2- Compound Excel; meaning more complex than the previous Grid layout one. This Excel can includes some different Rows, Tables, special Cells each placed
 in different Excel locations. Clearly, the first type is easier and most straight-forward and this type have different Excel build scenario (Using `GenerateCompoundExcel` method of `IEasyExcelService`).
+https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-4.png
 
 Also your can have different scenario in saving/reteriving generated Excel file:
 
@@ -164,6 +167,8 @@ For single sheet Grid layout Excel, it is as easy as passing the data (collectio
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in case of Blazor app). It will generate (download in Blazor) a very
 simple Excel filled with data without any Excel customization. 
 
+https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-1.png
+
 You see the example in how much is it simple section.
 
 ## What if you want some customization for the generated Excel file?
@@ -191,6 +196,9 @@ public class User
     public string? Nationality { get; set; }
 }
 ```
+
+The Result:
+https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-2.png
 
 You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available fields you 
 can use to customize the Excel.
