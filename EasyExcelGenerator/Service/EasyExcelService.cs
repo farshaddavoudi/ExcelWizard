@@ -16,7 +16,7 @@ using Table = EasyExcelGenerator.Models.Table;
 
 namespace EasyExcelGenerator.Service;
 
-public class EasyExcelService : IEasyExcelService
+internal class EasyExcelService : IEasyExcelService
 {
     private readonly IBlazorDownloadFileService _blazorDownloadFileService;
 

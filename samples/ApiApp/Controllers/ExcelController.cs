@@ -165,14 +165,24 @@ public class ExcelController : ControllerBase
     [HttpGet("export-grid-excel")]
     public IActionResult ExportGridExcel()
     {
-        var fetchDataFromDb = new List<User>
+        // The below data normally comes from your database
+        // Show static for demo purposes
+        var myUsers = new List<User>
         {
-            new() { Id = 1, FullName = "کریس رونالدو ", PersonnelCode = "980923" },
-            new() { Id = 2, FullName = "روبرتو کارلس", PersonnelCode = "991126" }
+            new() { Id = 1, FullName = "Ronaldo", PersonnelCode = "980923", Nationality = "Portugal" },
+            new() { Id = 2, FullName = "Messi", PersonnelCode = "991126", Nationality = "Argentine" },
+            new() { Id = 3, FullName = "Mbappe", PersonnelCode = "991213", Nationality = "France" }
         };
 
-        var result = _easyExcelService.GenerateGridLayoutExcel(fetchDataFromDb, @"C:\GeneratedExcelSamples");
+        // Below will create Excel file as byte[] data
+        // Just passing your data to method argument and let the rest to the package! hoorya!
+        // This method has an optional parameter `generatedFileName` which is obvious by the name
+        GeneratedExcelFile generatedExcelFile = _easyExcelService.GenerateGridLayoutExcel(myUsers);
 
-        return Ok(result);
+        // Below will create Excel file in specified path and return the full path as string
+        // The last param is generated file name
+        string fullPathAsString = _easyExcelService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
+
+        return Ok(generatedExcelFile);
     }
 }
