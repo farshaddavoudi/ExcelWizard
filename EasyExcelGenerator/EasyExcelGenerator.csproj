@@ -2,21 +2,40 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
+		<Version>1.0.1</Version>
+		<LangVersion>latest</LangVersion>
+		<NoWarn>$(NoWarn);NU1701;1702;1591;NU1602;CS8609;CS8610;CS8619;CS8632</NoWarn>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <LangVersion>latest</LangVersion>
+	<PropertyGroup>
+		<Authors>Farshad Davoudi</Authors>
+		<Title>EasyExcelGenerator</Title>
+		<Description>
+			Easily generate Excel file based on a C# model dynamically in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application.
+		</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<!-- Add README.md to nuget package -->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryURL>https://github.com/farshaddavoudi/EasyExcelGenerator</RepositoryURL>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <LangVersion>latest</LangVersion>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb;.xml</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<EmbedAllSources>True</EmbedAllSources>
+		<DebugType>portable</DebugType>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Templates\**" />
-	  <EmbeddedResource Remove="Templates\**" />
-	  <None Remove="Templates\**" />
+		<SupportedPlatform Include="browser" />
+		<!-- Add README.md to nuget package -->
+		<None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
