@@ -166,7 +166,7 @@ You see the example in how much is it simple section.
 
 ## What if you want some customization for the generated Excel file?
 For example having some aligns for header or cells, text font/size/color, different background color for header or cells or a specific column!,
-custom header name for a column, custom header height or column width and etc..? All these options plus a lot more can be configured by two
+custom header name for a column, custom header height or column width or Sheet direction (RTL/LTR) and etc..? All these options plus a lot more can be configured by two
 attributes you can use on your model. `[ExcelSheet]` for Excel generic properties and `[ExcelColumn]` for per property (column) customization.
 
 Remember the User model, we can use the attributes like below to customize our Users Excel:

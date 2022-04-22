@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiApp", "ApiApp", "{5D50B9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorApp", "BlazorApp", "{3E1B6E7D-8904-4EE5-BE51-3D89E6D870B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiApp", "samples\ApiApp\ApiApp.csproj", "{426BE6D5-4672-48F3-AF6C-9D95C083B515}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiApp", "samples\ApiApp\ApiApp.csproj", "{426BE6D5-4672-48F3-AF6C-9D95C083B515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "samples\BlazorApp\BlazorApp.csproj", "{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "samples\BlazorApp\BlazorApp.csproj", "{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8C405FC4-D38B-493C-94B1-43005080B037}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,6 +22,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{0B23C4ED-1435-41F1-A4DB-34C761F42C63}"
+	ProjectSection(SolutionItems) = preProject
+		screenshots\Screenshot-1.png = screenshots\Screenshot-1.png
+		screenshots\Screenshot-2.png = screenshots\Screenshot-2.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
