@@ -17,6 +17,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<!-- Add README.md to nuget package -->
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Copyright>MIT License</Copyright>
 		<RepositoryURL>https://github.com/farshaddavoudi/EasyExcelGenerator</RepositoryURL>
 	</PropertyGroup>
 
