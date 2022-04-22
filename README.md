@@ -202,5 +202,15 @@ public class User
 The Result:
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-2.png">
 
-You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available fields you 
+You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
 can use to customize the Excel.
+
+# Generate Multiple Sheets Grid Layout Excel
+
+It is almost the same with single sheet, using the same `GenerateGridLayoutExcel` method with `GridLayoutExcelBuilder` type argument 
+(`BlazorDownloadGridLayoutExcel` method in case of Blazor app) should be used so that multiple sheets data can be provided. The customization 
+is exactly like Single sheet Grid layout Excel (See previous section).
+
+# Generate Compound Excel
+Using `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just
+go along with the `CompoundExcelBuilder` argument and provide the necessary parts for your Excel.
