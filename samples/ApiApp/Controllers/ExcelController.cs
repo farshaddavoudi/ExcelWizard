@@ -165,8 +165,8 @@ public class ExcelController : ControllerBase
     [HttpGet("export-grid-excel")]
     public IActionResult ExportGridExcel()
     {
-        var fetchDataFromDb = new List<AppExcelReportModel>
-        { 
+        var fetchDataFromDb = new List<User>
+        {
             new() { Id = 1, FullName = "کریس رونالدو ", PersonnelCode = "980923" },
             new() { Id = 2, FullName = "روبرتو کارلس", PersonnelCode = "991126" }
         };
