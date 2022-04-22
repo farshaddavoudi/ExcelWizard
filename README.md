@@ -20,15 +20,15 @@ public class User
 ```
 public class UserController : ControllerBase 
 {
-    // Inject the IEasyExcelService Service 
-	private IEasyExcelService _easyExcelService;
+   // Inject the IEasyExcelService Service 
+    private IEasyExcelService _easyExcelService;
 
 	public ExcelController(IEasyExcelService easyExcelService)
     {
         _easyExcelService = easyExcelService;
     }
 
-	[HttpGet("export-users")]
+   [HttpGet("export-users")]
     public IActionResult ExportUsersToExcel()
     {
         // The below data normally comes from your database
