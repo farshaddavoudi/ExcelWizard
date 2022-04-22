@@ -70,7 +70,7 @@ public class UserController : ControllerBase
 ```
 
 In case you are coding in Blazor application, the scenario is even simpler. Only get the raw data (=`myUsers`) from API and use the `BlazorDownloadGridLayoutExcel` method
-of `EasyExcelService`, the Excel file will be instantly downloaded from the browser without any struggle for byte[] handling or something :)
+of `EasyExcelService`, the Excel file will be instantly downloaded (by opening download popup) from the browser without any struggle for byte[] handling or something :)
 
 In IndexPage.razor:
 
