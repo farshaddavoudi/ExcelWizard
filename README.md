@@ -104,12 +104,12 @@ In IndexPage.razor:
 
 The Excel you want can be two types: 
 
-1- Grid layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
+1- Grid-layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
 
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-3.png">
 
-2- Compound Excel; a little more complex than the previous Grid layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
+2- Compound Excel; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
 in different Excel locations. The first type is easier and most straightforward and this type has a different Excel build scenario (Using `GenerateCompoundExcel` method of `IEasyExcelService`).
 
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-4.png">
@@ -139,7 +139,7 @@ public interface IEasyExcelService
     // Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
     public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null);
 
-    // Generate Grid Layout Excel having multiple Sheets from special model configured options with EasyExcel attributes
+    // Generate Grid-Layout Excel having multiple Sheets from special model configured options with EasyExcel attributes
     public string GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder, string savePath);
 
     // Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
@@ -166,9 +166,9 @@ public interface IEasyExcelService
 }
 ```
 
-# Generate Single Sheet Grid Layout Excel
+# Generate Single Sheet Grid-Layout Excel
 
-For single sheet Grid layout Excel, it is as easy as passing the data (collection of a model like `var myUsers = new List<User>();`, remember?)
+For single sheet Grid-layout Excel, it is as easy as passing the data (collection of a model like `var myUsers = new List<User>();`, remember?)
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
 simple Excel filled with data without any Excel customization. 
 
@@ -208,11 +208,11 @@ The Result:
 You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
 can use to customize Excel.
 
-# Generate Multiple Sheets Grid Layout Excel
+# Generate Multiple Sheets Grid-Layout Excel
 
 It is almost the same with a single sheet, using the same `GenerateGridLayoutExcel` method (`BlazorDownloadGridLayoutExcel` method in case of the Blazor app) with the `GridLayoutExcelBuilder` argument 
  that should be provided to configure the Excel file. The customization 
-is exactly like Single sheet Grid layout Excel (See the previous section).
+is exactly like Single sheet Grid-layout Excel (See the previous section).
 
 # Generate Compound Excel
 Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just
