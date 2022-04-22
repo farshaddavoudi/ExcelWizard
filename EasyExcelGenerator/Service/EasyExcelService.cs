@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Border = EasyExcelGenerator.Models.Border;
 using Color = System.Drawing.Color;
@@ -477,12 +478,18 @@ internal class EasyExcelService : IEasyExcelService
                         // Header
                         if (headerCalculated is false)
                         {
+                            var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
+
+                            headerFont.IsBold = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontWeight == FontWeight.Inherit
+                                ? easyExcelSheetAttribute?.IsFontBold ?? true
+                                : easyExcelColumnAttribute.FontWeight == FontWeight.Bold;
+
                             headerRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation))
                             {
                                 Value = easyExcelColumnAttribute?.HeaderName ?? prop.Name,
                                 CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.HeaderTextAlign),
                                 CellType = CellType.Text,
-                                Font = finalFont
+                                Font = headerFont
                             });
 
                             headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight == 0 ? null : easyExcelSheetAttribute?.HeaderHeight;
