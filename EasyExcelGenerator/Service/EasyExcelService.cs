@@ -405,7 +405,7 @@ internal class EasyExcelService : IEasyExcelService
 
                 var columnsStyle = new List<ColumnStyle>();
 
-                SheetDirection sheetDirection = SheetDirection.RightToLeft;
+                SheetDirection sheetDirection = SheetDirection.LeftToRight;
 
                 bool isSheetLocked = false;
 
@@ -419,7 +419,7 @@ internal class EasyExcelService : IEasyExcelService
 
                     sheetName = easyExcelSheetAttribute?.SheetName;
 
-                    sheetDirection = easyExcelSheetAttribute?.SheetDirection ?? SheetDirection.RightToLeft;
+                    sheetDirection = easyExcelSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
 
                     var defaultFontWeight = easyExcelSheetAttribute?.FontWeight;
 

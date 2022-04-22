@@ -12,7 +12,7 @@ public class ExcelSheetAttribute : Attribute
     /// <summary>
     /// Sheet direction 
     /// </summary>
-    public SheetDirection SheetDirection { get; set; } = SheetDirection.RightToLeft;
+    public SheetDirection SheetDirection { get; set; } = SheetDirection.LeftToRight;
 
     /// <summary>
     /// Sheet name of generated Excel that contains the Class data. The default is Sheet1, Sheet2, etc..
