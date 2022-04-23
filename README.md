@@ -3,7 +3,7 @@
 Easily generate Excel file based on a C# model dynamically in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 # How to Use
-1- Install `EasyExcelGenerator` pacakge from nuget package manager.
+1- Install <a href="https://www.nuget.org/packages/EasyExcelGenerator">`EasyExcelGenerator`</a> pacakge from nuget package manager.
 
 2- Register EasyExcelGenerator Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
 ```
