@@ -18,7 +18,7 @@ builder.Services.AddEasyExcelServices(isBlazorApp: false);
 # How much is it simple to generate/download Excel with EasyExcelGenerator?
 
 Assuming you have a collection of a model e.g. `var users = List<User>()` which you normally get it from a database and show them in a Grid or something. Now, 
-you decided to have a live Excel report from it anytime you want.
+you decided to have a live Excel report from it anytime you want. Something like below:
 
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png">
 
@@ -102,7 +102,7 @@ In IndexPage.razor:
 
 # Concepts
 
-The Excel you want can be two types: 
+### The Excel you want can be two types: 
 
 1- Grid-layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
@@ -114,7 +114,7 @@ in different Excel locations. The first type is easier and most straightforward 
 
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-4.png">
 
-Also, you can have a different scenario in saving/retrieving generated Excel files:
+### Also, you can have a different scenario in saving/retrieving generated Excel files:
 
 1- Get the byte[] of the Excel file and use it for your use case, e.g. sending to another client to be shown or saving in a database, etc.
 
