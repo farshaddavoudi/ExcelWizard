@@ -1,19 +1,21 @@
 # EasyExcelGenerator
+[![NuGet Version](https://img.shields.io/nuget/v/EasyExcelGenerator.svg?style=flat)](https://www.nuget.org/packages/EasyExcelGenerator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/farshaddavoudi/ExcelWizard/master/LICENSE)
 
 Easily generate Excel file based on a C# model dynamically in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 # How to Use
-1- Install <a href="https://www.nuget.org/packages/EasyExcelGenerator">`EasyExcelGenerator`</a> pacakge from nuget package manager.
+1. Install `EasyExcelGenerator` pacakge from nuget package manager.
 
-2- Register EasyExcelGenerator Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
-```
+2. Register EasyExcelGenerator Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
+```csharp
 // Has a `isBlazorApp` argument (default is `false`). In case of using in Blazor application
 // For Blazor, pass the true value to register necessary services.
 // Has an optional argument for ServiceLifeTime. The default lifetime is Scoped.
 builder.Services.AddEasyExcelServices(isBlazorApp: false);
 ```
 
-3- Inject `IEasyExcelService` into your class and enjoy it!
+3. Inject `IEasyExcelService` into your class and enjoy it!
 
 # How much is it simple to generate/download Excel with EasyExcelGenerator?
 
@@ -24,20 +26,20 @@ you decided to have a live Excel report from it anytime you want. Something like
 
 The Model:
 
-```
+```csharp
 // The model you want to have Excel report upon it
 public class User
 {
 	public int Id { get; set; }
 	public string? FullName { get; set; }
 	public string? PersonnelCode { get; set; }
-        public string? Nationality { get; set; }
+    public string? Nationality { get; set; }
 }
 ```
 
 In your Service or Controller:
 
-```
+```csharp
 public class UserController : ControllerBase 
 {
     // Inject the IEasyExcelService Service 
@@ -80,7 +82,7 @@ of `EasyExcelService`, the Excel file will be instantly downloaded (by opening t
 
 In IndexPage.razor:
 
-```
+```razor
 <button @onclick="DownloadExcelReport"> Export Excel </button>
 
 @code {
@@ -104,23 +106,23 @@ In IndexPage.razor:
 
 ### The Excel you want can be two types: 
 
-1- Grid-layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
+1. Grid-layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
 
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-3.png">
 
-2- Compound Excel; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
+2. Compound Excel; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
 in different Excel locations. The first type is easier and most straightforward and this type has a different Excel build scenario (Using `GenerateCompoundExcel` method of `IEasyExcelService`).
 
 <img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-4.png">
 
 ### Also, you can have a different scenario in saving/retrieving generated Excel files:
 
-1- Get the byte[] of the Excel file and use it for your use case, e.g. sending to another client to be shown or saving in a database, etc.
+1. Get the byte[] of the Excel file and use it for your use case, e.g. sending to another client to be shown or saving in a database, etc.
 
-2- Save the Excel directly on disk and get the full path address to send to the app client or save it in the database.
+2. Save the Excel directly on disk and get the full path address to send to the app client or save it in the database.
 
-3- (Blazor app) Normally you want to show the Excel to the user as exported file and do not want to save it somewhere. If your app client is 
+3. (Blazor app) Normally you want to show the Excel to the user as exported file and do not want to save it somewhere. If your app client is 
 something other than Blazor (e.g. React, Angular, or MVC), your only choice is to work with generated Excel byte[] data and handle it for 
 the result you want, but for Blazor apps the story is very simple. Just use the `BlazorDownloadGridLayoutExcel` and `BlazorDownloadCompoundExcel` methods
 from `IEasyExcelService` in some click event and the Excel file will be generated and instantly downloaded (by opening the download popup) right from 
@@ -130,7 +132,7 @@ Knowing these simple concepts,  you will easily understand the IEasyExcelService
 in a very easy and fast way.
 
 IEasyExcelService Methods:
-```
+```csharp
 public interface IEasyExcelService
 {
     // Generate Simple Grid Excel file from special model configured options with EasyExcel attributes
@@ -172,7 +174,7 @@ For single sheet Grid-layout Excel, it is as easy as passing the data (collectio
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
 simple Excel filled with data without any Excel customization. 
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png">
+<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png" />
 
 You see the example in how much is it simple section.
 
@@ -183,7 +185,7 @@ attributes you can use on your model. `[ExcelSheet]` for Excel generic propertie
 
 Remember the User model, we can use the attributes below to customize our Users Excel:
 
-```
+```csharp
 [ExcelSheet(SheetName = "MyUsers", DefaultTextAlign = TextAlign.Center, HeaderBackgroundColor = KnownColor.LightBlue, HeaderHeight = 40,
     BorderType = LineStyle.DashDotDot, DataBackgroundColor = KnownColor.Bisque, DataRowHeight = 25, IsSheetLocked = true,
     SheetDirection = SheetDirection.RightToLeft, FontColor = KnownColor.Red)]
@@ -203,7 +205,7 @@ public class User
 ```
 
 The Result:
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-2.png">
+<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-2.png" />
 
 You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
 can use to customize Excel.
