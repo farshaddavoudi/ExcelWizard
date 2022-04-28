@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\EasyExcelGenerator\EasyExcelGenerator.csproj" />
+    <ProjectReference Include="..\..\ExcelWizard\ExcelWizard.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 using BlazorApp;
-using EasyExcelGenerator;
+using ExcelWizard;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

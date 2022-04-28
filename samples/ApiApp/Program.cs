@@ -1,4 +1,4 @@
-using EasyExcelGenerator;
+using ExcelWizard;
 
 var builder = WebApplication.CreateBuilder(args);
 

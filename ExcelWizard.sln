@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6C2DD239-0574-4F8B-84F5-678A0A58BEDF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiApp", "ApiApp", "{5D50B9DE-A302-4185-A9F5-17DCCE6D2D08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorApp", "BlazorApp", "{3E1B6E7D-8904-4EE5-BE51-3D89E6D870B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiApp", "samples\ApiApp\ApiApp.csproj", "{426BE6D5-4672-48F3-AF6C-9D95C083B515}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "samples\BlazorApp\BlazorApp.csproj", "{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8C405FC4-D38B-493C-94B1-43005080B037}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{0B23C4ED-1435-41F1-A4DB-34C761F42C63}"
+	ProjectSection(SolutionItems) = preProject
+		screenshots\Screenshot-1.png = screenshots\Screenshot-1.png
+		screenshots\Screenshot-2.png = screenshots\Screenshot-2.png
+		screenshots\Screenshot-3.png = screenshots\Screenshot-3.png
+		screenshots\Screenshot-4.png = screenshots\Screenshot-4.png
+		screenshots\Screenshot-5.png = screenshots\Screenshot-5.png
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelWizard", "ExcelWizard\ExcelWizard.csproj", "{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{426BE6D5-4672-48F3-AF6C-9D95C083B515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{426BE6D5-4672-48F3-AF6C-9D95C083B515}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{426BE6D5-4672-48F3-AF6C-9D95C083B515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{426BE6D5-4672-48F3-AF6C-9D95C083B515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D50B9DE-A302-4185-A9F5-17DCCE6D2D08} = {6C2DD239-0574-4F8B-84F5-678A0A58BEDF}
+		{3E1B6E7D-8904-4EE5-BE51-3D89E6D870B5} = {6C2DD239-0574-4F8B-84F5-678A0A58BEDF}
+		{426BE6D5-4672-48F3-AF6C-9D95C083B515} = {5D50B9DE-A302-4185-A9F5-17DCCE6D2D08}
+		{5B107EC1-7D25-430B-B8A3-A2560BBA6BF5} = {3E1B6E7D-8904-4EE5-BE51-3D89E6D870B5}
+		{0B23C4ED-1435-41F1-A4DB-34C761F42C63} = {8C405FC4-D38B-493C-94B1-43005080B037}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D9AE86C-5CA6-4159-8131-2ED56F560667}
+	EndGlobalSection
+EndGlobal

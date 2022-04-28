@@ -1,5 +1,5 @@
-﻿using EasyExcelGenerator.Models;
-using EasyExcelGenerator.Service;
+﻿using ExcelWizard.Models;
+using ExcelWizard.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 

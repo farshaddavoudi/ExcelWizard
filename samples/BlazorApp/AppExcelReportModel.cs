@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using EasyExcelGenerator.Models;
+using ExcelWizard.Models;
 
 namespace BlazorApp;
 

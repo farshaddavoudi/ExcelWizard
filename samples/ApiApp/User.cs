@@ -1,4 +1,4 @@
-﻿using EasyExcelGenerator.Models;
+﻿using ExcelWizard.Models;
 using System.Drawing;
 
 namespace ApiApp;

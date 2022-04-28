@@ -1,13 +1,13 @@
-# EasyExcelGenerator
-[![NuGet Version](https://img.shields.io/nuget/v/EasyExcelGenerator.svg?style=flat)](https://www.nuget.org/packages/EasyExcelGenerator/)
+# ExcelWizard
+[![NuGet Version](https://img.shields.io/nuget/v/ExcelWizard.svg?style=flat)](https://www.nuget.org/packages/ExcelWizard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/farshaddavoudi/ExcelWizard/master/LICENSE)
 
 Easily generate Excel file based on a C# model dynamically in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 # How to Use
-1. Install `EasyExcelGenerator` pacakge from nuget package manager.
+1. Install `ExcelWizard` pacakge from nuget package manager.
 
-2. Register EasyExcelGenerator Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
+2. Register ExcelWizard Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
 ```csharp
 // Has a `isBlazorApp` argument (default is `false`). In case of using in Blazor application
 // For Blazor, pass the true value to register necessary services.
@@ -17,12 +17,12 @@ builder.Services.AddEasyExcelServices(isBlazorApp: false);
 
 3. Inject `IEasyExcelService` into your class and enjoy it!
 
-# How much is it simple to generate/download Excel with EasyExcelGenerator?
+# How much is it simple to generate/download Excel with ExcelWizard?
 
 Assuming you have a collection of a model e.g. `var users = List<User>()` which you normally get it from a database and show them in a Grid or something. Now, 
 you decided to have a live Excel report from it anytime you want. Something like below:
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png">
+<img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-5.png">
 
 The Model:
 
@@ -109,12 +109,12 @@ In IndexPage.razor:
 1. Grid-layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-3.png">
+<img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-3.png">
 
 2. Compound Excel; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
 in different Excel locations. The first type is easier and most straightforward and this type has a different Excel build scenario (Using `GenerateCompoundExcel` method of `IEasyExcelService`).
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-4.png">
+<img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-4.png">
 
 ### Also, you can have a different scenario in saving/retrieving generated Excel files:
 
@@ -174,7 +174,7 @@ For single sheet Grid-layout Excel, it is as easy as passing the data (collectio
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
 simple Excel filled with data without any Excel customization. 
 
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-5.png" />
+<img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-5.png" />
 
 You see the example in how much is it simple section.
 
@@ -205,7 +205,7 @@ public class User
 ```
 
 The Result:
-<img src="https://github.com/farshaddavoudi/EasyExcelGenerator/blob/main/screenshots/Screenshot-2.png" />
+<img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-2.png" />
 
 You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
 can use to customize Excel.
