@@ -7,15 +7,15 @@ Easily generate Excel file based on a C# model dynamically in a very simple and 
 # How to Use
 1. Install `ExcelWizard` pacakge from nuget package manager.
 
-2. Register ExcelWizard Service in your application (API or Blazor) by using the AddEasyExcelServices extension.
+2. Register ExcelWizard Service in your application (API or Blazor) by using the AddExcelWizardServices extension.
 ```csharp
 // Has a `isBlazorApp` argument (default is `false`). In case of using in Blazor application
 // For Blazor, pass the true value to register necessary services.
 // Has an optional argument for ServiceLifeTime. The default lifetime is Scoped.
-builder.Services.AddEasyExcelServices(isBlazorApp: false);
+builder.Services.AddExcelWizardServices(isBlazorApp: false);
 ```
 
-3. Inject `IEasyExcelService` into your class and enjoy it!
+3. Inject `IExcelWizardService` into your class and enjoy it!
 
 # How much is it simple to generate/download Excel with ExcelWizard?
 
@@ -42,12 +42,12 @@ In your Service or Controller:
 ```csharp
 public class UserController : ControllerBase 
 {
-    // Inject the IEasyExcelService Service 
-    private IEasyExcelService _easyExcelService;
+    // Inject the IExcelWizardService Service 
+    private IExcelWizardService _excelWizardService;
 
-    public ExcelController(IEasyExcelService easyExcelService)
+    public ExcelController(IExcelWizardService excelWizardService)
     {
-        _easyExcelService = easyExcelService;
+        _excelWizardService = excelWizardService;
     }
 
     [HttpGet("export-users")]
@@ -65,11 +65,11 @@ public class UserController : ControllerBase
         // Below will create Excel file as byte[] data
         // Just passing your data to method argument and let the rest to the package! hoorya!
         // This method has an optional parameter `generatedFileName` which is obvious by the name
-        GeneratedExcelFile generatedExcelFile = _easyExcelService.GenerateGridLayoutExcel(myUsers);
+        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateGridLayoutExcel(myUsers);
 
         // Below will create Excel file in specified path and return the full path as string
         // The last param is generated file name
-        string fullPathAsString = _easyExcelService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
+        string fullPathAsString = _excelWizardService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
 
         return Ok(generatedExcelFile);
     }
@@ -78,7 +78,7 @@ public class UserController : ControllerBase
 ```
 
 In case you are coding in the Blazor application, the scenario is even simpler. Only get the raw data (=`myUsers`) from API and use the `BlazorDownloadGridLayoutExcel` method
-of `EasyExcelService`, the Excel file will be instantly downloaded (by opening the download popup) from the browser without any struggle for byte[] handling or something :)
+of `ExcelWizardService`, the Excel file will be instantly downloaded (by opening the download popup) from the browser without any struggle for byte[] handling or something :)
 
 In IndexPage.razor:
 
@@ -88,7 +88,7 @@ In IndexPage.razor:
 @code {
 
     // Inject the Service 
-    [Inject] private IEasyExcelService EasyExcelService { get; set; } = default!;
+    [Inject] private IExcelWizardService ExcelWizardService { get; set; } = default!;
 
     private async Task<DownloadFileResult> DownloadExcelReport()
     {
@@ -97,7 +97,7 @@ In IndexPage.razor:
 
         // Just pass the data to method and you are good to go ;)
         // This method has an optional parameter `generatedFileName` which is obvious by the name
-        return EasyExcelService.BlazorDownloadGridLayoutExcel(myUsers);
+        return ExcelWizardService.BlazorDownloadGridLayoutExcel(myUsers);
     }
 }
 ```
@@ -112,7 +112,7 @@ relatively simple, having a table-like layout, a header, and data. The first exa
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-3.png">
 
 2. Compound Excel; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
-in different Excel locations. The first type is easier and most straightforward and this type has a different Excel build scenario (Using `GenerateCompoundExcel` method of `IEasyExcelService`).
+in different Excel locations. The first type is easier and most straightforward and this type has a different Excel build scenario (Using `GenerateCompoundExcel` method of `IExcelWizardService`).
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-4.png">
 
@@ -125,26 +125,26 @@ in different Excel locations. The first type is easier and most straightforward 
 3. (Blazor app) Normally you want to show the Excel to the user as exported file and do not want to save it somewhere. If your app client is 
 something other than Blazor (e.g. React, Angular, or MVC), your only choice is to work with generated Excel byte[] data and handle it for 
 the result you want, but for Blazor apps the story is very simple. Just use the `BlazorDownloadGridLayoutExcel` and `BlazorDownloadCompoundExcel` methods
-from `IEasyExcelService` in some click event and the Excel file will be generated and instantly downloaded (by opening the download popup) right from 
+from `IExcelWizardService` in some click event and the Excel file will be generated and instantly downloaded (by opening the download popup) right from 
 the browser. Easy-peasy, huh! :)
 
-Knowing these simple concepts,  you will easily understand the IEasyExcelService methods and will be able to generate your favorable Excel
+Knowing these simple concepts,  you will easily understand the IExcelWizardService methods and will be able to generate your favorable Excel
 in a very easy and fast way.
 
-IEasyExcelService Methods:
+IExcelWizardService Methods:
 ```csharp
-public interface IEasyExcelService
+public interface IExcelWizardService
 {
-    // Generate Simple Grid Excel file from special model configured options with EasyExcel attributes
+    // Generate Simple Grid Excel file from special model configured options with ExcelWizard attributes
     public GeneratedExcelFile GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder);
 
-    // Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
+    // Generate Simple Single Sheet Grid Excel file from special model configured options with ExcelWizard attributes
     public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null);
 
-    // Generate Grid-Layout Excel having multiple Sheets from special model configured options with EasyExcel attributes
+    // Generate Grid-Layout Excel having multiple Sheets from special model configured options with ExcelWizard attributes
     public string GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder, string savePath);
 
-    // Generate Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes
+    // Generate Simple Single Sheet Grid Excel file from special model configured options with ExcelWizard attributes
     public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath, string generatedFileName);
 
     // Generate Compound Excel consisting multiple parts like some Rows, Tables, Special Cells, etc each in different Excel Location
@@ -155,10 +155,10 @@ public interface IEasyExcelService
 
     #region Blazor Application
 
-    // [Blazor only] Generate and Download instantly from Browser the Simple Multiple Sheet Grid Excel file from special model configured options with EasyExcel attributes in Blazor apps
+    // [Blazor only] Generate and Download instantly from Browser the Simple Multiple Sheet Grid Excel file from special model configured options with ExcelWizard attributes in Blazor apps
     public Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder);
 
-    // [Blazor only] Generate and Download instantly from Browser the Simple Single Sheet Grid Excel file from special model configured options with EasyExcel attributes in Blazor apps
+    // [Blazor only] Generate and Download instantly from Browser the Simple Single Sheet Grid Excel file from special model configured options with ExcelWizard attributes in Blazor apps
     public Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null);
 
     // [Blazor only] Generate and Download instantly from Browser the Compound Excel consisting multiple parts like some Rows, Tables, Special Cells, etc each in different Excel Location in Blazor apps

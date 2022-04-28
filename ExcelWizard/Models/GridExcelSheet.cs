@@ -7,7 +7,7 @@ namespace ExcelWizard.Models;
 public class GridExcelSheet : IValidatableObject
 {
     /// <summary>
-    /// Special Data model with EasyExcel attributes to customize the generated Excel. Should be List of items
+    /// Special Data model with ExcelWizard attributes to customize the generated Excel. Should be List of items
     /// </summary>
     [Required]
     public object? DataList { get; set; }

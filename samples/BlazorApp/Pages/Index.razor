@@ -15,7 +15,7 @@ Welcome to your new app.
 
 @code {
 
-    [Inject] private IEasyExcelService EasyExcelService { get; set; } = default!;
+    [Inject] private IExcelWizardService ExcelWizardService { get; set; } = default!;
 
     private Task<DownloadFileResult> GenerateExcelReport()
     {
@@ -26,6 +26,6 @@ Welcome to your new app.
             new() { Id = 3, FullName = "مارسل دسایی", PersonnelCode = "941126" }
         };
 
-        return EasyExcelService.BlazorDownloadGridLayoutExcel(fetchDataFromApi, "my-custom-report");
+        return ExcelWizardService.BlazorDownloadGridLayoutExcel(fetchDataFromApi, "my-custom-report");
     }
 }

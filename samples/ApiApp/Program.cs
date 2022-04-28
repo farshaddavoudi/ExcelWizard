@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddEasyExcelServices();
+builder.Services.AddExcelWizardServices();
 
 var app = builder.Build();
 

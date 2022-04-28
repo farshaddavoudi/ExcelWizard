@@ -9,17 +9,17 @@ namespace ApiApp.Controllers;
 [ApiController]
 public class ExcelController : ControllerBase
 {
-    private readonly IEasyExcelService _easyExcelService;
+    private readonly IExcelWizardService _excelWizardService;
 
-    public ExcelController(IEasyExcelService easyExcelService)
+    public ExcelController(IExcelWizardService excelWizardService)
     {
-        _easyExcelService = easyExcelService;
+        _excelWizardService = excelWizardService;
     }
 
     [HttpGet("export-excel-from-easy-excel-model")]
-    public IActionResult ExportExcelFromEasyExcelModel()
+    public IActionResult ExportExcelFromExcelWizardModel()
     {
-        var easyExcelModel = new CompoundExcelBuilder
+        var excelWizardModel = new CompoundExcelBuilder
         {
             // FileName = "From-Model",
 
@@ -158,7 +158,7 @@ public class ExcelController : ControllerBase
             }
         };
 
-        return Ok(_easyExcelService.GenerateCompoundExcel(easyExcelModel, @"C:\GeneratedExcelSamples"));
+        return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
     }
 
 
@@ -177,11 +177,11 @@ public class ExcelController : ControllerBase
         // Below will create Excel file as byte[] data
         // Just passing your data to method argument and let the rest to the package! hoorya!
         // This method has an optional parameter `generatedFileName` which is obvious by the name
-        GeneratedExcelFile generatedExcelFile = _easyExcelService.GenerateGridLayoutExcel(myUsers);
+        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateGridLayoutExcel(myUsers);
 
         // Below will create Excel file in specified path and return the full path as string
         // The last param is generated file name
-        string fullPathAsString = _easyExcelService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
+        string fullPathAsString = _excelWizardService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
 
         return Ok(generatedExcelFile);
     }

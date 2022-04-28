@@ -17,13 +17,13 @@ using Table = ExcelWizard.Models.Table;
 
 namespace ExcelWizard.Service;
 
-internal class EasyExcelService : IEasyExcelService
+internal class ExcelWizardService : IExcelWizardService
 {
     private readonly IBlazorDownloadFileService _blazorDownloadFileService;
 
     #region Constructor Injection
 
-    public EasyExcelService(IBlazorDownloadFileService blazorDownloadFileService)
+    public ExcelWizardService(IBlazorDownloadFileService blazorDownloadFileService)
     {
         _blazorDownloadFileService = blazorDownloadFileService;
     }
@@ -42,7 +42,7 @@ internal class EasyExcelService : IEasyExcelService
         var content = stream.ToArray();
 
         if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.GeneratedFileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+            compoundExcelBuilder.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
         return new GeneratedExcelFile { FileName = compoundExcelBuilder.GeneratedFileName, Content = content };
     }
@@ -52,7 +52,7 @@ internal class EasyExcelService : IEasyExcelService
         using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
 
         if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.GeneratedFileName = $"EasyExcelGeneratedFile_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+            compoundExcelBuilder.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
         var saveUrl = $"{savePath}\\{compoundExcelBuilder.GeneratedFileName}.xlsx";
 
@@ -64,7 +64,7 @@ internal class EasyExcelService : IEasyExcelService
 
     public GeneratedExcelFile GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
     {
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(multiSheetsGridLayoutExcelBuilder);
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(multiSheetsGridLayoutExcelBuilder);
 
         return GenerateCompoundExcel(compoundExcelBuilder);
     }
@@ -78,14 +78,14 @@ internal class EasyExcelService : IEasyExcelService
             Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
         };
 
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(gridLayoutExcelBuilder);
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelBuilder);
 
         return GenerateCompoundExcel(compoundExcelBuilder);
     }
 
     public string GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder, string savePath)
     {
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(multiSheetsGridLayoutExcelBuilder);
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(multiSheetsGridLayoutExcelBuilder);
 
         return GenerateCompoundExcel(compoundExcelBuilder, savePath);
     }
@@ -99,7 +99,7 @@ internal class EasyExcelService : IEasyExcelService
             Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
         };
 
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToEasyExcelBuilder(gridLayoutExcelBuilder);
+        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelBuilder);
 
         return GenerateCompoundExcel(compoundExcelBuilder, savePath);
     }
@@ -378,12 +378,12 @@ internal class EasyExcelService : IEasyExcelService
         return xlWorkbook;
     }
 
-    private CompoundExcelBuilder ConvertEasyGridExcelBuilderToEasyExcelBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
+    private CompoundExcelBuilder ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
     {
-        var easyExcelBuilder = new CompoundExcelBuilder();
+        var ExcelWizardBuilder = new CompoundExcelBuilder();
 
         if (gridLayoutExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace() is false)
-            easyExcelBuilder.GeneratedFileName = gridLayoutExcelBuilder.GeneratedFileName;
+            ExcelWizardBuilder.GeneratedFileName = gridLayoutExcelBuilder.GeneratedFileName;
 
         foreach (var gridExcelSheet in gridLayoutExcelBuilder.Sheets)
         {
@@ -415,32 +415,32 @@ internal class EasyExcelService : IEasyExcelService
                 {
                     // Each record is an entire row of Excel
 
-                    var easyExcelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
+                    var ExcelWizardSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
 
-                    sheetName = easyExcelSheetAttribute?.SheetName;
+                    sheetName = ExcelWizardSheetAttribute?.SheetName;
 
-                    sheetDirection = easyExcelSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
+                    sheetDirection = ExcelWizardSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
 
-                    var defaultFontWeight = easyExcelSheetAttribute?.FontWeight;
+                    var defaultFontWeight = ExcelWizardSheetAttribute?.FontWeight;
 
                     var defaultFont = new TextFont
                     {
-                        FontName = easyExcelSheetAttribute?.FontName,
-                        FontSize = easyExcelSheetAttribute?.FontSize == 0 ? null : easyExcelSheetAttribute?.FontSize,
-                        FontColor = Color.FromKnownColor(easyExcelSheetAttribute?.FontColor ?? KnownColor.Black),
+                        FontName = ExcelWizardSheetAttribute?.FontName,
+                        FontSize = ExcelWizardSheetAttribute?.FontSize == 0 ? null : ExcelWizardSheetAttribute?.FontSize,
+                        FontColor = Color.FromKnownColor(ExcelWizardSheetAttribute?.FontColor ?? KnownColor.Black),
                         IsBold = defaultFontWeight == FontWeight.Bold
                     };
 
-                    isSheetLocked = easyExcelSheetAttribute?.IsSheetLocked ?? false;
+                    isSheetLocked = ExcelWizardSheetAttribute?.IsSheetLocked ?? false;
 
-                    var isSheetHardProtected = easyExcelSheetAttribute?.IsSheetHardProtected ?? false;
+                    var isSheetHardProtected = ExcelWizardSheetAttribute?.IsSheetHardProtected ?? false;
 
                     if (isSheetHardProtected)
                         sheetProtectionLevel.HardProtect = true;
 
-                    borderType = easyExcelSheetAttribute?.BorderType ?? LineStyle.Thin;
+                    borderType = ExcelWizardSheetAttribute?.BorderType ?? LineStyle.Thin;
 
-                    var defaultTextAlign = easyExcelSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
+                    var defaultTextAlign = ExcelWizardSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
 
                     PropertyInfo[] properties = record.GetType().GetProperties();
 
@@ -448,13 +448,13 @@ internal class EasyExcelService : IEasyExcelService
 
                     var recordRow = new Row
                     {
-                        RowHeight = easyExcelSheetAttribute?.DataRowHeight == 0 ? null : easyExcelSheetAttribute?.DataRowHeight,
-                        BackgroundColor = easyExcelSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(easyExcelSheetAttribute.DataBackgroundColor) : Color.Transparent,
+                        RowHeight = ExcelWizardSheetAttribute?.DataRowHeight == 0 ? null : ExcelWizardSheetAttribute?.DataRowHeight,
+                        BackgroundColor = ExcelWizardSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(ExcelWizardSheetAttribute.DataBackgroundColor) : Color.Transparent,
                     };
 
                     foreach (var prop in properties)
                     {
-                        var easyExcelColumnAttribute = (ExcelColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelColumnAttribute);
+                        var ExcelWizardColumnAttribute = (ExcelColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelColumnAttribute);
 
                         TextAlign GetCellTextAlign(TextAlign defaultAlign, TextAlign? headerOrDataTextAlign)
                         {
@@ -467,14 +467,14 @@ internal class EasyExcelService : IEasyExcelService
 
                         var finalFont = new TextFont
                         {
-                            FontName = easyExcelColumnAttribute?.FontName ?? defaultFont.FontName,
-                            FontSize = easyExcelColumnAttribute?.FontSize is null || easyExcelColumnAttribute.FontSize == 0 ? defaultFont.FontSize : easyExcelColumnAttribute.FontSize,
-                            FontColor = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontColor == KnownColor.Transparent
+                            FontName = ExcelWizardColumnAttribute?.FontName ?? defaultFont.FontName,
+                            FontSize = ExcelWizardColumnAttribute?.FontSize is null || ExcelWizardColumnAttribute.FontSize == 0 ? defaultFont.FontSize : ExcelWizardColumnAttribute.FontSize,
+                            FontColor = ExcelWizardColumnAttribute is null || ExcelWizardColumnAttribute.FontColor == KnownColor.Transparent
                             ? defaultFont.FontColor.Value
-                            : Color.FromKnownColor(easyExcelColumnAttribute.FontColor),
-                            IsBold = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontWeight == FontWeight.Inherit
+                            : Color.FromKnownColor(ExcelWizardColumnAttribute.FontColor),
+                            IsBold = ExcelWizardColumnAttribute is null || ExcelWizardColumnAttribute.FontWeight == FontWeight.Inherit
                             ? defaultFont.IsBold
-                            : easyExcelColumnAttribute.FontWeight == FontWeight.Bold
+                            : ExcelWizardColumnAttribute.FontWeight == FontWeight.Bold
                         };
 
                         // Header
@@ -482,21 +482,21 @@ internal class EasyExcelService : IEasyExcelService
                         {
                             var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
 
-                            headerFont.IsBold = easyExcelColumnAttribute is null || easyExcelColumnAttribute.FontWeight == FontWeight.Inherit
+                            headerFont.IsBold = ExcelWizardColumnAttribute is null || ExcelWizardColumnAttribute.FontWeight == FontWeight.Inherit
                                 ? defaultFontWeight != FontWeight.Normal
-                                : easyExcelColumnAttribute.FontWeight == FontWeight.Bold;
+                                : ExcelWizardColumnAttribute.FontWeight == FontWeight.Bold;
 
                             headerRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation))
                             {
-                                Value = easyExcelColumnAttribute?.HeaderName ?? prop.Name,
-                                CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.HeaderTextAlign),
+                                Value = ExcelWizardColumnAttribute?.HeaderName ?? prop.Name,
+                                CellTextAlign = GetCellTextAlign(defaultTextAlign, ExcelWizardColumnAttribute?.HeaderTextAlign),
                                 CellType = CellType.Text,
                                 Font = headerFont
                             });
 
-                            headerRow.RowHeight = easyExcelSheetAttribute?.HeaderHeight == 0 ? null : easyExcelSheetAttribute?.HeaderHeight;
+                            headerRow.RowHeight = ExcelWizardSheetAttribute?.HeaderHeight == 0 ? null : ExcelWizardSheetAttribute?.HeaderHeight;
 
-                            headerRow.BackgroundColor = easyExcelSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(easyExcelSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
+                            headerRow.BackgroundColor = ExcelWizardSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(ExcelWizardSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
 
                             headerRow.OutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
@@ -508,8 +508,8 @@ internal class EasyExcelService : IEasyExcelService
                                 ColumnNo = xLocation,
                                 ColumnWidth = new ColumnWidth
                                 {
-                                    Width = easyExcelColumnAttribute?.ColumnWidth == 0 ? null : easyExcelColumnAttribute?.ColumnWidth,
-                                    WidthCalculationType = easyExcelColumnAttribute is null || easyExcelColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
+                                    Width = ExcelWizardColumnAttribute?.ColumnWidth == 0 ? null : ExcelWizardColumnAttribute?.ColumnWidth,
+                                    WidthCalculationType = ExcelWizardColumnAttribute is null || ExcelWizardColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
                                 }
                             });
                         }
@@ -518,8 +518,8 @@ internal class EasyExcelService : IEasyExcelService
                         recordRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation + 1))
                         {
                             Value = prop.GetValue(record),
-                            CellType = easyExcelColumnAttribute?.ExcelDataType ?? CellType.Text,
-                            CellTextAlign = GetCellTextAlign(defaultTextAlign, easyExcelColumnAttribute?.DataTextAlign),
+                            CellType = ExcelWizardColumnAttribute?.ExcelDataType ?? CellType.Text,
+                            CellTextAlign = GetCellTextAlign(defaultTextAlign, ExcelWizardColumnAttribute?.DataTextAlign),
                             Font = finalFont
                         });
 
@@ -533,7 +533,7 @@ internal class EasyExcelService : IEasyExcelService
                     headerCalculated = true;
                 }
 
-                easyExcelBuilder.Sheets.Add(new Sheet
+                ExcelWizardBuilder.Sheets.Add(new Sheet
                 {
                     SheetName = sheetName,
 
@@ -567,7 +567,7 @@ internal class EasyExcelService : IEasyExcelService
             }
         }
 
-        return easyExcelBuilder;
+        return ExcelWizardBuilder;
     }
 
     private void ConfigureCell(IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)

@@ -13,14 +13,14 @@ public static class DIExtension
     /// <param name="services"></param>
     /// <param name="isBlazorApp"> Do you register for a Blazor app or not. In case of API or MVC project, is will be false </param>
     /// <param name="lifetime"> LifeTime of Dependency Injection </param>
-    public static void AddEasyExcelServices(this IServiceCollection services, bool isBlazorApp = false, ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    public static void AddExcelWizardServices(this IServiceCollection services, bool isBlazorApp = false, ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
         if (isBlazorApp)
             services.AddBlazorDownloadFile(lifetime);
 
         if (lifetime == ServiceLifetime.Scoped)
         {
-            services.AddScoped<IEasyExcelService, EasyExcelService>();
+            services.AddScoped<IExcelWizardService, ExcelWizardService>();
 
             if (isBlazorApp is false)
                 services.AddScoped<IBlazorDownloadFileService, FakeBlazorDownloadFileService>();
@@ -28,7 +28,7 @@ public static class DIExtension
 
         else if (lifetime == ServiceLifetime.Transient)
         {
-            services.AddTransient<IEasyExcelService, EasyExcelService>();
+            services.AddTransient<IExcelWizardService, ExcelWizardService>();
 
             if (isBlazorApp is false)
                 services.AddTransient<IBlazorDownloadFileService, FakeBlazorDownloadFileService>();
@@ -36,7 +36,7 @@ public static class DIExtension
 
         else if (lifetime == ServiceLifetime.Singleton)
         {
-            services.AddSingleton<IEasyExcelService, EasyExcelService>();
+            services.AddSingleton<IExcelWizardService, ExcelWizardService>();
 
             if (isBlazorApp is false)
                 services.AddSingleton<IBlazorDownloadFileService, FakeBlazorDownloadFileService>();
