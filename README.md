@@ -176,7 +176,36 @@ simple Excel filled with data without any Excel customization.
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-5.png" />
 
-You see the example in how much is it simple section.
+You saw a simple example in <i>how much is it simple section</i>. Below we are just adding a variable (`IsLoading`) to show some loading during fetching data and generating Excel:
+
+```razor
+<button @onclick="DownloadExcelReport"> Export Excel </button>
+
+@code {
+
+    // Inject the Service 
+    [Inject] private IExcelWizardService ExcelWizardService { get; set; } = default!;
+
+    private async Task<DownloadFileResult> DownloadExcelReport()
+    {
+        // IsLoading is a hypothetical variable to show some Loading in your page
+        IsLoading = true;
+        
+        try {
+            // Get your data from API usually by Http call
+            var myUsers = await apiService.GetMyUsers();
+
+            // Just pass the data to method and you are good to go ;)
+            // This method has an optional parameter `generatedFileName` which is obvious by the name
+            return ExcelWizardService.BlazorDownloadGridLayoutExcel(myUsers);
+        }
+        finally {
+            // Finish Showing loading 
+            IsLoading = false;
+        }
+    }
+}
+```
 
 ## What if you want some customization for the generated Excel file?
 For example, ignore a column (property) to be shown in exported Excel, having some aligns for header or cells, text font/size/color, different background color for header or cells or a specific column!,
