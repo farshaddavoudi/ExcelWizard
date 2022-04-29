@@ -197,7 +197,7 @@ You saw a simple example in <i>how much is it simple section</i>. Below we are j
 
             // Just pass the data to method and you are good to go ;)
             // This method has an optional parameter `generatedFileName` which is obvious by the name
-            return ExcelWizardService.BlazorDownloadGridLayoutExcel(myUsers);
+            return await ExcelWizardService.BlazorDownloadGridLayoutExcel(myUsers);
         }
         finally {
             // Finish Showing loading 
