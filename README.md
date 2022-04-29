@@ -106,12 +106,12 @@ In IndexPage.razor:
 
 ### The Excel you want can be two types: 
 
-1. Grid-layout like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
+1. **Grid-layout** like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-3.png">
 
-2. Compound Excel; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
+2. **Compound Excel**; a little more complex than the previous Grid-layout one. This Excel type can include some different Rows, Tables, and special Cells each placed
 in different Excel locations. The first type is easier and most straightforward and this type has a different Excel build scenario (Using `GenerateCompoundExcel` method of `IExcelWizardService`).
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-4.png">
