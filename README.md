@@ -179,7 +179,7 @@ simple Excel filled with data without any Excel customization.
 You see the example in how much is it simple section.
 
 ## What if you want some customization for the generated Excel file?
-For example, having some aligns for header or cells, text font/size/color, different background color for header or cells or a specific column!,
+For example, ignore a column (property) to be shown in exported Excel, having some aligns for header or cells, text font/size/color, different background color for header or cells or a specific column!,
 custom header name for a column, custom header height or column width or Sheet direction (RTL/LTR), etc..? All these options plus a lot more can be configured by two
 attributes you can use on your model. `[ExcelSheet]` for Excel generic properties and `[ExcelColumn]` for per property (column) customization.
 
@@ -201,6 +201,9 @@ public class User
     public string? PersonnelCode { get; set; }
 
     public string? Nationality { get; set; }
+    
+    [ExcelColumn(Ignore = true)]
+    public string? Age { get; set; }
 }
 ```
 

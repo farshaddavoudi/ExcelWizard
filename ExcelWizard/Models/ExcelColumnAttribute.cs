@@ -10,6 +10,11 @@ namespace ExcelWizard.Models;
 public class ExcelColumnAttribute : Attribute
 {
     /// <summary>
+    /// Ignore the Column from being shown in exported Excel
+    /// </summary>
+    public bool Ignore { get; set; }
+
+    /// <summary>
     /// Column Header Name 
     /// </summary>
     public string? HeaderName { get; set; }

@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using ExcelWizard.Models;
+﻿using ExcelWizard.Models;
+using System.Drawing;
 
 namespace BlazorApp;
 
@@ -11,7 +11,7 @@ public class AppExcelReportModel
     [ExcelColumn(HeaderName = "شناسه", HeaderTextAlign = TextAlign.Right, DataTextAlign = TextAlign.Right, FontColor = KnownColor.Blue)]
     public int Id { get; set; }
 
-    [ExcelColumn(HeaderName = "Name", HeaderTextAlign = TextAlign.Left, FontWeight = FontWeight.Bold)]
+    [ExcelColumn(Ignore = true, HeaderName = "Name", HeaderTextAlign = TextAlign.Left, FontWeight = FontWeight.Bold)]
     public string? FullName { get; set; }
 
     [ExcelColumn(HeaderName = "شماره پرسنلی", HeaderTextAlign = TextAlign.Left, ColumnWidth = 50, FontSize = 15)]
