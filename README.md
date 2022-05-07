@@ -116,13 +116,13 @@ in different Excel locations. The first type is easier and most straightforward 
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-4.png">
 
-### Also, you can have a different scenario in saving/retrieving generated Excel files:
+### Also, you can have different scenario in saving or retrieving generated Excel file:
 
-1. Get the byte[] of the Excel file and use it for your use case, e.g. sending to another client to be shown or saving in a database, etc.
+1. Get the *`byte[]`* of the Excel file and use it for your use case, e.g. sending to another client to be shown or saving in a database, etc.
 
-2. Save the Excel directly on disk and get the full path address to send to the app client or save it in the database.
+2. Save the Excel directly *on disk* and get the full path address to send to the app client or save it in the database.
 
-3. (Blazor app) Normally you want to show the Excel to the user as exported file and do not want to save it somewhere. If your app client is 
+3. (Blazor app) Normally you want to *show the Excel to the user as exported file and do not want to save it somewhere*. If your app client is 
 something other than Blazor (e.g. React, Angular, or MVC), your only choice is to work with generated Excel byte[] data and handle it for 
 the result you want, but for Blazor apps the story is very simple. Just use the `BlazorDownloadGridLayoutExcel` and `BlazorDownloadCompoundExcel` methods
 from `IExcelWizardService` in some click event and the Excel file will be generated and instantly downloaded (by opening the download popup) right from 
