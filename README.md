@@ -9,8 +9,8 @@ Using ExcelWizard, you can easily generate Excel file in a very simple and strai
 
 2. Register ExcelWizard Service in your application (API or Blazor) by using the AddExcelWizardServices extension.
 ```csharp
-// Has a `isBlazorApp` argument (default is `false`). In case of using in Blazor application
-// For Blazor, pass the true value to register necessary services.
+// Has a `isBlazorApp` argument (default is `false`). 
+// In case of using in Blazor application, pass the true value to register necessary services.
 // Has an optional argument for ServiceLifeTime. The default lifetime is Scoped.
 builder.Services.AddExcelWizardServices(isBlazorApp: false);
 ```
