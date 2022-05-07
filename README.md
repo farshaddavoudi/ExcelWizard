@@ -124,8 +124,7 @@ in different Excel locations. The first type is easier and most straightforward 
 
 3. (Blazor app) Normally you want to *show the Excel to the user as exported file and do not want to save it somewhere*. If your app client is 
 something other than Blazor (e.g. React, Angular, or MVC), your only choice is to work with generated Excel byte[] data and handle it for 
-the result you want, but for Blazor apps the story is very simple. Just use the `BlazorDownloadGridLayoutExcel` and `BlazorDownloadCompoundExcel` methods
-from `IExcelWizardService` in some click event and the Excel file will be generated and instantly downloaded (by opening the download popup) right from 
+the result you want, but for Blazor apps the story is very simple. Just use the `BlazorDownloadGridLayoutExcel` and `BlazorDownloadCompoundExcel` methods *(notice the methods name start with BlazorDownload)* from `IExcelWizardService` in some click event and the Excel file will be generated and instantly downloaded (by opening the download popup) right from 
 the browser. Easy-peasy, huh! :)
 
 Knowing these simple concepts,  you will easily understand the IExcelWizardService methods and will be able to generate your favorable Excel
