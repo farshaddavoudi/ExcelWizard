@@ -167,7 +167,7 @@ public interface IExcelWizardService
 }
 ```
 
-# Generate *Single* Sheet Grid-Layout Excel *In Details*
+# Generate *Single* Sheet Grid-Layout Excel In Details
 
 For single sheet Grid-layout Excel, it is as easy as passing the data (collection of a model like `var myUsers = new List<User>();`, remember?)
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
@@ -206,7 +206,7 @@ You saw a simple example in <i>how much is it simple section</i>. Below we are j
 }
 ```
 
-## What if you want some customization for the generated Excel file?
+## What if I want some customization for the generated Excel file?
 For example, ignore a column (property) to be shown in exported Excel, having some aligns for header or cells, text font/size/color, different background color for header or cells or a specific column!,
 custom header name for a column, custom header height or column width or Sheet direction (RTL/LTR), etc..? All these options plus a lot more can be configured by two
 attributes you can use on your model. `[ExcelSheet]` for Excel generic properties and `[ExcelColumn]` for per property (column) customization.
@@ -241,12 +241,12 @@ The Result:
 You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
 can use to customize Excel.
 
-# Generate Multiple Sheets Grid-Layout Excel
+# Generate *Multiple* Sheets Grid-Layout Excel In Details
 
 It is almost the same with a single sheet, using the same `GenerateGridLayoutExcel` method (`BlazorDownloadGridLayoutExcel` method in case of the Blazor app) with the `GridLayoutExcelBuilder` argument 
  that should be provided to configure the Excel file. The customization 
 is exactly like Single sheet Grid-layout Excel (See the previous section).
 
-# Generate Compound Excel
-Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just
+# Generate *Compound* Excel
+In this case, the process for single or multi sheets are the same. Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just
 go along with the `CompoundExcelBuilder` argument and provide the necessary parts for your Excel.
