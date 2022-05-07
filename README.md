@@ -2,7 +2,7 @@
 [![NuGet Version](https://img.shields.io/nuget/v/ExcelWizard.svg?style=flat)](https://www.nuget.org/packages/ExcelWizard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/farshaddavoudi/ExcelWizard/master/LICENSE)
 
-Easily generate Excel file based on a C# model dynamically in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
+Using ExcelWizard, you can easily generate Excel file in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 # How to Use
 1. Install `ExcelWizard` pacakge from nuget package manager.
