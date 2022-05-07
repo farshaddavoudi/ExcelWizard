@@ -130,7 +130,7 @@ the browser. Easy-peasy, huh! :)
 Knowing these simple concepts,  you will easily understand the IExcelWizardService methods and will be able to generate your favorable Excel
 in a very easy and fast way.
 
-**`IExcelWizardService`** all Methods at a glance:
+**`IExcelWizardService` all Methods at a glance:**
 ```csharp
 public interface IExcelWizardService
 {
