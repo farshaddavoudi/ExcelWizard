@@ -167,7 +167,7 @@ public interface IExcelWizardService
 }
 ```
 
-# Generate Single Sheet Grid-Layout Excel
+# Generate *Single* Sheet Grid-Layout Excel *In Details*
 
 For single sheet Grid-layout Excel, it is as easy as passing the data (collection of a model like `var myUsers = new List<User>();`, remember?)
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
