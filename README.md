@@ -244,7 +244,7 @@ can use to customize Excel.
 # Generate *Multiple* Sheets Grid-Layout Excel In Details
 
 It is almost the same with a single sheet, using the second overload of the same `GenerateGridLayoutExcel` method (`BlazorDownloadGridLayoutExcel` method in case of the Blazor app) with the `GridLayoutExcelBuilder` argument 
- that should be provided to configure the Excel file. The customization 
+ that should be provided to configure the Excel file. The Excel customization 
 is exactly like Single sheet Grid-layout Excel (See the previous section).
 
 # Generate *Compound* Excel
