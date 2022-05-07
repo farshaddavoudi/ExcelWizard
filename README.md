@@ -248,5 +248,4 @@ It is almost the same with a single sheet, using the second overload of the same
 is exactly like Single sheet Grid-layout Excel (See the previous section).
 
 # Generate *Compound* Excel
-In this case, the process for single or multi sheets are the same. Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just
-go along with the `CompoundExcelBuilder` argument and provide the necessary parts for your Excel.
+Generating Excel in this case for single or multi sheets are the same. Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just go along with the `CompoundExcelBuilder` argument and provide the necessary parts for your Excel.
