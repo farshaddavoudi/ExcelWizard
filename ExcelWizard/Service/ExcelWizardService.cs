@@ -313,10 +313,10 @@ internal class ExcelWizardService : IExcelWizardService
                     ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
                 }
 
-                var tableRange = xlSheet.Range(table.StartCellLocation.Y,
-                    table.StartCellLocation.X,
-                    table.EndLocation.Y,
-                    table.EndLocation.X);
+                var tableRange = xlSheet.Range(table.StartCellLocation.RowNumber,
+                    table.StartCellLocation.ColumnNumber,
+                    table.EndLocation.RowNumber,
+                    table.EndLocation.ColumnNumber);
 
                 // Config Outside-Border
                 XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(table.OutsideBorder.BorderLineStyle);
@@ -448,8 +448,11 @@ internal class ExcelWizardService : IExcelWizardService
 
                     var recordRow = new Row
                     {
-                        RowHeight = excelWizardSheetAttribute?.DataRowHeight == 0 ? null : excelWizardSheetAttribute?.DataRowHeight,
-                        BackgroundColor = excelWizardSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.DataBackgroundColor) : Color.Transparent,
+                        RowStyle = new RowStyle
+                        {
+                            RowHeight = excelWizardSheetAttribute?.DataRowHeight == 0 ? null : excelWizardSheetAttribute?.DataRowHeight,
+                            BackgroundColor = excelWizardSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.DataBackgroundColor) : Color.Transparent
+                        }
                     };
 
                     // Each loop is a Column
@@ -490,21 +493,24 @@ internal class ExcelWizardService : IExcelWizardService
                                 ? defaultFontWeight != FontWeight.Normal
                                 : excelWizardColumnAttribute.FontWeight == FontWeight.Bold;
 
-                            headerRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation))
+                            headerRow.Cells.Add(new Cell(xLocation, yLocation)
                             {
                                 Value = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
-                                CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.HeaderTextAlign),
-                                CellType = CellType.Text,
-                                Font = headerFont
+                                CellStyle = new CellStyle
+                                {
+                                    CellFont = headerFont,
+                                    CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.HeaderTextAlign)
+                                },
+                                CellContentType = CellContentType.Text,
                             });
 
-                            headerRow.RowHeight = excelWizardSheetAttribute?.HeaderHeight == 0 ? null : excelWizardSheetAttribute?.HeaderHeight;
+                            headerRow.RowStyle.RowHeight = excelWizardSheetAttribute?.HeaderHeight == 0 ? null : excelWizardSheetAttribute?.HeaderHeight;
 
-                            headerRow.BackgroundColor = excelWizardSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
+                            headerRow.RowStyle.BackgroundColor = excelWizardSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
 
-                            headerRow.OutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+                            headerRow.RowStyle.OutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
-                            headerRow.InsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+                            headerRow.RowStyle.InsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
                             // Calculate Columns style
                             columnsStyle.Add(new ColumnStyle
@@ -519,12 +525,15 @@ internal class ExcelWizardService : IExcelWizardService
                         }
 
                         // Data
-                        recordRow.Cells.Add(new Cell(new CellLocation(xLocation, yLocation + 1))
+                        recordRow.Cells.Add(new Cell(xLocation, yLocation + 1)
                         {
                             Value = prop.GetValue(record),
-                            CellType = excelWizardColumnAttribute?.ExcelDataType ?? CellType.Text,
-                            CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.DataTextAlign),
-                            Font = finalFont
+                            CellContentType = excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text,
+                            CellStyle = new CellStyle
+                            {
+                                CellFont = finalFont,
+                                CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.DataTextAlign)
+                            }
                         });
 
                         xLocation++;
@@ -579,32 +588,32 @@ internal class ExcelWizardService : IExcelWizardService
         // Infer XLDataType and value from "cell" CellType
         XLDataType? xlDataType;
         object cellValue = cell.Value;
-        switch (cell.CellType)
+        switch (cell.CellContentType)
         {
-            case CellType.Number:
+            case CellContentType.Number:
                 xlDataType = XLDataType.Number;
                 break;
 
-            case CellType.Percentage:
+            case CellContentType.Percentage:
                 xlDataType = XLDataType.Text;
                 cellValue = $"{cellValue}%";
                 break;
 
-            case CellType.Currency:
+            case CellContentType.Currency:
                 xlDataType = XLDataType.Number;
                 if (IsNumber(cellValue) is false)
                     throw new Exception("Cell with Currency CellType should be Number type");
                 cellValue = Convert.ToDecimal(cellValue).ToString("##,###");
                 break;
 
-            case CellType.MiladiDate:
+            case CellContentType.MiladiDate:
                 xlDataType = XLDataType.DateTime;
                 if (cellValue is not DateTime)
                     throw new Exception("Cell with MiladiDate CellType should be DateTime type");
                 break;
 
-            case CellType.Text:
-            case CellType.Formula:
+            case CellContentType.Text:
+            case CellContentType.Formula:
                 xlDataType = XLDataType.Text;
                 break;
 
@@ -614,7 +623,7 @@ internal class ExcelWizardService : IExcelWizardService
         }
 
         // Infer XLAlignment from "cell"
-        XLAlignmentHorizontalValues? cellAlignmentHorizontalValue = cell.CellTextAlign switch
+        XLAlignmentHorizontalValues? cellAlignmentHorizontalValue = cell.CellStyle.CellTextAlign switch
         {
             TextAlign.Center => XLAlignmentHorizontalValues.Center,
             TextAlign.Left => XLAlignmentHorizontalValues.Left,
@@ -628,7 +637,7 @@ internal class ExcelWizardService : IExcelWizardService
 
         if (isLocked is null)
         { // Get from ColumnProps level
-            var x = cell.CellLocation.X;
+            var x = cell.CellLocation.ColumnNumber;
 
             var relatedColumnProp = columnProps.SingleOrDefault(c => c.ColumnNo == x);
 
@@ -643,17 +652,17 @@ internal class ExcelWizardService : IExcelWizardService
         //-------------------------------------------
         //  Map column per Cells loop cycle
         //-------------------------------------------
-        var locationCell = xlSheet.Cell(cell.CellLocation.Y, cell.CellLocation.X);
+        var locationCell = xlSheet.Cell(cell.CellLocation.RowNumber, cell.CellLocation.ColumnNumber);
 
         if (xlDataType is not null)
             locationCell.SetDataType((XLDataType)xlDataType);
 
-        if (cell.CellType == CellType.Formula)
+        if (cell.CellContentType == CellContentType.Formula)
             locationCell.SetFormulaA1(cellValue.ToString());
         else
             locationCell.SetValue(cellValue);
 
-        locationCell.Style.Alignment.SetWrapText(cell.Wordwrap);
+        locationCell.Style.Alignment.SetWrapText(cell.CellStyle.Wordwrap);
 
         locationCell.Style.Protection.Locked = (bool)isLocked;
 
@@ -664,17 +673,17 @@ internal class ExcelWizardService : IExcelWizardService
         locationCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
         // Set Font
-        if (cell.Font.FontColor is not null)
-            locationCell.Style.Font.SetFontColor(XLColor.FromColor(cell.Font.FontColor.Value));
+        if (cell.CellStyle.CellFont.FontColor is not null)
+            locationCell.Style.Font.SetFontColor(XLColor.FromColor(cell.CellStyle.CellFont.FontColor.Value));
 
-        if (cell.Font.FontSize is not null)
-            locationCell.Style.Font.SetFontSize(cell.Font.FontSize.Value);
+        if (cell.CellStyle.CellFont.FontSize is not null)
+            locationCell.Style.Font.SetFontSize(cell.CellStyle.CellFont.FontSize.Value);
 
-        if (cell.Font.IsBold is not null)
-            locationCell.Style.Font.SetBold(cell.Font.IsBold.Value);
+        if (cell.CellStyle.CellFont.IsBold is not null)
+            locationCell.Style.Font.SetBold(cell.CellStyle.CellFont.IsBold.Value);
 
-        if (cell.Font.FontName.IsNullOrWhiteSpace() is false)
-            locationCell.Style.Font.SetFontName(cell.Font.FontName);
+        if (cell.CellStyle.CellFont.FontName.IsNullOrWhiteSpace() is false)
+            locationCell.Style.Font.SetFontName(cell.CellStyle.CellFont.FontName);
     }
 
     private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
@@ -696,68 +705,46 @@ internal class ExcelWizardService : IExcelWizardService
 
         if (row.Cells.Count != 0)
         {
-            if (row.StartCellLocation is not null && row.EndCellLocation is not null)
+            var xlRow = xlSheet.Row(row.Cells.First().CellLocation.RowNumber);
+            if (row.RowStyle.RowHeight is not null)
+                xlRow.Height = (double)row.RowStyle.RowHeight;
+
+            var xlRowRange = xlSheet.Range(row.GetRowStartCellLocation().RowNumber,
+                row.GetRowStartCellLocation().ColumnNumber,
+                row.GetRowEndCellLocation().RowNumber,
+                row.GetRowEndCellLocation().ColumnNumber);
+
+            if (row.RowStyle.Font.FontColor is not null)
+                xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.RowStyle.Font.FontColor.Value));
+
+            if (row.RowStyle.Font.FontSize is not null)
+                xlRowRange.Style.Font.SetFontSize(row.RowStyle.Font.FontSize.Value);
+
+            if (row.RowStyle.Font.IsBold is not null)
+                xlRowRange.Style.Font.SetBold(row.RowStyle.Font.IsBold.Value);
+
+            if (row.RowStyle.Font.FontName.IsNullOrWhiteSpace() is false)
+                xlRowRange.Style.Font.SetFontName(row.RowStyle.Font.FontName);
+
+            xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.RowStyle.BackgroundColor));
+
+            XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(row.RowStyle.OutsideBorder.BorderLineStyle);
+
+            if (outsideBorder is not null)
             {
-                var xlRow = xlSheet.Row(row.Cells.First().CellLocation.Y);
-                if (row.RowHeight is not null)
-                    xlRow.Height = (double)row.RowHeight;
-
-                var xlRowRange = xlSheet.Range(row.StartCellLocation.Y,
-                    row.StartCellLocation.X,
-                    row.EndCellLocation.Y,
-                    row.EndCellLocation.X);
-
-                if (row.Font.FontColor is not null)
-                    xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.Font.FontColor.Value));
-
-                if (row.Font.FontSize is not null)
-                    xlRowRange.Style.Font.SetFontSize(row.Font.FontSize.Value);
-
-                if (row.Font.IsBold is not null)
-                    xlRowRange.Style.Font.SetBold(row.Font.IsBold.Value);
-
-                if (row.Font.FontName.IsNullOrWhiteSpace() is false)
-                    xlRowRange.Style.Font.SetFontName(row.Font.FontName);
-
-                xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.BackgroundColor));
-
-                XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(row.OutsideBorder.BorderLineStyle);
-
-                if (outsideBorder is not null)
-                {
-                    xlRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
-                    xlRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(row.OutsideBorder.BorderColor));
-                }
-
-                XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(row.InsideBorder.BorderLineStyle);
-
-                if (insideBorder is not null)
-                {
-                    xlRowRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
-                    xlRowRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(row.InsideBorder.BorderColor));
-                }
+                xlRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
+                xlRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(row.RowStyle.OutsideBorder.BorderColor));
             }
-            else
+
+            XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(row.RowStyle.InsideBorder.BorderLineStyle);
+
+            if (insideBorder is not null)
             {
-                var xlRow = xlSheet.Row(row.Cells.First().CellLocation.Y);
-                if (row.RowHeight is not null)
-                    xlRow.Height = (double)row.RowHeight;
-
-                if (row.Font.FontColor is not null)
-                    xlRow.Style.Font.SetFontColor(XLColor.FromColor(row.Font.FontColor.Value));
-                if (row.Font.FontSize is not null)
-                    xlRow.Style.Font.SetFontSize(row.Font.FontSize.Value);
-                if (row.Font.IsBold is not null)
-                    xlRow.Style.Font.SetBold(row.Font.IsBold.Value);
-                if (row.Font.FontName.IsNullOrWhiteSpace() is false)
-                    xlRow.Style.Font.SetFontName(row.Font.FontName);
-
-                xlRow.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.BackgroundColor));
-                xlRow.Style.Border.SetOutsideBorder(XLBorderStyleValues.Dotted);
-                xlRow.Style.Border.SetInsideBorder(XLBorderStyleValues.Thick);
-                xlRow.Style.Border.SetTopBorder(XLBorderStyleValues.Thick);
-                xlRow.Style.Border.SetRightBorder(XLBorderStyleValues.DashDotDot);
+                xlRowRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
+                xlRowRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(row.RowStyle.InsideBorder.BorderColor));
             }
+
+
         }
     }
 

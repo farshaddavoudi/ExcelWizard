@@ -44,7 +44,7 @@ public class Sheet
     public List<string> MergedCells { get; set; } = new();
 
     /// <summary>
-    /// Will override the ExcelFileModel SheetsDefaultIsLocked value
+    /// Will override the CompoundExcelBuilder AreSheetsLockedByDefault value. Default will inherit
     /// </summary>
     public bool? IsSheetLocked { get; set; }
 

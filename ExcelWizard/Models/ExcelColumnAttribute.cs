@@ -32,7 +32,7 @@ public class ExcelColumnAttribute : Attribute
     /// <summary>
     ///  Excel Data Type. Default is Text type
     /// </summary>
-    public CellType ExcelDataType { get; set; } = CellType.Text;
+    public CellContentType ExcelDataContentType { get; set; } = CellContentType.Text;
 
     /// <summary>
     /// Column Width. If 0 it means Width automatically set to AdjustToContents

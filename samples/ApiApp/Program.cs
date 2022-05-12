@@ -1,3 +1,4 @@
+using ApiApp.Service;
 using ExcelWizard;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddExcelWizardServices();
+
+builder.Services.AddScoped<ISimorghExcelBuilderService, SimorghExcelBuilderService>();
 
 var app = builder.Build();
 

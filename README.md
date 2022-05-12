@@ -206,7 +206,7 @@ You saw a simple example in <i>how much is it simple section</i>. Below we are j
 }
 ```
 
-### Customize Excel using *`[ExcelSheet]`* and *`[ExcelColumn]`* Attributes
+### Customize Excel using **`[ExcelSheet]`** and **`[ExcelColumn]`** Attributes
 For example, ignore a column (property) to be shown in exported Excel, having some aligns for header or cells, text font/size/color, different background color for header or cells or a specific column!,
 custom header name for a column, custom header height or column width or Sheet direction (RTL/LTR), etc..? All these options plus a lot more can be configured by two
 attributes you can use on your model. `[ExcelSheet]` for Excel generic properties and `[ExcelColumn]` for per property (column) customization.

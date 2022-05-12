@@ -1,4 +1,6 @@
-﻿using ExcelWizard.Models;
+﻿using ApiApp.Service;
+using ApiApp.SimorghReportModels;
+using ExcelWizard.Models;
 using ExcelWizard.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
@@ -10,18 +12,21 @@ namespace ApiApp.Controllers;
 public class ExcelController : ControllerBase
 {
     private readonly IExcelWizardService _excelWizardService;
+    private readonly ISimorghExcelBuilderService _simorghExcelBuilderService;
 
-    public ExcelController(IExcelWizardService excelWizardService)
+    public ExcelController(IExcelWizardService excelWizardService, ISimorghExcelBuilderService simorghExcelBuilderService)
     {
         _excelWizardService = excelWizardService;
+        _simorghExcelBuilderService = simorghExcelBuilderService;
     }
 
-    [HttpGet("export-excel-from-easy-excel-model")]
+
+    [HttpGet("export-simple-compound-excel")]
     public IActionResult ExportExcelFromExcelWizardModel()
     {
         var excelWizardModel = new CompoundExcelBuilder
         {
-            // FileName = "From-Model",
+            // GeneratedFileName = "From-Model",
 
             Sheets = new List<Sheet>
             {
@@ -37,63 +42,71 @@ public class ExcelController : ControllerBase
                                     {
                                         Cells = new List<Cell>
                                         {
-                                            new(new CellLocation(3,5))
+                                            new(3,5)
                                             {
                                                 Value = "احمد",
-                                                CellType= CellType.Text,
-                                                CellTextAlign = TextAlign.Center
+                                                CellContentType = CellContentType.Text,
+                                                CellStyle = new CellStyle
+                                                {
+                                                    CellTextAlign = TextAlign.Center
+                                                }
                                             }
                                         },
                                         MergedCellsList = new(){"C5:D5"},
-                                        //StartLocation = new Location(3,5),
-                                        //EndLocation = new Location(4,5),
-                                        Font = new TextFont{FontColor = Color.DarkGreen},
-                                        BackgroundColor = Color.Aqua,
-                                        OutsideBorder = new Border
+                                        RowStyle = new RowStyle
                                         {
-                                            BorderLineStyle = LineStyle.DashDotDot,
-                                            BorderColor = Color.Brown
+                                            Font = new TextFont{FontColor = Color.DarkGreen},
+                                            BackgroundColor = Color.Aqua,
+                                            OutsideBorder = new Border
+                                            {
+                                                BorderLineStyle = LineStyle.DashDotDot,
+                                                BorderColor = Color.Brown
+                                            }
                                         }
                                     },
                                     new()
                                     {
                                         Cells = new List<Cell>
                                         {
-                                            new(new CellLocation(3,6))
+                                            new(3,6)
                                             {
                                                 Value = "کامبیز دیرباز",
-                                                CellType = CellType.Text,
-                                                CellTextAlign = TextAlign.Center
+                                                CellContentType = CellContentType.Text,
+                                                CellStyle = new CellStyle
+                                                {
+                                                    CellTextAlign = TextAlign.Center
+                                                }
                                             }
                                         },
                                         MergedCellsList = new(){"C6:D6"},
-                                        //StartLocation = new Location(3,6),
-                                        //EndLocation = new Location(4,6),
-                                        Font = new TextFont{FontColor = Color.DarkGreen},
-                                        BackgroundColor = Color.Aqua,
-                                        OutsideBorder = new Border
+                                        RowStyle = new RowStyle
                                         {
-                                            BorderLineStyle = LineStyle.DashDotDot,
-                                            BorderColor = Color.Red
+                                            Font = new TextFont{FontColor = Color.DarkGreen},
+                                            BackgroundColor = Color.Aqua,
+                                            OutsideBorder = new Border
+                                            {
+                                                BorderLineStyle = LineStyle.DashDotDot,
+                                                BorderColor = Color.Red
+                                            }
                                         }
                                     },
                                     new()
                                     {
                                         Cells = new List<Cell>
                                         {
-                                            new(new CellLocation(3,7))
+                                            new(3,7)
                                             {
                                                 Value = "اصغر فرهادی",
-                                                CellType = CellType.Text,
-                                                CellTextAlign = TextAlign.Center
+                                                CellContentType = CellContentType.Text
                                             }
                                         },
                                         MergedCellsList = new(){"C7:D7"},
-                                        //StartLocation = new Location(3,7),
-                                        //EndLocation = new Location(4,7),
-                                        Font = new TextFont{FontColor = Color.DarkGreen},
-                                        BackgroundColor = Color.Aqua,
-                                        OutsideBorder = new Border()
+                                        RowStyle = new RowStyle
+                                        {
+                                            Font = new TextFont{FontColor = Color.DarkGreen},
+                                            BackgroundColor = Color.Aqua,
+                                            OutsideBorder = new Border()
+                                        }
                                     }
                                 },
                                 //StartLocation = new Location(3,5), //TODO: Can't be inferred from First Row StartLocation???
@@ -119,40 +132,50 @@ public class ExcelController : ControllerBase
                         {
                             Cells = new List<Cell>
                             {
-                                new(new CellLocation(3,2)) {
+                                new(3,2) {
                                     Value = "فرشاد",
-                                    CellType = CellType.Text,
-                                    CellTextAlign = TextAlign.Right
+                                    CellContentType = CellContentType.Text,
+                                    CellStyle = new CellStyle
+                                    {
+                                        CellTextAlign = TextAlign.Right
+                                    }
                                 }
                             },
                             MergedCellsList = new(){"C2:D2"},
-                            //StartLocation = new Location(2,2),
-                            //EndLocation = new Location(4,2),
-                            Font = new TextFont{FontColor = Color.DarkGreen},
-                            BackgroundColor = Color.AliceBlue,
-                            OutsideBorder = new Border()
+                            RowStyle = new RowStyle
+                            {
+                                Font = new TextFont{FontColor = Color.DarkGreen},
+                                BackgroundColor = Color.AliceBlue,
+                                OutsideBorder = new Border()
+                            }
                         }
                     },
 
                     SheetCells = new List<Cell>
                     {
-                        new(new CellLocation("A",1)){
+                        new("A",1){
                             Value = 11,
-                            CellType = CellType.Percentage,
-                            CellTextAlign = TextAlign.Left
+                            CellContentType = CellContentType.Percentage,
+                            CellStyle = new CellStyle
+                            {
+                                CellTextAlign = TextAlign.Left
+                            }
                         },
-                        new(new CellLocation(2, 1))
+                        new(2, 1)
                         {
                             Value = 112343,
-                            CellType = CellType.Currency
+                            CellContentType = CellContentType.Currency
                         },
-                        new(new CellLocation("D", 1)) { Value = 112 },
-                        new(new CellLocation(1, 2))
+                        new("D", 1) { Value = 112 },
+                        new(1, 2)
                         {
                             Value = 211,
-                            CellTextAlign = TextAlign.Center
+                            CellStyle = new CellStyle
+                            {
+                                CellTextAlign = TextAlign.Center
+                            }
                         },
-                        new(new CellLocation(2, 2)) { Value = 212 }
+                        new(2, 2) { Value = 212 }
                     }
                 }
             }
@@ -160,7 +183,6 @@ public class ExcelController : ControllerBase
 
         return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
     }
-
 
     [HttpGet("export-grid-excel")]
     public IActionResult ExportGridExcel()
@@ -184,5 +206,108 @@ public class ExcelController : ControllerBase
         string fullPathAsString = _excelWizardService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
 
         return Ok(generatedExcelFile);
+    }
+
+    [HttpGet("export-simorgh-report-compound-excel")]
+    public IActionResult ExportExcelFromSimorghCompoundReport()
+    {
+        var voucherStatementPageResult = new VoucherStatementResult
+        {
+            ReportName = "Excel Wizard Compound Report",
+
+            SummaryAccounts = new List<SummaryAccount>
+                {
+                    new SummaryAccount
+                    {
+                        AccountName = "کارخانه دان-51011" ,
+                        Multiplex =new List<Multiplex>
+                        {
+                            new() { After = 5000000, Before = 4000 }
+                        }
+                    },
+
+                    new SummaryAccount
+                    {
+                        AccountName = "پرورش پولت-51018" ,
+                        Multiplex =new List<Multiplex>
+                        {
+                            new() { After = 5000000, Before = 4000 }
+                        }
+                    },
+
+                    new SummaryAccount
+                    {
+                        AccountName = "تخم گزار تجاری-51035" ,
+                        Multiplex =new List<Multiplex>
+                        {
+                            new Multiplex{After = 5000000,Before = 4000 }
+                        }
+                    }
+                },
+
+            Accounts = new List<AccountDto>
+                {
+                   new AccountDto
+                   {
+                        Name="حقوق پایه",
+                        Code="81010"
+                   },
+
+                   new AccountDto
+                   {
+                        Name="اضافه کار",
+                        Code="81011"
+                   }
+                },
+
+            VoucherStatementItem = new List<VoucherStatementItem>
+                {
+                    new VoucherStatementItem
+                    {
+                        AccountCode = "13351",
+                        Credit = 50000,
+                        Debit = 0
+                    },
+
+                    new VoucherStatementItem
+                    {
+                        AccountCode = "21253",
+                        Credit = 0,
+                        Debit = 50000
+                    },
+
+                    new VoucherStatementItem
+                    {
+                        AccountCode = "13556",
+                        Credit = 1000000,
+                        Debit = 0
+                    },
+
+                    new VoucherStatementItem
+                    {
+                        AccountCode = "13500",
+                        Credit = 1000000,
+                        Debit = 0
+                    },
+
+                    new VoucherStatementItem
+                    {
+                        AccountCode = "13499",
+                        Credit = 2000000,
+                        Debit = 0
+                    },
+
+                    new VoucherStatementItem
+                    {
+                        AccountCode = "22500",
+                        Credit = 0,
+                        Debit = 4000000
+                    }
+                }
+        };
+
+        var excel = _simorghExcelBuilderService.GenerateVoucherStatementExcelReport(voucherStatementPageResult, @"C:\GeneratedExcelSamples");
+
+        return Ok(excel);
     }
 }

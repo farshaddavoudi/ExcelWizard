@@ -15,7 +15,7 @@ public class CompoundExcelBuilder
     public AllSheetsDefaultStyle AllSheetsDefaultStyle { get; set; } = new();
 
     /// <summary>
-    /// Set the default IsLocked value for all Sheets
+    /// Set the default IsLocked value for all Sheets. Default is false
     /// </summary>
     public bool AreSheetsLockedByDefault { get; set; } = false;
 

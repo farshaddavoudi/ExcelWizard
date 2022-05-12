@@ -1,6 +1,6 @@
 ﻿namespace ExcelWizard.Models;
 
-public enum CellType
+public enum CellContentType
 {
     General,
     Number,

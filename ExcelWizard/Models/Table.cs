@@ -9,14 +9,15 @@ public class Table : IValidatableObject
 {
     public List<Row> TableRows { get; set; } = new();
 
-    public CellLocation? StartCellLocation => TableRows.FirstOrDefault()?.StartCellLocation; //TODO: Discuss with Shahab. The Rows has StartLocation itself, which one should be considered?
-    //TODO: StartLocation and EndLocation for Table model are critical and should exist and be exact to create desired result
+    public CellLocation? StartCellLocation => TableRows.FirstOrDefault()?.GetRowStartCellLocation(); //TODO: Discuss with Shahab. The Rows has StartLocation itself, which one should be considered?
+    // TODO: StartLocation and EndLocation for Table model are critical and should exist and be exact to create desired result
+    // TODO: Remove StartLoc and EndLoc. It should calculated by Cells Loc
 
     public CellLocation EndLocation
     {
         get
         {
-            return TableRows.LastOrDefault().EndCellLocation;
+            return TableRows.LastOrDefault().GetRowEndCellLocation();
         }
 
     } //TODO: above question
@@ -35,8 +36,8 @@ public class Table : IValidatableObject
     {
         get
         {
-            var y = TableRows.LastOrDefault().EndCellLocation.Y - (TableRows.LastOrDefault().EndCellLocation.Y - TableRows.LastOrDefault().StartCellLocation.Y);
-            return new CellLocation(TableRows.LastOrDefault().EndCellLocation.X + 1, y);
+            var y = TableRows.LastOrDefault().GetRowEndCellLocation().RowNumber - (TableRows.LastOrDefault().GetRowEndCellLocation().RowNumber - TableRows.LastOrDefault().GetRowStartCellLocation().RowNumber);
+            return new CellLocation(TableRows.LastOrDefault().GetRowEndCellLocation().ColumnNumber + 1, y);
         }
     }
 
@@ -44,22 +45,22 @@ public class Table : IValidatableObject
     {
         get
         {
-            var x = TableRows.LastOrDefault().EndCellLocation.X - (TableRows.LastOrDefault().EndCellLocation.X - TableRows.LastOrDefault().StartCellLocation.X);
-            return new CellLocation(x, TableRows.LastOrDefault().EndCellLocation.Y + 1);
+            var x = TableRows.LastOrDefault().GetRowEndCellLocation().ColumnNumber - (TableRows.LastOrDefault().GetRowEndCellLocation().ColumnNumber - TableRows.LastOrDefault().GetRowStartCellLocation().ColumnNumber);
+            return new CellLocation(x, TableRows.LastOrDefault().GetRowEndCellLocation().RowNumber + 1);
         }
     }
 
     public Cell GetCell(CellLocation cellLocation)
     {
-        return TableRows[cellLocation.X - 1].Cells[cellLocation.Y - 1];
+        return TableRows[cellLocation.ColumnNumber - 1].Cells[cellLocation.RowNumber - 1];
     }
 
     public List<Cell> GetCells(CellLocation startCellLocation, CellLocation endCellLocation)
     {
         List<Cell> cells = new();
-        for (int i = startCellLocation.Y; i < endCellLocation.Y; i++)
+        for (int i = startCellLocation.RowNumber; i < endCellLocation.RowNumber; i++)
         {
-            cells.Add(GetCell(new CellLocation(startCellLocation.X, i)));
+            cells.Add(GetCell(new CellLocation(startCellLocation.ColumnNumber, i)));
         }
 
         return cells;
