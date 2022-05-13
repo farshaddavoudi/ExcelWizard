@@ -4,11 +4,11 @@ namespace ExcelWizard.Models;
 
 public class CellLocation
 {
-    /// <param name="x"> Cell Column Letter </param>
+    /// <param name="columnLetter"> Cell Column Letter </param>
     /// <param name="rowNumber"> Cell Row Number </param>
-    public CellLocation(string x, int rowNumber)
+    public CellLocation(string columnLetter, int rowNumber)
     {
-        ColumnNumber = GetCellColumnNumberByCellColumnLetter(x);
+        ColumnNumber = GetCellColumnNumberByCellColumnLetter(columnLetter);
         RowNumber = rowNumber;
     }
 

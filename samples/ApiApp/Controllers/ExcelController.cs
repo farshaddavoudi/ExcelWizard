@@ -52,7 +52,14 @@ public class ExcelController : ControllerBase
                                                 }
                                             }
                                         },
-                                        MergedCellsList = new(){"C5:D5"},
+                                        MergedCellsList = new()
+                                        {
+                                            new MergeCells
+                                            {
+                                                FirstCellLocation = new CellLocation("C", 5),
+                                                LastCellLocation = new CellLocation("D", 5)
+                                            }
+                                        },
                                         RowStyle = new RowStyle
                                         {
                                             Font = new TextFont{FontColor = Color.DarkGreen},
@@ -78,7 +85,14 @@ public class ExcelController : ControllerBase
                                                 }
                                             }
                                         },
-                                        MergedCellsList = new(){"C6:D6"},
+                                        MergedCellsList = new()
+                                        {
+                                            new MergeCells
+                                            {
+                                                FirstCellLocation = new CellLocation("C", 6),
+                                                LastCellLocation = new CellLocation("D", 6)
+                                            }
+                                        },
                                         RowStyle = new RowStyle
                                         {
                                             Font = new TextFont{FontColor = Color.DarkGreen},
@@ -100,7 +114,14 @@ public class ExcelController : ControllerBase
                                                 CellContentType = CellContentType.Text
                                             }
                                         },
-                                        MergedCellsList = new(){"C7:D7"},
+                                        MergedCellsList = new()
+                                        {
+                                            new MergeCells
+                                            {
+                                                FirstCellLocation = new CellLocation("C", 7),
+                                                LastCellLocation = new CellLocation("D", 7)
+                                            }
+                                        },
                                         RowStyle = new RowStyle
                                         {
                                             Font = new TextFont{FontColor = Color.DarkGreen},
@@ -141,7 +162,14 @@ public class ExcelController : ControllerBase
                                     }
                                 }
                             },
-                            MergedCellsList = new(){"C2:D2"},
+                            MergedCellsList = new()
+                            {
+                                new MergeCells
+                                {
+                                    FirstCellLocation = new CellLocation("C", 2),
+                                    LastCellLocation = new CellLocation("D", 2)
+                                }
+                            },
                             RowStyle = new RowStyle
                             {
                                 Font = new TextFont{FontColor = Color.DarkGreen},

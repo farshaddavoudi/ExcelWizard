@@ -699,8 +699,13 @@ internal class ExcelWizardService : IExcelWizardService
         // Configure merged cells in the row
         foreach (var cellsToMerge in row.MergedCellsList)
         {
-            // CellsToMerge example is "B2:D2"
-            xlSheet.Range(cellsToMerge).Row(1).Merge();
+            var firstCellRow = cellsToMerge.FirstCellLocation!.RowNumber;
+            var firstCellColumn = cellsToMerge.FirstCellLocation.ColumnNumber;
+
+            var lastCellRow = cellsToMerge.LastCellLocation!.RowNumber;
+            var lastCellColumn = cellsToMerge.LastCellLocation!.ColumnNumber;
+
+            xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
         }
 
         if (row.Cells.Count != 0)
