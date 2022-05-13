@@ -7,69 +7,108 @@ namespace ExcelWizard.Models;
 
 public class Table : IValidatableObject
 {
+    // Props
+
+    /// <summary>
+    /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
+    /// </summary>
     public List<Row> TableRows { get; set; } = new();
 
-    public CellLocation? StartCellLocation => TableRows.FirstOrDefault()?.GetRowStartCellLocation(); //TODO: Discuss with Shahab. The Rows has StartLocation itself, which one should be considered?
-    // TODO: StartLocation and EndLocation for Table model are critical and should exist and be exact to create desired result
-    // TODO: Remove StartLoc and EndLoc. It should calculated by Cells Loc
+    /// <summary>
+    /// Set Table Styles e.g. OutsideBorder, etc
+    /// </summary>
+    public TableStyle TableStyle { get; set; } = new();
 
-    public CellLocation EndLocation
+    /// <summary>
+    /// Arbitrary property to define of Merged Cells in the current Table. The property is collection, in case
+    /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
+    /// should place into the Locations of the current Table, otherwise an error will throw.
+    /// </summary>
+    public List<MergeStartEndLocation> MergedCellsList { get; set; } = new();
+
+    // Methods
+
+    /// <summary>
+    /// Get table Starting Cell Automatically
+    /// </summary>
+    /// <returns></returns>
+    public CellLocation GetTableFirstCellLocation()
     {
-        get
-        {
-            return TableRows.LastOrDefault().GetRowEndCellLocation();
-        }
+        var tableRowNumbers = TableRows.Select(r => r.GetRowNumber()).ToList();
 
-    } //TODO: above question
+        var startCellRowNumber = tableRowNumbers.Min();
 
-    public Border InlineBorder { get; set; } = new();//TODO: What it is? Inside border can be set on cells or columns or rows
-
-    public Border OutsideBorder { get; set; } = new();
-
-    public bool IsBordered { get; set; } //TODO? What is this? isn't it the default one?
-
-    public List<string> MergedCells { get; set; } = new();
-
-    public int RowsCount => TableRows.Count;
-
-    public CellLocation NextHorizontalCellLocation
-    {
-        get
-        {
-            var y = TableRows.LastOrDefault().GetRowEndCellLocation().RowNumber - (TableRows.LastOrDefault().GetRowEndCellLocation().RowNumber - TableRows.LastOrDefault().GetRowStartCellLocation().RowNumber);
-            return new CellLocation(TableRows.LastOrDefault().GetRowEndCellLocation().ColumnNumber + 1, y);
-        }
+        return TableRows.First(r => r.GetRowNumber() == startCellRowNumber).GetRowFirstCellLocation();
     }
 
-    public CellLocation NextVerticalCellLocation
+    /// <summary>
+    /// Get table Ending Cell Automatically
+    /// </summary>
+    /// <returns></returns>
+    public CellLocation GetTableLastCellLocation()
     {
-        get
-        {
-            var x = TableRows.LastOrDefault().GetRowEndCellLocation().ColumnNumber - (TableRows.LastOrDefault().GetRowEndCellLocation().ColumnNumber - TableRows.LastOrDefault().GetRowStartCellLocation().ColumnNumber);
-            return new CellLocation(x, TableRows.LastOrDefault().GetRowEndCellLocation().RowNumber + 1);
-        }
+        var tableRowNumbers = TableRows.Select(r => r.GetRowNumber()).ToList();
+
+        var endCellRowNumber = tableRowNumbers.Max();
+
+        return TableRows.First(r => r.GetRowNumber() == endCellRowNumber).GetRowLastCellLocation();
     }
 
-    public Cell GetCell(CellLocation cellLocation)
+    public int GetNextHorizontalColumnNumberAfterTable()
     {
-        return TableRows[cellLocation.ColumnNumber - 1].Cells[cellLocation.RowNumber - 1];
+        var lastTableCell = GetTableLastCellLocation();
+
+        return lastTableCell.ColumnNumber + 1;
+    }
+    
+    public int GetNextVerticalRowNumberAfterTable()
+    {
+        var lastTableCell = GetTableLastCellLocation();
+
+        return lastTableCell.RowNumber + 1;
     }
 
-    public List<Cell> GetCells(CellLocation startCellLocation, CellLocation endCellLocation)
+    /// <summary>
+    ///  Get the Table Cell by its location. The Location should be inside Table territory
+    /// </summary>
+    public Cell? GetTableCell(CellLocation cellLocation)
     {
-        List<Cell> cells = new();
-        for (int i = startCellLocation.RowNumber; i < endCellLocation.RowNumber; i++)
-        {
-            cells.Add(GetCell(new CellLocation(startCellLocation.ColumnNumber, i)));
-        }
+        var cellRow = TableRows.FirstOrDefault(r => r.GetRowNumber() == cellLocation.RowNumber);
 
-        return cells;
+        return cellRow?.GetRowCellByColumnNumber(cellLocation.ColumnNumber);
     }
+
+    // Validations
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (false)
-            yield return new ValidationResult("");
-        // TODO: Discuess with Shahab. Shouldn't Rows in a Table have common features like Same StartLocation.X and things like
+        // Table definition cannot have no Rows
+        if (TableRows.Count == 0)
+            yield return new ValidationResult("Table instance should contain one or more Row(s)");
+
+        // Check Merged Cells
+        foreach (var cellsToMerge in MergedCellsList)
+        {
+            if (cellsToMerge.FirstCellLocation is null || cellsToMerge.LastCellLocation is null)
+                yield return new ValidationResult("Something is not right about MergedCells format. FirstCellLocation and LastCellLocations cannot be null");
+
+            if (cellsToMerge.FirstCellLocation!.RowNumber < GetTableFirstCellLocation().RowNumber)
+                yield return new ValidationResult("Something is not right about MergedCells format. The RowNumber of FirstCellLocation cannot be little than TableFirstCellLocation");
+
+            if (cellsToMerge.FirstCellLocation!.ColumnNumber < GetTableFirstCellLocation().ColumnNumber)
+                yield return new ValidationResult("Something is not right about MergedCells format. The ColumnNumber of FirstCellLocation cannot be little than TableFirstCellLocation");
+
+            if (cellsToMerge.LastCellLocation!.RowNumber > GetTableLastCellLocation().RowNumber)
+                yield return new ValidationResult("Something is not right about MergedCells format. The RowNumber of LastCellLocation cannot be greater than TableLastCellLocation");
+            
+            if (cellsToMerge.LastCellLocation!.ColumnNumber > GetTableLastCellLocation().ColumnNumber)
+                yield return new ValidationResult("Something is not right about MergedCells format. The ColumnNumber of LastCellLocation cannot be greater than TableLastCellLocation");
+        }
+
+        // Not repetitive Locations
+        var isAllRowsUnique = TableRows.Select(r => r.GetRowNumber()).Distinct().Count() == TableRows.Count;
+
+        if (isAllRowsUnique is false)
+            yield return new ValidationResult("There are some repetitive rows in the Table. Make all rows unique");
     }
 }

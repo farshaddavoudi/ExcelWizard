@@ -313,33 +313,31 @@ internal class ExcelWizardService : IExcelWizardService
                     ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
                 }
 
-                var tableRange = xlSheet.Range(table.StartCellLocation.RowNumber,
-                    table.StartCellLocation.ColumnNumber,
-                    table.EndLocation.RowNumber,
-                    table.EndLocation.ColumnNumber);
+                var tableFirstCellLocation = table.GetTableFirstCellLocation();
+
+                var tableLastCellLocation = table.GetTableLastCellLocation();
+
+                var tableRange = xlSheet.Range(tableFirstCellLocation.RowNumber,
+                    tableFirstCellLocation.ColumnNumber,
+                    tableLastCellLocation.RowNumber,
+                    tableLastCellLocation.ColumnNumber);
 
                 // Config Outside-Border
-                XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(table.OutsideBorder.BorderLineStyle);
+                XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(table.TableStyle.OutsideBorder.BorderLineStyle);
 
                 if (outsideBorder is not null)
                 {
                     tableRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
-                    tableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.OutsideBorder.BorderColor));
-                }
-
-                // Config Inside-Border
-                XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(table.InlineBorder.BorderLineStyle);
-
-                if (insideBorder is not null)
-                {
-                    tableRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
-                    tableRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(table.InlineBorder.BorderColor));
+                    tableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.OutsideBorder.BorderColor));
                 }
 
                 // Apply table merges here
-                foreach (var mergedCells in table.MergedCells)
+                foreach (var mergedCells in table.MergedCellsList)
                 {
-                    xlSheet.Range(mergedCells).Merge();
+                    xlSheet.Range(mergedCells.FirstCellLocation!.RowNumber,
+                        mergedCells.FirstCellLocation.ColumnNumber,
+                        mergedCells.LastCellLocation!.RowNumber,
+                        mergedCells.LastCellLocation.ColumnNumber).Merge();
                 }
             }
 
@@ -493,7 +491,7 @@ internal class ExcelWizardService : IExcelWizardService
                                 ? defaultFontWeight != FontWeight.Normal
                                 : excelWizardColumnAttribute.FontWeight == FontWeight.Bold;
 
-                            headerRow.Cells.Add(new Cell(xLocation, yLocation)
+                            headerRow.RowCells.Add(new Cell(xLocation, yLocation)
                             {
                                 Value = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
                                 CellStyle = new CellStyle
@@ -525,7 +523,7 @@ internal class ExcelWizardService : IExcelWizardService
                         }
 
                         // Data
-                        recordRow.Cells.Add(new Cell(xLocation, yLocation + 1)
+                        recordRow.RowCells.Add(new Cell(xLocation, yLocation + 1)
                         {
                             Value = prop.GetValue(record),
                             CellContentType = excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text,
@@ -565,8 +563,10 @@ internal class ExcelWizardService : IExcelWizardService
                         new()
                         {
                             TableRows = dataRows,
-                            InlineBorder = new Border { BorderLineStyle = borderType },
-                            OutsideBorder = new Border { BorderLineStyle = borderType }
+                            TableStyle= new TableStyle
+                            {
+                                OutsideBorder = new Border { BorderLineStyle = borderType }
+                            }
                         }
                     },
 
@@ -688,7 +688,7 @@ internal class ExcelWizardService : IExcelWizardService
 
     private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
     {
-        foreach (var rowCell in row.Cells)
+        foreach (var rowCell in row.RowCells)
         {
             if (rowCell.IsCellVisible is false)
                 continue;
@@ -708,16 +708,16 @@ internal class ExcelWizardService : IExcelWizardService
             xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
         }
 
-        if (row.Cells.Count != 0)
+        if (row.RowCells.Count != 0)
         {
-            var xlRow = xlSheet.Row(row.Cells.First().CellLocation.RowNumber);
+            var xlRow = xlSheet.Row(row.RowCells.First().CellLocation.RowNumber);
             if (row.RowStyle.RowHeight is not null)
                 xlRow.Height = (double)row.RowStyle.RowHeight;
 
-            var xlRowRange = xlSheet.Range(row.GetRowStartCellLocation().RowNumber,
-                row.GetRowStartCellLocation().ColumnNumber,
-                row.GetRowEndCellLocation().RowNumber,
-                row.GetRowEndCellLocation().ColumnNumber);
+            var xlRowRange = xlSheet.Range(row.GetRowFirstCellLocation().RowNumber,
+                row.GetRowFirstCellLocation().ColumnNumber,
+                row.GetRowLastCellLocation().RowNumber,
+                row.GetRowLastCellLocation().ColumnNumber);
 
             if (row.RowStyle.Font.FontColor is not null)
                 xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.RowStyle.Font.FontColor.Value));

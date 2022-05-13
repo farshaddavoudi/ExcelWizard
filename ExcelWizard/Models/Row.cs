@@ -11,7 +11,7 @@ public class Row : IValidatableObject
     /// <summary>
     /// Each Row contains one or more Cell(s). It is required as Row definition cannot be without Cells.
     /// </summary>
-    public List<Cell> Cells { get; set; } = new();
+    public List<Cell> RowCells { get; set; } = new();
 
     /// <summary>
     /// Set Row Styles including Bg, Font, Height, Borders and etc
@@ -19,11 +19,11 @@ public class Row : IValidatableObject
     public RowStyle RowStyle { get; set; } = new();
 
     /// <summary>
-    /// Arbitrary property to define Merged Cells in the current Row. The property is collection, in case
+    /// Arbitrary property to define Location of Merged Cells in the current Row. The property is collection, in case
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public List<MergeCells> MergedCellsList { get; set; } = new();
+    public List<MergeStartEndLocation> MergedCellsList { get; set; } = new();
 
     // TODO: R&D about it
     public string? Formulas { get; set; }
@@ -31,14 +31,23 @@ public class Row : IValidatableObject
     // Methods
 
     /// <summary>
+    /// Get Current Row Y Location (RowNumber)
+    /// </summary>
+    /// <returns></returns>
+    public int GetRowNumber()
+    {
+        return RowCells.First().CellLocation.RowNumber;
+    }
+
+    /// <summary>
     /// Get current Row Starting Cell Automatically by its Cells Location
     /// </summary>
     /// <returns></returns>
-    public CellLocation GetRowStartCellLocation()
+    public CellLocation GetRowFirstCellLocation()
     {
-        var rowColumns = Cells.Select(c => c.CellLocation.ColumnNumber).ToList();
+        var rowColumns = RowCells.Select(c => c.CellLocation.ColumnNumber).ToList();
 
-        var rowNumber = Cells.First().CellLocation.RowNumber; //All Cells in a Row have equal RowNumber
+        var rowNumber = RowCells.First().CellLocation.RowNumber; //All Cells in a Row have equal RowNumber
 
         return new CellLocation(rowColumns.Min(), rowNumber);
     }
@@ -47,40 +56,40 @@ public class Row : IValidatableObject
     /// Get current Row Ending Cell Automatically by its Cells Location
     /// </summary>
     /// <returns></returns>
-    public CellLocation GetRowEndCellLocation()
+    public CellLocation GetRowLastCellLocation()
     {
-        var rowColumns = Cells.Select(c => c.CellLocation.ColumnNumber).ToList();
+        var rowColumns = RowCells.Select(c => c.CellLocation.ColumnNumber).ToList();
 
-        var rowNumber = Cells.First().CellLocation.RowNumber; //All Cells in a Row have equal RowNumber
+        var rowNumber = RowCells.First().CellLocation.RowNumber; //All Cells in a Row have equal RowNumber
 
         return new CellLocation(rowColumns.Max(), rowNumber);
     }
 
     public CellLocation GetNextHorizontalCellLocationAfterRow()
     {
-        var rowEndLocation = GetRowEndCellLocation();
+        var rowEndLocation = GetRowLastCellLocation();
 
         return new CellLocation(rowEndLocation.ColumnNumber + 1, rowEndLocation.RowNumber);
     }
 
     public Cell? GetRowCellByColumnNumber(int columnNumber)
     {
-        return Cells.FirstOrDefault(c => c.CellLocation.ColumnNumber == columnNumber);
+        return RowCells.FirstOrDefault(c => c.CellLocation.ColumnNumber == columnNumber);
     }
 
     // Validations
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         // Row definition cannot have no Cells
-        if (Cells.Count == 0)
+        if (RowCells.Count == 0)
             yield return new ValidationResult("Row instance should contain one or more Cell(s)");
 
         // Check Y of StartLocation and EndLocation should be the equal and same with other Cells location Y property (Check with Shahab)
-        if (Cells.Select(c => c.CellLocation.RowNumber).Distinct().ToList().Count != 1)
+        if (RowCells.Select(c => c.CellLocation.RowNumber).Distinct().ToList().Count != 1)
             yield return new ValidationResult("Invalid Row. All Row Cells should have equal RowNumber!");
 
         // Check MergedCells format
-        var currentRowNumber = Cells.First().CellLocation.RowNumber;
+        var currentRowNumber = RowCells.First().CellLocation.RowNumber;
 
         foreach (var cellsToMerge in MergedCellsList)
         {
@@ -93,5 +102,11 @@ public class Row : IValidatableObject
             if (cellsToMerge.LastCellLocation!.RowNumber != currentRowNumber)
                 yield return new ValidationResult("Something is not right about MergedCells format. The RowNumber of LastCellLocation should be equal with the Row RowNumber!");
         }
+
+        // Check all Cells be Unique (not repetitive)
+        var isAllCellsUnique = RowCells.Select(c => c.CellLocation.ColumnNumber).Distinct().Count() == RowCells.Count;
+
+        if (isAllCellsUnique is false)
+            yield return new ValidationResult("There are some repetitive cells in the Row. All cells should be unique in a Row");
     }
 }
