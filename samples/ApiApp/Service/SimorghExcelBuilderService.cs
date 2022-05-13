@@ -47,10 +47,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // 3- First table with some dynamic data which the data is currency type
         // 4- Again having a Row which is the second table Header.
         // 5- Second table again with dynamic data.
-        // 6- A Table which actually is the bottom data header. It is merged, so cannot be declared as a Row.
+        // 6- A Table which actually is the bottom data header (with blue bg). It is merged, so cannot be declared as a Row.
         // 7- Bottom table with think inside border having حقوق پایه و اضافه کار Data in it
         // 8- Last Table for Bottom data which again is merged
-
 
         // Table: Excel Header 
         var tableHeader = new Table
@@ -99,7 +98,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         };
 
         // First table with header of (کد حساب - بدهکار - بستانکار)
-        var firstTable = new Table
+        var table1St = new Table
         {
             TableRows = voucherStatement.VoucherStatementItem.Select((item, index) => new Row
             {
@@ -119,13 +118,13 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         };
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - Second table Header
-        var secondTableHeaderRow = new Row
+        var rowSecondTableHeader = new Row
         {
             RowCells = new List<Cell>
             {
-                new("A", firstTable.GetNextVerticalRowNumberAfterTable()) {Value = "کد حساب"},
-                new("B", firstTable.GetNextVerticalRowNumberAfterTable()) {Value = "بدهکار"},
-                new("C", firstTable.GetNextVerticalRowNumberAfterTable()) {Value = "بستانکار"}
+                new("A", table1St.GetNextVerticalRowNumberAfterTable()) {Value = "کد حساب"},
+                new("B", table1St.GetNextVerticalRowNumberAfterTable()) {Value = "بدهکار"},
+                new("C", table1St.GetNextVerticalRowNumberAfterTable()) {Value = "بستانکار"}
             },
 
             RowStyle = new RowStyle
@@ -135,15 +134,15 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         };
 
         // Second table with header of (کد حساب - بدهکار - بستانکار)
-        var secondTable = new Table
+        var table2Nd = new Table
         {
             TableRows = voucherStatement.VoucherStatementItem.Select((item, index) => new Row
             {
                 RowCells = new List<Cell>
                 {
-                    new("A", index + secondTableHeaderRow.GetNextRowNumberAfterRow()) { Value = item.AccountCode },
-                    new("B", index + secondTableHeaderRow.GetNextRowNumberAfterRow()) { Value = item.Debit, CellContentType = CellContentType.Currency },
-                    new("C", index + secondTableHeaderRow.GetNextRowNumberAfterRow()) { Value = item.Credit, CellContentType = CellContentType.Currency }
+                    new("A", index + rowSecondTableHeader.GetNextRowNumberAfterRow()) { Value = item.AccountCode },
+                    new("B", index + rowSecondTableHeader.GetNextRowNumberAfterRow()) { Value = item.Debit, CellContentType = CellContentType.Currency },
+                    new("C", index + rowSecondTableHeader.GetNextRowNumberAfterRow()) { Value = item.Credit, CellContentType = CellContentType.Currency }
                 }
             }).ToList(),
 
@@ -151,6 +150,55 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             {
                 OutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
                 CellsSeparatorBorder = new Border { BorderLineStyle = LineStyle.Thick }
+            }
+        };
+
+        // Bottom section Data Header (Blue Bg)
+        // The Merges here is very tricky!
+        // At first, there are Two Vertical Merges (A17:A18) and (B17:B18). 
+        // Then there is one Horizontal Merge (C17:E17) for کارخانه دان
+        // The same pattern repeats for پرورش پولت and تخم گزاری جوجه
+        // And a Vertical Merge for showing sum (K17:K18) 
+        // And a Vertical Merge for Average (L17:L18)
+        var tableBottomBlueHeader = new Table
+        {
+            TableRows = new List<Row>
+            {
+                new()
+                {
+                    RowCells = new List<Cell>
+                    {
+                        new("A", table2Nd.GetNextVerticalRowNumberAfterTable()){ Value = "نام حساب" },
+                        new("B", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "کد حساب" },
+                        new("C", table2Nd.GetNextVerticalRowNumberAfterTable()){ Value = "کارخانه دان" },
+                        new("D", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("E", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("F", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("G", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("H", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("I", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("J", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("K", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("L", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    }
+                }
+            },
+
+            TableStyle = new TableStyle
+            {
+                // TODO: Add background color here
+            },
+
+            MergedCellsList = new List<MergedCells>
+            {
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                    },
+                }
             }
         };
 
@@ -167,14 +215,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     SheetTables = new()
                     {
                         tableHeader,
-                        firstTable,
-                        secondTable
+                        table1St,
+                        table2Nd
                     },
 
                     SheetRows = new()
                     {
                         firstTableHeaderRow,
-                        secondTableHeaderRow
+                        rowSecondTableHeader
                     },
 
                     SheetCells = new()
