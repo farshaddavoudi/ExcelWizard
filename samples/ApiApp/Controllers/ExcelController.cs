@@ -54,7 +54,7 @@ public class ExcelController : ControllerBase
                                         },
                                         MergedCellsList = new()
                                         {
-                                            new MergeStartEndLocation
+                                            new MergedBoundaryLocation
                                             {
                                                 FirstCellLocation = new CellLocation("C", 5),
                                                 LastCellLocation = new CellLocation("D", 5)
@@ -87,7 +87,7 @@ public class ExcelController : ControllerBase
                                         },
                                         MergedCellsList = new()
                                         {
-                                            new MergeStartEndLocation
+                                            new MergedBoundaryLocation
                                             {
                                                 FirstCellLocation = new CellLocation("C", 6),
                                                 LastCellLocation = new CellLocation("D", 6)
@@ -116,7 +116,7 @@ public class ExcelController : ControllerBase
                                         },
                                         MergedCellsList = new()
                                         {
-                                            new MergeStartEndLocation
+                                            new MergedBoundaryLocation
                                             {
                                                 FirstCellLocation = new CellLocation("C", 7),
                                                 LastCellLocation = new CellLocation("D", 7)
@@ -140,12 +140,15 @@ public class ExcelController : ControllerBase
                                         BorderColor = Color.GreenYellow
                                     }
                                 },
-                                MergedCellsList = new List<MergeStartEndLocation>
+                                MergedCellsList = new List<MergedCells>
                                 {
                                     new()
                                     {
-                                        FirstCellLocation = new CellLocation("C", 5),
-                                        LastCellLocation = new CellLocation("D", 6)
+                                        MergedBoundaryLocation = new()
+                                        {
+                                            FirstCellLocation = new CellLocation("C", 5),
+                                            LastCellLocation = new CellLocation("D", 6)
+                                        }
                                     }
                                 }
                             }
@@ -174,7 +177,7 @@ public class ExcelController : ControllerBase
                             },
                             MergedCellsList = new()
                             {
-                                new MergeStartEndLocation
+                                new MergedBoundaryLocation
                                 {
                                     FirstCellLocation = new CellLocation("C", 2),
                                     LastCellLocation = new CellLocation("D", 2)

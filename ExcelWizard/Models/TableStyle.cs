@@ -7,7 +7,7 @@ public class TableStyle
     /// <summary>
     /// Set outside border of a table. Default is without border.
     /// </summary>
-    public Border OutsideBorder { get; set; } = new();
+    public Border OutsideBorder { get; set; } = new() { BorderLineStyle = LineStyle.Thin, BorderColor = Color.LightGray };
 
     /// <summary>
     /// Set inline or inside border of table Cells. Default is Thin border (Like Excel normal cells)

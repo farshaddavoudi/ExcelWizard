@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ExcelWizard.Models;
 
-public class Row : IValidatableObject
+public class Row
 {
     // Props
 
@@ -23,7 +23,7 @@ public class Row : IValidatableObject
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public List<MergeStartEndLocation> MergedCellsList { get; set; } = new();
+    public List<MergedBoundaryLocation> MergedCellsList { get; set; } = new();
 
     // TODO: R&D about it
     public string? Formulas { get; set; }
@@ -37,6 +37,11 @@ public class Row : IValidatableObject
     public int GetRowNumber()
     {
         return RowCells.First().CellLocation.RowNumber;
+    }
+
+    public int GetNextRowNumberAfterRow()
+    {
+        return GetRowNumber() + 1;
     }
 
     /// <summary>
@@ -78,15 +83,15 @@ public class Row : IValidatableObject
     }
 
     // Validations
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public void ValidateRowInstance()
     {
         // Row definition cannot have no Cells
         if (RowCells.Count == 0)
-            yield return new ValidationResult("Row instance should contain one or more Cell(s)");
+            throw new ValidationException("Row instance should contain one or more Cell(s)");
 
         // Check Y of StartLocation and EndLocation should be the equal and same with other Cells location Y property (Check with Shahab)
         if (RowCells.Select(c => c.CellLocation.RowNumber).Distinct().ToList().Count != 1)
-            yield return new ValidationResult("Invalid Row. All Row Cells should have equal RowNumber!");
+            throw new ValidationException("Invalid Row. All Row Cells should have equal RowNumber!");
 
         // Check MergedCells format
         var currentRowNumber = RowCells.First().CellLocation.RowNumber;
@@ -94,19 +99,20 @@ public class Row : IValidatableObject
         foreach (var cellsToMerge in MergedCellsList)
         {
             if (cellsToMerge.FirstCellLocation is null || cellsToMerge.LastCellLocation is null)
-                yield return new ValidationResult("Something is not right about MergedCells format. FirstCellLocation and LastCellLocations cannot be null");
+                throw new ValidationException("Something is not right about MergedCells format. FirstCellLocation and LastCellLocations cannot be null");
 
             if (cellsToMerge.FirstCellLocation!.RowNumber != currentRowNumber)
-                yield return new ValidationResult("Something is not right about MergedCells format. The RowNumber of FirstCellLocation should be equal with the Row RowNumber!");
+                throw new ValidationException("Something is not right about MergedCells format. The RowNumber of FirstCellLocation should be equal with the Row RowNumber!");
 
             if (cellsToMerge.LastCellLocation!.RowNumber != currentRowNumber)
-                yield return new ValidationResult("Something is not right about MergedCells format. The RowNumber of LastCellLocation should be equal with the Row RowNumber!");
+                throw new ValidationException("Something is not right about MergedCells format. The RowNumber of LastCellLocation should be equal with the Row RowNumber!");
         }
 
         // Check all Cells be Unique (not repetitive)
         var isAllCellsUnique = RowCells.Select(c => c.CellLocation.ColumnNumber).Distinct().Count() == RowCells.Count;
 
         if (isAllCellsUnique is false)
-            yield return new ValidationResult("There are some repetitive cells in the Row. All cells should be unique in a Row");
+            throw new ValidationException("There are some repetitive cells in the Row. All cells should be unique in a Row");
+
     }
 }

@@ -5,6 +5,7 @@ using ExcelWizard.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -308,6 +309,8 @@ internal class ExcelWizardService : IExcelWizardService
             //-------------------------------------------
             foreach (var table in sheet.SheetTables)
             {
+                table.ValidateTableInstance();
+
                 foreach (var tableRow in table.TableRows)
                 {
                     ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
@@ -343,10 +346,33 @@ internal class ExcelWizardService : IExcelWizardService
                 // Apply table merges here
                 foreach (var mergedCells in table.MergedCellsList)
                 {
-                    xlSheet.Range(mergedCells.FirstCellLocation!.RowNumber,
-                        mergedCells.FirstCellLocation.ColumnNumber,
-                        mergedCells.LastCellLocation!.RowNumber,
-                        mergedCells.LastCellLocation.ColumnNumber).Merge();
+                    var mergedTableRange = xlSheet.Range(mergedCells.MergedBoundaryLocation.FirstCellLocation!.RowNumber,
+                        mergedCells.MergedBoundaryLocation.FirstCellLocation.ColumnNumber,
+                        mergedCells.MergedBoundaryLocation.LastCellLocation!.RowNumber,
+                        mergedCells.MergedBoundaryLocation.LastCellLocation.ColumnNumber).Merge();
+
+                    // Config Outside-Border Specified for Merged Cells
+                    if (mergedCells.OutsideBorder is not null)
+                    {
+                        XLBorderStyleValues? mergedOutsideBorder = GetXlBorderLineStyle(mergedCells.OutsideBorder!.BorderLineStyle);
+
+                        if (mergedOutsideBorder is not null)
+                        {
+                            mergedTableRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)mergedOutsideBorder);
+                            mergedTableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(mergedCells.OutsideBorder.BorderColor));
+                        }
+                    }
+                    else
+                    {
+                        if (outsideBorder is not null)
+                        {
+                            mergedTableRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
+                            mergedTableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.OutsideBorder.BorderColor));
+                        }
+                    }
+
+                    // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
+                    mergedTableRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
                 }
             }
 
@@ -697,6 +723,8 @@ internal class ExcelWizardService : IExcelWizardService
 
     private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
     {
+        row.ValidateRowInstance();
+
         foreach (var rowCell in row.RowCells)
         {
             if (rowCell.IsCellVisible is false)

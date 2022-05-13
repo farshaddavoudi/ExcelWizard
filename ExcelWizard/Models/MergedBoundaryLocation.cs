@@ -2,7 +2,7 @@
 
 namespace ExcelWizard.Models;
 
-public class MergeStartEndLocation
+public class MergedBoundaryLocation
 {
     [Required]
     public CellLocation? FirstCellLocation { get; set; }
