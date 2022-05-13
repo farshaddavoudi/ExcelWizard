@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExcelWizard.Models;
 
-public class GridExcelSheet : IValidatableObject
+public class GridExcelSheet
 {
     /// <summary>
     /// Special Data model with ExcelWizard attributes to customize the generated Excel. Should be List of items
@@ -14,9 +14,9 @@ public class GridExcelSheet : IValidatableObject
 
 
     // Validations
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public void ValidateGridExcelSheetInstance()
     {
         if (DataList is not IEnumerable)
-            yield return new ValidationResult("Object provided for GridExcelSheet should be a Collection of records");
+            throw new ValidationException("Object provided for GridExcelSheet should be a Collection of records");
     }
 }

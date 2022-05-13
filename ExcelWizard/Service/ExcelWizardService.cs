@@ -420,6 +420,8 @@ internal class ExcelWizardService : IExcelWizardService
 
         foreach (var gridExcelSheet in gridLayoutExcelBuilder.Sheets)
         {
+            gridExcelSheet.ValidateGridExcelSheetInstance();
+
             if (gridExcelSheet.DataList is IEnumerable records)
             {
                 var headerRow = new Row();
