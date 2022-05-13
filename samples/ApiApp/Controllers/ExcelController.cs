@@ -251,7 +251,7 @@ public class ExcelController : ControllerBase
     {
         var voucherStatementPageResult = new VoucherStatementResult
         {
-            ReportName = "Excel Wizard Compound Report",
+            ReportName = "ExcelWizard Compound Report",
 
             SummaryAccounts = new List<SummaryAccount>
                 {

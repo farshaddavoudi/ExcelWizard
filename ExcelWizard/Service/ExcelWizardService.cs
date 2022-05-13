@@ -331,6 +331,15 @@ internal class ExcelWizardService : IExcelWizardService
                     tableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.OutsideBorder.BorderColor));
                 }
 
+                // Config Inside-Border
+                XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(table.TableStyle.CellsSeparatorBorder.BorderLineStyle);
+
+                if (insideBorder is not null)
+                {
+                    tableRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
+                    tableRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(table.TableStyle.CellsSeparatorBorder.BorderColor));
+                }
+
                 // Apply table merges here
                 foreach (var mergedCells in table.MergedCellsList)
                 {
@@ -587,7 +596,7 @@ internal class ExcelWizardService : IExcelWizardService
     {
         // Infer XLDataType and value from "cell" CellType
         XLDataType? xlDataType;
-        object cellValue = cell.Value;
+        object? cellValue = cell.Value;
         switch (cell.CellContentType)
         {
             case CellContentType.Number:
@@ -603,7 +612,7 @@ internal class ExcelWizardService : IExcelWizardService
                 xlDataType = XLDataType.Number;
                 if (IsNumber(cellValue) is false)
                     throw new Exception("Cell with Currency CellType should be Number type");
-                cellValue = Convert.ToDecimal(cellValue).ToString("##,###");
+                cellValue = Convert.ToDecimal(cellValue).ToString("N0");
                 break;
 
             case CellContentType.MiladiDate:
@@ -770,7 +779,7 @@ internal class ExcelWizardService : IExcelWizardService
         };
     }
 
-    private bool IsNumber(object value)
+    private bool IsNumber(object? value)
     {
         return value is sbyte
                || value is byte
