@@ -5,7 +5,6 @@ using ExcelWizard.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -288,19 +287,19 @@ internal class ExcelWizardService : IExcelWizardService
                 if (columnStyle.ColumnWidth is not null)
                 {
                     if (columnStyle.ColumnWidth.WidthCalculationType == ColumnWidthCalculationType.AdjustToContents)
-                        xlSheet.Column(columnStyle.ColumnNo).AdjustToContents();
+                        xlSheet.Column(columnStyle.ColumnNumber).AdjustToContents();
 
                     else
-                        xlSheet.Column(columnStyle.ColumnNo).Width = (double)columnStyle.ColumnWidth.Width!;
+                        xlSheet.Column(columnStyle.ColumnNumber).Width = (double)columnStyle.ColumnWidth.Width!;
                 }
 
                 if (columnStyle.AutoFit)
-                    xlSheet.Column(columnStyle.ColumnNo).AdjustToContents();
+                    xlSheet.Column(columnStyle.ColumnNumber).AdjustToContents();
 
                 if (columnStyle.IsColumnHidden)
-                    xlSheet.Column(columnStyle.ColumnNo).Hide();
+                    xlSheet.Column(columnStyle.ColumnNumber).Hide();
 
-                xlSheet.Column(columnStyle.ColumnNo).Style.Alignment
+                xlSheet.Column(columnStyle.ColumnNumber).Style.Alignment
                     .SetHorizontal(columnAlignmentHorizontalValue);
             }
 
@@ -548,9 +547,8 @@ internal class ExcelWizardService : IExcelWizardService
                             headerRow.RowStyle.InsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
                             // Calculate Columns style
-                            columnsStyle.Add(new ColumnStyle
+                            columnsStyle.Add(new ColumnStyle(xLocation)
                             {
-                                ColumnNo = xLocation,
                                 ColumnWidth = new ColumnWidth
                                 {
                                     Width = excelWizardColumnAttribute?.ColumnWidth == 0 ? null : excelWizardColumnAttribute?.ColumnWidth,
@@ -676,7 +674,7 @@ internal class ExcelWizardService : IExcelWizardService
         { // Get from ColumnProps level
             var x = cell.CellLocation.ColumnNumber;
 
-            var relatedColumnProp = columnProps.SingleOrDefault(c => c.ColumnNo == x);
+            var relatedColumnProp = columnProps.SingleOrDefault(c => c.ColumnNumber == x);
 
             isLocked = relatedColumnProp?.IsColumnLocked;
 

@@ -156,8 +156,8 @@ public class ExcelController : ControllerBase
 
                     SheetColumnsStyle = new List<ColumnStyle>
                     {
-                        new() { ColumnNo = 3, ColumnWidth = new ColumnWidth{ Width = 30 } },
-                        new() { ColumnNo = 1, IsColumnLocked = true, ColumnWidth = new ColumnWidth{ WidthCalculationType = ColumnWidthCalculationType.AdjustToContents }}
+                        new(3) { ColumnWidth = new ColumnWidth{ Width = 30 } },
+                        new(1) { IsColumnLocked = true, ColumnWidth = new ColumnWidth{ WidthCalculationType = ColumnWidthCalculationType.AdjustToContents }}
                     },
 
                     SheetRows = new List<Row>

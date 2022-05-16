@@ -5,7 +5,7 @@ using System;
 
 namespace ExcelWizard;
 
-public static class DIExtension
+public static class ExcelWizardExtensions
 {
     /// <summary>
     /// Add ExcelWizard package required services to IServiceCollection
@@ -46,5 +46,42 @@ public static class DIExtension
         {
             throw new InvalidOperationException("The lifeTime is invalid");
         }
+    }
+
+    /// <summary>
+    ///  Get Cell Column Number from Cell Column Letter, e.g. "A" => 1 or "C" => 3
+    /// </summary>
+    public static int GetCellColumnNumberByCellColumnLetter(this string cellColumnLetter)
+    {
+        int retVal = 0;
+        string col = cellColumnLetter.ToUpper();
+        for (int iChar = col.Length - 1; iChar >= 0; iChar--)
+        {
+            char colPiece = col[iChar];
+            int colNum = colPiece - 64;
+            retVal = retVal + colNum * (int)Math.Pow(26, col.Length - (iChar + 1));
+        }
+        return retVal;
+    }
+
+    /// <summary>
+    /// Get Cell Column Letter By Cell Column Number, e.g. 1 => "A" or 3 => "C"
+    /// </summary>
+    /// <param name="cellColumnNumber"></param>
+    /// <returns></returns>
+    public static string GetCellColumnLetterByCellColumnNumber(this int cellColumnNumber)
+    {
+        int dividend = cellColumnNumber;
+
+        string cellName = string.Empty;
+
+        while (dividend > 0)
+        {
+            var modulo = (dividend - 1) % 26;
+            cellName = Convert.ToChar(65 + modulo) + cellName;
+            dividend = (dividend - modulo) / 26;
+        }
+
+        return cellName.ToUpper();
     }
 }
