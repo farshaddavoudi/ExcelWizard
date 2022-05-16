@@ -310,11 +310,6 @@ internal class ExcelWizardService : IExcelWizardService
             {
                 table.ValidateTableInstance();
 
-                foreach (var tableRow in table.TableRows)
-                {
-                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
-                }
-
                 var tableFirstCellLocation = table.GetTableFirstCellLocation();
 
                 var tableLastCellLocation = table.GetTableLastCellLocation();
@@ -323,6 +318,10 @@ internal class ExcelWizardService : IExcelWizardService
                     tableFirstCellLocation.ColumnNumber,
                     tableLastCellLocation.RowNumber,
                     tableLastCellLocation.ColumnNumber);
+
+                // Config Bg
+                if (table.TableStyle.BackgroundColor is not null)
+                    tableRange.Style.Fill.BackgroundColor = XLColor.FromColor(table.TableStyle.BackgroundColor.Value);
 
                 // Config Outside-Border
                 XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(table.TableStyle.OutsideBorder.BorderLineStyle);
@@ -340,6 +339,11 @@ internal class ExcelWizardService : IExcelWizardService
                 {
                     tableRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
                     tableRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(table.TableStyle.CellsSeparatorBorder.BorderColor));
+                }
+
+                foreach (var tableRow in table.TableRows)
+                {
+                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
                 }
 
                 // Apply table merges here
@@ -719,6 +723,9 @@ internal class ExcelWizardService : IExcelWizardService
 
         if (cell.CellStyle.CellFont.FontName.IsNullOrWhiteSpace() is false)
             locationCell.Style.Font.SetFontName(cell.CellStyle.CellFont.FontName);
+
+        if (cell.CellStyle.BackgroundColor is not null)
+            locationCell.Style.Fill.SetBackgroundColor(XLColor.FromColor(cell.CellStyle.BackgroundColor.Value));
     }
 
     private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
@@ -768,7 +775,8 @@ internal class ExcelWizardService : IExcelWizardService
             if (row.RowStyle.Font.FontName.IsNullOrWhiteSpace() is false)
                 xlRowRange.Style.Font.SetFontName(row.RowStyle.Font.FontName);
 
-            xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.RowStyle.BackgroundColor));
+            if (row.RowStyle.BackgroundColor is not null)
+                xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.RowStyle.BackgroundColor.Value));
 
             XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(row.RowStyle.OutsideBorder.BorderLineStyle);
 

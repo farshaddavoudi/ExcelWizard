@@ -4,7 +4,10 @@ namespace ExcelWizard.Models;
 
 public class RowStyle
 {
-    public Color BackgroundColor { get; set; } = Color.White;
+    /// <summary>
+    /// Set Background Color for entire Row. It will override the Table Background Colors. Default inherit
+    /// </summary>
+    public Color? BackgroundColor { get; set; }
 
     public TextFont Font { get; set; } = new();
 

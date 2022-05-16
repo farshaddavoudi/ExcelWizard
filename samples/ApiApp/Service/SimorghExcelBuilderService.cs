@@ -82,7 +82,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         };
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - First table Header
-        var firstTableHeaderRow = new Row
+        var rowFirstTableHeader = new Row
         {
             RowCells = new List<Cell>
             {
@@ -104,9 +104,16 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             {
                 RowCells = new List<Cell>
                 {
-                    new("A", index + 4) {Value = item.AccountCode},
+                    new("A", index + 4) {Value = item.AccountCode, CellStyle = new CellStyle
+                    {
+                        BackgroundColor = Color.Red
+                    }},
                     new("B", index + 4) {Value = item.Debit, CellContentType = CellContentType.Currency},
                     new("C", index + 4) {Value = item.Credit, CellContentType = CellContentType.Currency}
+                },
+                RowStyle = new RowStyle
+                {
+                    //BackgroundColor = Color.Aquamarine
                 }
             }).ToList(),
 
@@ -221,7 +228,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
                     SheetRows = new()
                     {
-                        firstTableHeaderRow,
+                        rowFirstTableHeader,
                         rowSecondTableHeader
                     },
 
