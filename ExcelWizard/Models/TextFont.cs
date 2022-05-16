@@ -8,9 +8,6 @@ public class TextFont
 
     public bool? IsBold { get; set; }
 
-    /// <summary>
-    /// Override the Row Font color. Default is inherit
-    /// </summary>
     public Color? FontColor { get; set; }
 
     public string? FontName { get; set; }

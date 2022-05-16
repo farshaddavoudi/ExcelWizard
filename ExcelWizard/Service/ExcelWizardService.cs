@@ -319,31 +319,43 @@ internal class ExcelWizardService : IExcelWizardService
                     tableLastCellLocation.RowNumber,
                     tableLastCellLocation.ColumnNumber);
 
+                foreach (var tableRow in table.TableRows)
+                {
+                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                }
+
                 // Config Bg
                 if (table.TableStyle.BackgroundColor is not null)
                     tableRange.Style.Fill.BackgroundColor = XLColor.FromColor(table.TableStyle.BackgroundColor.Value);
 
+                if (table.TableStyle.Font?.FontColor is not null)
+                    tableRange.Style.Font.SetFontColor(XLColor.FromColor(table.TableStyle.Font.FontColor.Value));
+
+                if (table.TableStyle.Font?.FontSize is not null)
+                    tableRange.Style.Font.SetFontSize(table.TableStyle.Font.FontSize.Value);
+
+                if (table.TableStyle.Font?.IsBold is not null)
+                    tableRange.Style.Font.SetBold(table.TableStyle.Font.IsBold.Value);
+
+                if (table.TableStyle.Font?.FontName.IsNullOrWhiteSpace() is false)
+                    tableRange.Style.Font.SetFontName(table.TableStyle.Font.FontName);
+
                 // Config Outside-Border
-                XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(table.TableStyle.OutsideBorder.BorderLineStyle);
+                XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(table.TableStyle.TableOutsideBorder.BorderLineStyle);
 
                 if (outsideBorder is not null)
                 {
                     tableRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
-                    tableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.OutsideBorder.BorderColor));
+                    tableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.TableOutsideBorder.BorderColor));
                 }
 
                 // Config Inside-Border
-                XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(table.TableStyle.CellsSeparatorBorder.BorderLineStyle);
+                XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(table.TableStyle.InsideCellsBorder.BorderLineStyle);
 
                 if (insideBorder is not null)
                 {
                     tableRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
-                    tableRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(table.TableStyle.CellsSeparatorBorder.BorderColor));
-                }
-
-                foreach (var tableRow in table.TableRows)
-                {
-                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                    tableRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(table.TableStyle.InsideCellsBorder.BorderColor));
                 }
 
                 // Apply table merges here
@@ -370,12 +382,24 @@ internal class ExcelWizardService : IExcelWizardService
                         if (outsideBorder is not null)
                         {
                             mergedTableRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
-                            mergedTableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.OutsideBorder.BorderColor));
+                            mergedTableRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(table.TableStyle.TableOutsideBorder.BorderColor));
                         }
                     }
 
                     // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
                     mergedTableRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
+                }
+
+                if (table.TableStyle.TableTextAlign is not null)
+                {
+                    tableRange.Style.Alignment.Horizontal = table.TableStyle.TableTextAlign switch
+                    {
+                        TextAlign.Center => XLAlignmentHorizontalValues.Center,
+                        TextAlign.Justify => XLAlignmentHorizontalValues.Justify,
+                        TextAlign.Left => XLAlignmentHorizontalValues.Left,
+                        TextAlign.Right => XLAlignmentHorizontalValues.Right,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
                 }
             }
 
@@ -536,7 +560,7 @@ internal class ExcelWizardService : IExcelWizardService
                                 Value = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
                                 CellStyle = new CellStyle
                                 {
-                                    CellFont = headerFont,
+                                    Font = headerFont,
                                     CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.HeaderTextAlign)
                                 },
                                 CellContentType = CellContentType.Text,
@@ -546,9 +570,9 @@ internal class ExcelWizardService : IExcelWizardService
 
                             headerRow.RowStyle.BackgroundColor = excelWizardSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
 
-                            headerRow.RowStyle.OutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+                            headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
-                            headerRow.RowStyle.InsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+                            headerRow.RowStyle.InsideCellsBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
                             // Calculate Columns style
                             columnsStyle.Add(new ColumnStyle(xLocation)
@@ -568,7 +592,7 @@ internal class ExcelWizardService : IExcelWizardService
                             CellContentType = excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text,
                             CellStyle = new CellStyle
                             {
-                                CellFont = finalFont,
+                                Font = finalFont,
                                 CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.DataTextAlign)
                             }
                         });
@@ -604,7 +628,7 @@ internal class ExcelWizardService : IExcelWizardService
                             TableRows = dataRows,
                             TableStyle= new TableStyle
                             {
-                                OutsideBorder = new Border { BorderLineStyle = borderType }
+                                TableOutsideBorder = new Border { BorderLineStyle = borderType }
                             }
                         }
                     },
@@ -697,7 +721,7 @@ internal class ExcelWizardService : IExcelWizardService
             locationCell.SetDataType((XLDataType)xlDataType);
 
         if (cell.CellContentType == CellContentType.Formula)
-            locationCell.SetFormulaA1(cellValue.ToString());
+            locationCell.SetFormulaA1(cellValue?.ToString());
         else
             locationCell.SetValue(cellValue);
 
@@ -712,17 +736,17 @@ internal class ExcelWizardService : IExcelWizardService
         locationCell.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
         // Set Font
-        if (cell.CellStyle.CellFont.FontColor is not null)
-            locationCell.Style.Font.SetFontColor(XLColor.FromColor(cell.CellStyle.CellFont.FontColor.Value));
+        if (cell.CellStyle.Font?.FontColor is not null)
+            locationCell.Style.Font.SetFontColor(XLColor.FromColor(cell.CellStyle.Font.FontColor.Value));
 
-        if (cell.CellStyle.CellFont.FontSize is not null)
-            locationCell.Style.Font.SetFontSize(cell.CellStyle.CellFont.FontSize.Value);
+        if (cell.CellStyle.Font?.FontSize is not null)
+            locationCell.Style.Font.SetFontSize(cell.CellStyle.Font.FontSize.Value);
 
-        if (cell.CellStyle.CellFont.IsBold is not null)
-            locationCell.Style.Font.SetBold(cell.CellStyle.CellFont.IsBold.Value);
+        if (cell.CellStyle.Font?.IsBold is not null)
+            locationCell.Style.Font.SetBold(cell.CellStyle.Font.IsBold.Value);
 
-        if (cell.CellStyle.CellFont.FontName.IsNullOrWhiteSpace() is false)
-            locationCell.Style.Font.SetFontName(cell.CellStyle.CellFont.FontName);
+        if (cell.CellStyle.Font?.FontName.IsNullOrWhiteSpace() is false)
+            locationCell.Style.Font.SetFontName(cell.CellStyle.Font.FontName);
 
         if (cell.CellStyle.BackgroundColor is not null)
             locationCell.Style.Fill.SetBackgroundColor(XLColor.FromColor(cell.CellStyle.BackgroundColor.Value));
@@ -763,38 +787,48 @@ internal class ExcelWizardService : IExcelWizardService
                 row.GetRowLastCellLocation().RowNumber,
                 row.GetRowLastCellLocation().ColumnNumber);
 
-            if (row.RowStyle.Font.FontColor is not null)
+            if (row.RowStyle.Font?.FontColor is not null)
                 xlRowRange.Style.Font.SetFontColor(XLColor.FromColor(row.RowStyle.Font.FontColor.Value));
 
-            if (row.RowStyle.Font.FontSize is not null)
+            if (row.RowStyle.Font?.FontSize is not null)
                 xlRowRange.Style.Font.SetFontSize(row.RowStyle.Font.FontSize.Value);
 
-            if (row.RowStyle.Font.IsBold is not null)
+            if (row.RowStyle.Font?.IsBold is not null)
                 xlRowRange.Style.Font.SetBold(row.RowStyle.Font.IsBold.Value);
 
-            if (row.RowStyle.Font.FontName.IsNullOrWhiteSpace() is false)
+            if (row.RowStyle.Font?.FontName.IsNullOrWhiteSpace() is false)
                 xlRowRange.Style.Font.SetFontName(row.RowStyle.Font.FontName);
 
             if (row.RowStyle.BackgroundColor is not null)
                 xlRowRange.Style.Fill.SetBackgroundColor(XLColor.FromColor(row.RowStyle.BackgroundColor.Value));
 
-            XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(row.RowStyle.OutsideBorder.BorderLineStyle);
+            XLBorderStyleValues? outsideBorder = GetXlBorderLineStyle(row.RowStyle.RowOutsideBorder.BorderLineStyle);
 
             if (outsideBorder is not null)
             {
                 xlRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)outsideBorder);
-                xlRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(row.RowStyle.OutsideBorder.BorderColor));
+                xlRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(row.RowStyle.RowOutsideBorder.BorderColor));
             }
 
-            XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(row.RowStyle.InsideBorder.BorderLineStyle);
+            XLBorderStyleValues? insideBorder = GetXlBorderLineStyle(row.RowStyle.InsideCellsBorder.BorderLineStyle);
 
             if (insideBorder is not null)
             {
                 xlRowRange.Style.Border.SetInsideBorder((XLBorderStyleValues)insideBorder);
-                xlRowRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(row.RowStyle.InsideBorder.BorderColor));
+                xlRowRange.Style.Border.SetInsideBorderColor(XLColor.FromColor(row.RowStyle.InsideCellsBorder.BorderColor));
             }
 
-
+            if (row.RowStyle.RowTextAlign is not null)
+            {
+                xlRowRange.Style.Alignment.Horizontal = row.RowStyle.RowTextAlign switch
+                {
+                    TextAlign.Center => XLAlignmentHorizontalValues.Center,
+                    TextAlign.Justify => XLAlignmentHorizontalValues.Justify,
+                    TextAlign.Left => XLAlignmentHorizontalValues.Left,
+                    TextAlign.Right => XLAlignmentHorizontalValues.Right,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+            }
         }
     }
 

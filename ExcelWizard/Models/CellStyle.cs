@@ -4,7 +4,10 @@ namespace ExcelWizard.Models;
 
 public class CellStyle
 {
-    public TextFont CellFont { get; set; } = new();
+    /// <summary>
+    /// Set Font for the Cell. It will override the Table and Row Fonts. Default inherit
+    /// </summary>
+    public TextFont? Font { get; set; }
 
     /// <summary>
     /// Set Wordwrap for the Cell content. Default is false

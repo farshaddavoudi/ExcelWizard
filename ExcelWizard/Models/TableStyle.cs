@@ -10,12 +10,19 @@ public class TableStyle
     public Color? BackgroundColor { get; set; }
 
     /// <summary>
-    /// Set outside border of a table. Default is without border.
+    /// Set the Font props (font-family, size, color, etc) for the entire table
     /// </summary>
-    public Border OutsideBorder { get; set; } = new() { BorderLineStyle = LineStyle.Thin, BorderColor = Color.LightGray };
+    public TextFont? Font { get; set; }
+
+    public TextAlign? TableTextAlign { get; set; }
 
     /// <summary>
-    /// Set inline or inside border of table Cells. Default is Thin border (Like Excel normal cells)
+    /// Set outside border of a table. Default is without border.
     /// </summary>
-    public Border CellsSeparatorBorder { get; set; } = new() { BorderLineStyle = LineStyle.Thin, BorderColor = Color.LightGray };
+    public Border TableOutsideBorder { get; set; } = new() { BorderLineStyle = LineStyle.Thin, BorderColor = Color.LightGray };
+
+    /// <summary>
+    /// Set inside borders of table Cells. It do not effect the table Outside borders! Default is Thin border (Like Excel normal cells)
+    /// </summary>
+    public Border InsideCellsBorder { get; set; } = new() { BorderLineStyle = LineStyle.Thin, BorderColor = Color.LightGray };
 }

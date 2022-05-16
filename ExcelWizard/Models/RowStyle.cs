@@ -9,11 +9,16 @@ public class RowStyle
     /// </summary>
     public Color? BackgroundColor { get; set; }
 
-    public TextFont Font { get; set; } = new();
+    /// <summary>
+    /// Set Font for entire Row. It will override the Table Font. Default inherit
+    /// </summary>
+    public TextFont? Font { get; set; }
+
+    public TextAlign? RowTextAlign { get; set; }
 
     public double? RowHeight { get; set; }
 
-    public Border InsideBorder { get; set; } = new();
+    public Border InsideCellsBorder { get; set; } = new();
 
-    public Border OutsideBorder { get; set; } = new();
+    public Border RowOutsideBorder { get; set; } = new();
 }

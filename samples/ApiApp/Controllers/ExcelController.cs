@@ -64,7 +64,7 @@ public class ExcelController : ControllerBase
                                         {
                                             Font = new TextFont{FontColor = Color.DarkGreen},
                                             BackgroundColor = Color.Aqua,
-                                            OutsideBorder = new Border
+                                            RowOutsideBorder = new Border
                                             {
                                                 BorderLineStyle = LineStyle.DashDotDot,
                                                 BorderColor = Color.Brown
@@ -97,7 +97,7 @@ public class ExcelController : ControllerBase
                                         {
                                             Font = new TextFont{FontColor = Color.DarkGreen},
                                             BackgroundColor = Color.Aqua,
-                                            OutsideBorder = new Border
+                                            RowOutsideBorder = new Border
                                             {
                                                 BorderLineStyle = LineStyle.DashDotDot,
                                                 BorderColor = Color.Red
@@ -126,7 +126,7 @@ public class ExcelController : ControllerBase
                                         {
                                             Font = new TextFont{FontColor = Color.DarkGreen},
                                             BackgroundColor = Color.Aqua,
-                                            OutsideBorder = new Border()
+                                            RowOutsideBorder = new Border()
                                         }
                                     }
                                 },
@@ -134,7 +134,7 @@ public class ExcelController : ControllerBase
                                 //EndLocation = new Location(4,7), //TODO: Can't be inferred from EndLocation of last Row???
                                 TableStyle = new TableStyle
                                 {
-                                    OutsideBorder = new Border
+                                    TableOutsideBorder = new Border
                                     {
                                         BorderLineStyle = LineStyle.Thick,
                                         BorderColor = Color.GreenYellow
@@ -187,7 +187,7 @@ public class ExcelController : ControllerBase
                             {
                                 Font = new TextFont{FontColor = Color.DarkGreen},
                                 BackgroundColor = Color.AliceBlue,
-                                OutsideBorder = new Border()
+                                RowOutsideBorder = new Border()
                             }
                         }
                     },
