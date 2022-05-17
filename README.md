@@ -255,7 +255,7 @@ Tip: We do not use any attributes (`[ExcelSheet]` and `[ExcelColumn]`) here.
 ### Complete Example of Building Compound Excel from Scratch
 Let's assume we have an application related to a company financials and we want to have a custom Excel report like below format:
 
-Excem Image here
+<img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/accounts-excel-template-report.png" />
 
 You can download the Excel from here.
 
