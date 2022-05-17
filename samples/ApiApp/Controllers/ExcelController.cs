@@ -38,7 +38,36 @@ public class ExcelController : ControllerBase
                 new() { AccountCode = "13499", Debit = 0, Credit = 2000000 },
                 new() { AccountCode = "22500", Debit = 4000000, Credit = 0}
             },
-            //TODO: Continute building model
+
+            AccountSalaryCodes = new List<AccountSalaryCode>
+            {
+                new() { Code = "81010", Name = "Base Salari" },
+                new() { Code = "81011", Name = "Overtime Salari" }
+            },
+
+            AccountSharingData = new List<AccountSharingData>
+            {
+                new()
+                {
+                    AccountName = "Branch 1",
+                    AccountSharingDetail = new AccountSharingDetail
+                    {
+                        BeforeSharing = 504000,
+                        AfterSharing = 51353
+                    }
+                },
+                new()
+                {
+                    AccountName = "Branch 2",
+                    AccountSharingDetail = new AccountSharingDetail
+                    {
+                        BeforeSharing = 11000,
+                        AfterSharing = 10000
+                    }
+                }
+            },
+
+            Average = 32000
         };
 
         var excelWizardModel = new CompoundExcelBuilder();

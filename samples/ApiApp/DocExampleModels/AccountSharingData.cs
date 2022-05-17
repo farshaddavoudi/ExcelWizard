@@ -4,7 +4,7 @@ public class AccountSharingData
 {
     public string? AccountName { get; set; }
 
-    public List<AccountSharingDetail> AccountSharingDetailsList { get; set; } = new();
+    public AccountSharingDetail AccountSharingDetail { get; set; } = new();
 }
 
 public class AccountSharingDetail

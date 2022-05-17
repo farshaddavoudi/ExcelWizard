@@ -9,4 +9,6 @@ public class AccountsReportDto
     public List<AccountSalaryCode> AccountSalaryCodes { get; set; } = new();
 
     public List<AccountSharingData> AccountSharingData { get; set; } = new();
+
+    public decimal Average { get; set; }
 }
