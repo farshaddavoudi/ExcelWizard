@@ -249,3 +249,5 @@ is exactly like Single sheet Grid-layout Excel (See the previous section).
 
 # Generate *Compound* Excel
 Generating Excel in this case for single or multi sheets are the same. Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just go along with the `CompoundExcelBuilder` argument and provide the necessary parts for your Excel.
+
+Tip: We do not use any attributes (`[ExcelSheet]` and `[ExcelColumn]`) here.
