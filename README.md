@@ -259,15 +259,18 @@ Let's assume we have an application related to a company's financials and we wan
 
 You can download Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx">here</a>.
 
-So, it is a **Compound Excel**, not the **GridLayout** one. At first, we should fetch the report database model (DTO) to show them to our Excel.
+So, it is a **Compound Excel**, not the **GridLayout** one. 
+
+We should create our Excel template (CompoundExcelBuilder model) using our local app model (here accountsReportDto), So At first, we should fetch the report model (DTO) (normally from a database).
 
 In our example, the data is like below:
 
 ```csharp
         // Fetch data from db
         // For demo, we use static data
-        // Here we do not care about the business. Our focus is merely on the Excel report generation
-        var reportData = new AccountsReportDto
+        // Here we do not care about the properties and business. Our focus is merely on the Excel report generation
+        // All Classes can be seen in Repo Samples
+        var accountsReportDto = new AccountsReportDto
         {
             ReportName = "Accounts Report",
 
@@ -313,7 +316,7 @@ In our example, the data is like below:
         };
 ```
 
-Then we can create our Excel step by step.
+Now that we have our report data, we can create our Excel step by step.
 
 ### Steps to Generate the Compound Excel Filled with DTO data: 
 
@@ -326,22 +329,36 @@ Then we can create our Excel step by step.
 
 Analyze the Excel template and divide it into **Table**s, **Row**s, and **Cell**s sections. In the next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in Step 3 to create the `CompoundExcelBuilder` model.
 
-For our example, the Excel is composed of these sections:
+For our example, seeing the Excel template at a glance, we can detect it is composed of below sections:
 
-1- 
+1- Top header which is a **Table** (is not a **Row** because of occupying two Rows *i.e. RowNumber 1 and RowNumber 2*) which is Merged and became a Unit Cell
 
-2- 
+2- Having a **Row** which is the debits credits table Header (It can be part of the debits credits **Table** model, but it makes it a little hard because
+   the Table data is dynamic and it is better to see the Table header as a Single Row.
 
-3- 
+3- First table with some dynamic data (debits and credits) which the data is in currency type
 
-4- 
+4- Now there is the interesting part!, they way I like to see it is a big **Table** from **A10** until **I11**. There are 
+multiple merges can be seen here, including:
+- `A10:A11` *(Account Name)*
+- `B10:B11` *(Account Code)*
+- `C10:E10` *(Branch 1)* 
+- `F10:H10` *(Branch 2)*
+- `I10:I11` *(Average)*
 
-5- 
+5- Bottom *Table* with thin inside border having Base Salary and Overtime Salary Data in it.
+
+6- **Table** with Sharing data which is merged vertically. It can not be considered as row because of, again, being merged and therefore, occupying more than one row.
+
+7- A **Row** with Report date info
+
+8- A "Cell" with my name on it! at the bottom of Excel
 
 
 ## *2- Create each Section Related Model*
 
 These models are `Table` model, `Row` model and `Cell` model. All of them are ExcelWizard models and will be used in generating the main `CompoundExcelBuilder` model (in the next step).
+Note in creating these models that all of their properties have proper comments to make them clear and their names speak for themselves.
 
 ## *3- Create `CompoundExcelBuilder` Model*
 

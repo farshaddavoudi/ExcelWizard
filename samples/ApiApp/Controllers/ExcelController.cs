@@ -24,8 +24,12 @@ public class ExcelController : ControllerBase
     public IActionResult ExportExcelFromExcelWizardModel()
     {
         // Fetch data from db
+        // Here we do not care about the properties and business. Our focus is merely on the Excel report generation
+        #region Fetch data from your app business Service
+
         // For demo, we use static data
-        var reportData = new AccountsReportDto
+
+        var accountsReportDto = new AccountsReportDto
         {
             ReportName = "Accounts Report",
 
@@ -69,6 +73,15 @@ public class ExcelController : ControllerBase
 
             Average = 32000
         };
+
+        #endregion
+
+        // Steps to generate Excel
+        // It is the heart of using the ExcelWizard package to generate your desired Excel report
+        //---------------------------------------------------------------
+        // 1- Analyze Excel Template and Divide It into Separate Sections
+        //---------------------------------------------------------------
+        // 
 
         var excelWizardModel = new CompoundExcelBuilder();
         return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));

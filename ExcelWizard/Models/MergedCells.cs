@@ -1,4 +1,6 @@
-﻿namespace ExcelWizard.Models;
+﻿using System.Drawing;
+
+namespace ExcelWizard.Models;
 
 public class MergedCells
 {
@@ -11,4 +13,10 @@ public class MergedCells
     /// Set outside border of a Merged Cells (like table). Default will inherit
     /// </summary>
     public Border? OutsideBorder { get; set; }
+
+    /// <summary>
+    /// Set Background Color for entire Merged Cells. Default inherit
+    /// </summary>
+    public Color? BackgroundColor { get; set; }
+
 }

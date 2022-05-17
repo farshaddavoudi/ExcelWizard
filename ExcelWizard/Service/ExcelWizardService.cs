@@ -388,6 +388,10 @@ internal class ExcelWizardService : IExcelWizardService
 
                     // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
                     mergedTableRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
+
+                    // Set Bg Color
+                    if (mergedCells.BackgroundColor is not null)
+                        mergedTableRange.Style.Fill.BackgroundColor = XLColor.FromColor(mergedCells.BackgroundColor.Value);
                 }
 
                 if (table.TableStyle.TableTextAlign is not null)
