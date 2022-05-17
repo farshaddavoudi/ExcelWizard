@@ -253,41 +253,61 @@ Generating Excel in this case for single or multi sheets are the same. Using the
 Tip: We do not use any attributes (`[ExcelSheet]` and `[ExcelColumn]`) here.
 
 ### Complete Example of Building Compound Excel from Scratch
-Let's assume we have an application related to a company financials and we want to have a custom Excel report like below format:
+Let's assume we have an application related to a company's financials and we want to have a custom Excel report like the below format:
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/accounts-excel-template-report.png" />
 
-You can download the Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx" download> here </a>.
+You can download Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx">here</a>.
 
-So, clearly it is a Compound Excel, not the GridLayout one. At first, we should fetch the report database model (DTO) to show them to our Excel.
+So, it is a **Compound Excel**, not the **GridLayout** one. At first, we should fetch the report database model (DTO) to show them to our Excel.
+
+In our example, the data is like below:
+
+```csharp
+// The model you want to have Excel report upon it
+public class User
+{
+    public int Id { get; set; }
+    public string? FullName { get; set; }
+    public string? PersonnelCode { get; set; }
+    public string? Nationality { get; set; }
+}
+```
+
+Then we can create our Excel step by step.
 
 ### Steps to create `CompoundExcelBuilder` model:
 
-#### 1- Analyze Excel Template and Divide It to Sections
-#### 2- Create Sections Model
-#### 3- Create the `CompoundExcelBuilder` model
-#### 4- Use `ExcelWizardService` and `CompoundExcelBuilder` model (step 3) to generate our Excel
+#### 1- Analyze Excel Template and Divide It into Separate Sections
+#### 2- Create each Section Related Model
+#### 3- Create `CompoundExcelBuilder` Model
+#### 4- Generate Excel using `ExcelWizardService` and `CompoundExcelBuilder` model (step 3)
 
+**1- Analyze Excel Template and Divide It into Separate Sections**
 
-**1- Analyze Excel Template and Divide It to Sections**
-
-Analyze the Excel template and divide it to **Table**s, **Row**s and **Cell**s sections. In next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in the Step 3 to create the `CompoundExcelBuilder` model by putting them all together.
+Analyze the Excel template and divide it into **Table**s, **Row**s, and **Cell**s sections. In the next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in Step 3 to create the `CompoundExcelBuilder` model.
 
 For our example, the Excel is composed of these sections:
 
 1- 
+
 2- 
+
 3- 
+
 4- 
+
 5- 
 
-**2- Create Each Section Model**
 
-These models are `Table` model, `Row` model and `Cell` model. All of these models are ExcelWizard models and will use in generating the main `CompoundExcelBuilder` model.
+**2- Create each Section Related Model**
 
-**3- Create the `CompoundExcelBuilder` Model**
+These models are `Table` model, `Row` model and `Cell` model. All of them are ExcelWizard models and will be used in generating the main `CompoundExcelBuilder` model (in the next step).
 
-At last, we create our main model by using the sections model created in Step 2 plus other styles that are available in this class.
+**3- Create `CompoundExcelBuilder` Model**
 
-**4- Use `ExcelWizardService` and `CompoundExcelBuilder` model (step 3) to generate our Excel**
+Then we create our main model by using the sections model created in Step 2 plus other styles that are available in this class.
 
+**4- Generate Excel using `ExcelWizardService` and `CompoundExcelBuilder` model (step 3)**
+
+At last, we create our gorgeous Excel! by injecting `IExcelWizardService` and using the Step 3 `compoundExcelBuilder` model. It is the easiest part! 
