@@ -261,7 +261,7 @@ You can download Excel from <a target="_blank" href="https://github.com/farshadd
 
 So, it is a **Compound Excel**, not the **GridLayout** one. 
 
-We should create our Excel template (CompoundExcelBuilder model) using our local app model (here accountsReportDto), So At first, we should fetch the report model (DTO) (normally from a database).
+We should create our Excel template (`CompoundExcelBuilder` model) using our local app model (here `accountsReportDto`), So At first, we should fetch the report model (DTO) (normally from a database).
 
 In our example, the data is like below:
 
@@ -338,21 +338,21 @@ For our example, seeing the Excel template at a glance, we can detect it is comp
 
 3- First table with some dynamic data (debits and credits) which the data is in currency type
 
-4- Now there is the interesting part!, they way I like to see it is a big **Table** from **A10** until **I11**. There are 
+4- Now it is the interesting part! the way I like to see it is a big **Table** from **A10** until **I11**. There are 
 multiple merges can be seen here, including:
-- `A10:A11` *(Account Name)*
-- `B10:B11` *(Account Code)*
-- `C10:E10` *(Branch 1)* 
-- `F10:H10` *(Branch 2)*
-- `I10:I11` *(Average)*
+- `A10:A11 *(Account Name)*` 
+- `B10:B11 *(Account Code)*` 
+- `C10:E10 *(Branch 1)*`  
+- `F10:H10 *(Branch 2)*`
+- `I10:I11 *(Average)*`
 
-5- Bottom *Table* with thin inside border having Base Salary and Overtime Salary Data in it.
+5- Bottom **Table** with thin inside borders having *Base Salary* and *Overtime Salary* Data in it.
 
-6- **Table** with Sharing data which is merged vertically. It can not be considered as row because of, again, being merged and therefore, occupying more than one row.
+6- **Table** with *Sharing data* which is merged vertically. It can not be considered as Row because, again, being merged and therefore, occupying more than one row.
 
-7- A **Row** with Report date info
+7- A **Row** with Reporting datetime info
 
-8- A "Cell" with my name on it! at the bottom of Excel
+8- A **Cell** with my name on it! at the bottom of Excel
 
 
 ## *2- Create each Section Related Model*
