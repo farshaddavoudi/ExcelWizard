@@ -271,7 +271,7 @@ So, clearly it is a Compound Excel, not the GridLayout one. At first, we should 
 
 **1- Analyze Excel Template and Divide It to Sections**
 
-Analyze the Excel template and divide it to **Table**s, **Row**s and **Cell**s sections. In next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in the next step to create the `CompoundExcelBuilder` model by putting them all together.
+Analyze the Excel template and divide it to **Table**s, **Row**s and **Cell**s sections. In next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in the Step 3 to create the `CompoundExcelBuilder` model by putting them all together.
 
 For our example, the Excel is composed of these sections:
 
@@ -281,10 +281,13 @@ For our example, the Excel is composed of these sections:
 4- 
 5- 
 
-**2- Create each section model**
+**2- Create Each Section Model**
 
 These models are `Table` model, `Row` model and `Cell` model. All of these models are ExcelWizard models and will use in generating the main `CompoundExcelBuilder` model.
 
-**3- Create the `ExcelBuilderBuilder`**
+**3- Create the `CompoundExcelBuilder` Model**
 
 At last, we create our main model by using the sections model created in Step 2 plus other styles that are available in this class.
+
+**4- Use `ExcelWizardService` and `CompoundExcelBuilder` model (step 3) to generate our Excel**
+
