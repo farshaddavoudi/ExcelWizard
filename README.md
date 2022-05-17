@@ -264,11 +264,8 @@ So, clearly it is a Compound Excel, not the GridLayout one. At first, we should 
 ### Steps to create `CompoundExcelBuilder` model:
 
 #### 1- Analyze Excel Template and Divide It to Sections
-
 #### 2- Create Sections Model
-
 #### 3- Create the `CompoundExcelBuilder` model
-
 #### 4- Use `ExcelWizardService` and `CompoundExcelBuilder` model to generate our Excel
 
 
