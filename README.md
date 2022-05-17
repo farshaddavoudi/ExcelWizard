@@ -283,7 +283,7 @@ Then we can create our Excel step by step.
 3- Create `CompoundExcelBuilder` Model <br />
 4- Generate Excel using `ExcelWizardService` and `CompoundExcelBuilder` model (step 3)**
 
-## *1- Analyze Excel Template and Divide It into Separate Sections
+## *1- Analyze Excel Template and Divide It into Separate Sections*
 
 Analyze the Excel template and divide it into **Table**s, **Row**s, and **Cell**s sections. In the next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in Step 3 to create the `CompoundExcelBuilder` model.
 
@@ -300,14 +300,14 @@ For our example, the Excel is composed of these sections:
 5- 
 
 
-## *2- Create each Section Related Model**
+## *2- Create each Section Related Model*
 
 These models are `Table` model, `Row` model and `Cell` model. All of them are ExcelWizard models and will be used in generating the main `CompoundExcelBuilder` model (in the next step).
 
-## *3- Create `CompoundExcelBuilder` Model**
+## *3- Create `CompoundExcelBuilder` Model*
 
 Then we create our main model by using the sections model created in Step 2 plus other styles that are available in this class.
 
-## *4- Generate Excel using `ExcelWizardService` and `CompoundExcelBuilder` model (step 3)**
+## *4- Generate Excel using `ExcelWizardService` and `CompoundExcelBuilder` model (step 3)*
 
 At last, we create our gorgeous Excel! by injecting `IExcelWizardService` and using the Step 3 `compoundExcelBuilder` model. It is the easiest part! 
