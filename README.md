@@ -340,11 +340,11 @@ For our example, seeing the Excel template at a glance, we can detect it is comp
 
 4- Now it is the interesting part! the way I like to see it is a big **Table** from **A10** until **I11**. There are 
 multiple merges can be seen here, including:
-- `A10:A11 *(Account Name)*` 
-- `B10:B11 *(Account Code)*` 
-- `C10:E10 *(Branch 1)*`  
-- `F10:H10 *(Branch 2)*`
-- `I10:I11 *(Average)*`
+- `A10:A11 (Account Name)` 
+- `B10:B11 (Account Code)` 
+- `C10:E10 (Branch 1)`  
+- `F10:H10 (Branch 2)`
+- `I10:I11 (Average)`
 
 5- Bottom **Table** with thin inside borders having *Base Salary* and *Overtime Salary* Data in it.
 
@@ -358,7 +358,9 @@ multiple merges can be seen here, including:
 ## *2- Create each Section Related Model*
 
 These models are `Table` model, `Row` model and `Cell` model. All of them are ExcelWizard models and will be used in generating the main `CompoundExcelBuilder` model (in the next step).
-Note in creating these models that all of their properties have proper comments to make them clear and their names speak for themselves.
+Note in creating these models that, all properties have proper comments to make them clear and their names also speak for themselves.
+
+
 
 ## *3- Create `CompoundExcelBuilder` Model*
 
