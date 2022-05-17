@@ -252,8 +252,8 @@ Generating Excel in this case for single or multi sheets are the same. Using the
 
 Tip: We do not use any attributes (`[ExcelSheet]` and `[ExcelColumn]`) here.
 
-### Complete Example
-Lets assume we have an application related to a company financials and we want to have a custom Excel report like below format:
+### Complete Example of Building Compound Excel from Scratch
+Let's assume we have an application related to a company financials and we want to have a custom Excel report like below format:
 
 Excem Image here
 
