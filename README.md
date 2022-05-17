@@ -266,12 +266,12 @@ So, clearly it is a Compound Excel, not the GridLayout one. At first, we should 
 #### 1- Analyze Excel Template and Divide It to Sections
 #### 2- Create Sections Model
 #### 3- Create the `CompoundExcelBuilder` model
-#### 4- Use `ExcelWizardService` and `CompoundExcelBuilder` model to generate our Excel
+#### 4- Use `ExcelWizardService` and `CompoundExcelBuilder` model (step 3) to generate our Excel
 
 
 **1- Analyze Excel Template and Divide It to Sections**
 
-Analyze the Excel template and divide it to **Table**s, **Row**s and **Cell**s sections (Each section will be mapped to its ExcelWizard model), then create each section model. We use these section models in the next step to create the `CompoundExcelBuilder` model by putting them all together.
+Analyze the Excel template and divide it to **Table**s, **Row**s and **Cell**s sections. In next step, each section will be mapped to its ExcelWizard model equivalent. We use these section models in the next step to create the `CompoundExcelBuilder` model by putting them all together.
 
 For our example, the Excel is composed of these sections:
 
