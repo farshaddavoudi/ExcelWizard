@@ -259,17 +259,17 @@ Let's assume we have an application related to a company financials and we want 
 
 You can download the Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx" download> here </a>.
 
-So, clearly it is a Compound Excel, not the GridLayout one. In this case, we should fetch the report database model (DTO) to show them to our Excel.
+So, clearly it is a Compound Excel, not the GridLayout one. At first, we should fetch the report database model (DTO) to show them to our Excel.
 
 ### Steps to create `CompoundExcelBuilder` model:
 
-####1- Analyze Excel Template and Divide It to Sections
+#### 1- Analyze Excel Template and Divide It to Sections
 
-####2- Create Sections Model
+#### 2- Create Sections Model
 
-####3- Create the `CompoundExcelBuilder` model
+#### 3- Create the `CompoundExcelBuilder` model
 
-####4- Use `ExcelWizardService` and `CompoundExcelBuilder` model to generate our Excel
+#### 4- Use `ExcelWizardService` and `CompoundExcelBuilder` model to generate our Excel
 
 
 **1- Analyze Excel Template and Divide It to Sections**
