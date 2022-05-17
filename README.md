@@ -251,3 +251,41 @@ is exactly like Single sheet Grid-layout Excel (See the previous section).
 Generating Excel in this case for single or multi sheets are the same. Using the `GenerateCompoundExcel` method (`BlazorDownloadCompoundExcel` in case of Blazor application) you can create any customized Excel file. Just go along with the `CompoundExcelBuilder` argument and provide the necessary parts for your Excel.
 
 Tip: We do not use any attributes (`[ExcelSheet]` and `[ExcelColumn]`) here.
+
+### Complete Example
+Lets assume we have an application related to a company financials and we want to have a custom Excel report like below format:
+
+Excem Image here
+
+You can download the Excel from here.
+
+So, clearly it is a Compound Excel, not the GridLayout one. In this case, we should fetch all the data from our database, in other words, get the report Db Model (DTO) to convert it to our Excel.
+
+### Steps to create CompoundExcelBuilder model:
+
+**
+#####1- Analyze Excel Template and Divide It to Sections
+#####2- Create Sections Model
+#####3- Create the `CompoundExcelBuilder` model
+#####4- Use `ExcelWizardService` and `CompoundExcelBuilder` model to generate our Excel
+**
+
+**1- Analyze Excel Template and Divide It to Sections**
+
+Analyze the Excel template and divide it to **Table**s, **Row**s and **Cell**s sections (Each section will be mapped to its ExcelWizard model), then create each section model. We use these section models in the next step to create the `CompoundExcelBuilder` model by putting them all together.
+
+For our example, the Excel is composed of these sections:
+
+1- 
+2- 
+3- 
+4- 
+5- 
+
+**2- Create each section model**
+
+These models are `Table` model, `Row` model and `Cell` model. All of these models are ExcelWizard models and will use in generating the main `CompoundExcelBuilder` model.
+
+**3- Create the `ExcelBuilderBuilder`**
+
+At last, we create our main model by using the sections model created in Step 2 plus other styles that are available in this class.

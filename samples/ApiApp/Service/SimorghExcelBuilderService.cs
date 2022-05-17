@@ -40,7 +40,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // Just start with CompoundExcelBuilder and the properties names speak for themselves. Also note all properties
         // have proper comments to make them clear
 
-        // Building Excel Part: Seeing the Excel template At a glance, we can see it is created of below parts:
+        // Building Excel Parts: Seeing the Excel template At a glance, we can see it is created of below sections:
         // 1- Top header which is a Table (is not a Row because of occupying two Rows) which is Merged and became a Unite Cell
         // 2- Having a Row which is the first table Header (It can be part of the Table model, but it makes it a little hard because
         // the Table data is dynamic and it is better to see the Table header as a single Row.
@@ -385,6 +385,12 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         return new CompoundExcelBuilder
         {
             GeneratedFileName = voucherStatement.ReportName,
+
+            AllSheetsDefaultStyle = new AllSheetsDefaultStyle
+            {
+                AllSheetsDefaultTextAlign = TextAlign.Right,
+                AllSheetsDefaultDirection = SheetDirection.RightToLeft
+            },
 
             Sheets = new List<Sheet>
             {

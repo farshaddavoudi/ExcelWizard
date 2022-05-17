@@ -2,15 +2,14 @@
 {
     public class AllSheetsDefaultStyle
     {
-        public SheetDirection AllSheetsDefaultDirection { get; set; } = SheetDirection.RightToLeft;
+        public SheetDirection AllSheetsDefaultDirection { get; set; } = SheetDirection.LeftToRight;
 
-        public TextAlign AllSheetsDefaultTextAlign { get; set; } = TextAlign.Right;
+        public TextAlign AllSheetsDefaultTextAlign { get; set; } = TextAlign.Left;
 
         /// <summary>
         /// Default column width for the workbook.
         /// <para>All new worksheets will use this column width.</para>
         /// </summary>
-        // TODO: Shouldn't it use the ColumnWidth class?
         public double AllSheetsDefaultColumnWidth { get; set; } = 20;
 
         /// <summary>
