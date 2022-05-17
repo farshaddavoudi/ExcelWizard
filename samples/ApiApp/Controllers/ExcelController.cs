@@ -1,9 +1,9 @@
-﻿using ApiApp.Service;
+﻿using ApiApp.DocExampleModels;
+using ApiApp.Service;
 using ApiApp.SimorghReportModels;
 using ExcelWizard.Models;
 using ExcelWizard.Service;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace ApiApp.Controllers;
 
@@ -20,208 +20,28 @@ public class ExcelController : ControllerBase
         _simorghExcelBuilderService = simorghExcelBuilderService;
     }
 
-
-    [HttpGet("export-simple-compound-excel")]
+    [HttpGet("export-compound-excel")]
     public IActionResult ExportExcelFromExcelWizardModel()
     {
-        var excelWizardModel = new CompoundExcelBuilder
+        // Fetch data from db
+        // For demo, we use static data
+        var reportData = new AccountsReportDto
         {
-            // GeneratedFileName = "From-Model",
+            ReportName = "Accounts Report",
 
-            Sheets = new List<Sheet>
+            AccountDebitCreditList = new List<AccountDebitCredit>
             {
-                new Sheet
-                {
-                    SheetTables = new List<Table>
-                    {
-                        new()
-                            {
-                                TableRows = new List<Row>
-                                {
-                                    new()
-                                    {
-                                        RowCells = new List<Cell>
-                                        {
-                                            new(3,5)
-                                            {
-                                                Value = "احمد",
-                                                CellContentType = CellContentType.Text,
-                                                CellStyle = new CellStyle
-                                                {
-                                                    CellTextAlign = TextAlign.Center
-                                                }
-                                            }
-                                        },
-                                        MergedCellsList = new()
-                                        {
-                                            new MergedBoundaryLocation
-                                            {
-                                                FirstCellLocation = new CellLocation("C", 5),
-                                                LastCellLocation = new CellLocation("D", 5)
-                                            }
-                                        },
-                                        RowStyle = new RowStyle
-                                        {
-                                            Font = new TextFont{FontColor = Color.DarkGreen},
-                                            BackgroundColor = Color.Aqua,
-                                            RowOutsideBorder = new Border
-                                            {
-                                                BorderLineStyle = LineStyle.DashDotDot,
-                                                BorderColor = Color.Brown
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        RowCells = new List<Cell>
-                                        {
-                                            new(3,6)
-                                            {
-                                                Value = "کامبیز دیرباز",
-                                                CellContentType = CellContentType.Text,
-                                                CellStyle = new CellStyle
-                                                {
-                                                    CellTextAlign = TextAlign.Center
-                                                }
-                                            }
-                                        },
-                                        MergedCellsList = new()
-                                        {
-                                            new MergedBoundaryLocation
-                                            {
-                                                FirstCellLocation = new CellLocation("C", 6),
-                                                LastCellLocation = new CellLocation("D", 6)
-                                            }
-                                        },
-                                        RowStyle = new RowStyle
-                                        {
-                                            Font = new TextFont{FontColor = Color.DarkGreen},
-                                            BackgroundColor = Color.Aqua,
-                                            RowOutsideBorder = new Border
-                                            {
-                                                BorderLineStyle = LineStyle.DashDotDot,
-                                                BorderColor = Color.Red
-                                            }
-                                        }
-                                    },
-                                    new()
-                                    {
-                                        RowCells = new List<Cell>
-                                        {
-                                            new(3,7)
-                                            {
-                                                Value = "اصغر فرهادی",
-                                                CellContentType = CellContentType.Text
-                                            }
-                                        },
-                                        MergedCellsList = new()
-                                        {
-                                            new MergedBoundaryLocation
-                                            {
-                                                FirstCellLocation = new CellLocation("C", 7),
-                                                LastCellLocation = new CellLocation("D", 7)
-                                            }
-                                        },
-                                        RowStyle = new RowStyle
-                                        {
-                                            Font = new TextFont{FontColor = Color.DarkGreen},
-                                            BackgroundColor = Color.Aqua,
-                                            RowOutsideBorder = new Border()
-                                        }
-                                    }
-                                },
-                                //StartLocation = new Location(3,5), //TODO: Can't be inferred from First Row StartLocation???
-                                //EndLocation = new Location(4,7), //TODO: Can't be inferred from EndLocation of last Row???
-                                TableStyle = new TableStyle
-                                {
-                                    TableOutsideBorder = new Border
-                                    {
-                                        BorderLineStyle = LineStyle.Thick,
-                                        BorderColor = Color.GreenYellow
-                                    }
-                                },
-                                MergedCellsList = new List<MergedCells>
-                                {
-                                    new()
-                                    {
-                                        MergedBoundaryLocation = new()
-                                        {
-                                            FirstCellLocation = new CellLocation("C", 5),
-                                            LastCellLocation = new CellLocation("D", 6)
-                                        }
-                                    }
-                                }
-                            }
-                    },
-
-                    SheetColumnsStyle = new List<ColumnStyle>
-                    {
-                        new(3) { ColumnWidth = new ColumnWidth{ Width = 30 } },
-                        new(1) { IsColumnLocked = true, ColumnWidth = new ColumnWidth{ WidthCalculationType = ColumnWidthCalculationType.AdjustToContents }}
-                    },
-
-                    SheetRows = new List<Row>
-                    {
-                        new()
-                        {
-                            RowCells = new List<Cell>
-                            {
-                                new(3,2) {
-                                    Value = "فرشاد",
-                                    CellContentType = CellContentType.Text,
-                                    CellStyle = new CellStyle
-                                    {
-                                        CellTextAlign = TextAlign.Right
-                                    }
-                                }
-                            },
-                            MergedCellsList = new()
-                            {
-                                new MergedBoundaryLocation
-                                {
-                                    FirstCellLocation = new CellLocation("C", 2),
-                                    LastCellLocation = new CellLocation("D", 2)
-                                }
-                            },
-                            RowStyle = new RowStyle
-                            {
-                                Font = new TextFont{FontColor = Color.DarkGreen},
-                                BackgroundColor = Color.AliceBlue,
-                                RowOutsideBorder = new Border()
-                            }
-                        }
-                    },
-
-                    SheetCells = new List<Cell>
-                    {
-                        new("A",1){
-                            Value = 11,
-                            CellContentType = CellContentType.Percentage,
-                            CellStyle = new CellStyle
-                            {
-                                CellTextAlign = TextAlign.Left
-                            }
-                        },
-                        new(2, 1)
-                        {
-                            Value = 112343,
-                            CellContentType = CellContentType.Currency
-                        },
-                        new("D", 1) { Value = 112 },
-                        new(1, 2)
-                        {
-                            Value = 211,
-                            CellStyle = new CellStyle
-                            {
-                                CellTextAlign = TextAlign.Center
-                            }
-                        },
-                        new(2, 2) { Value = 212 }
-                    }
-                }
-            }
+                new() { AccountCode = "13351", Debit = 0, Credit = 50000 },
+                new() { AccountCode = "21253", Debit = 50000, Credit = 0 },
+                new() { AccountCode = "13556", Debit = 0, Credit = 1000000 },
+                new() { AccountCode = "13500", Debit = 0, Credit = 1000000 },
+                new() { AccountCode = "13499", Debit = 0, Credit = 2000000 },
+                new() { AccountCode = "22500", Debit = 4000000, Credit = 0}
+            },
+            //TODO: Continute building model
         };
 
+        var excelWizardModel = new CompoundExcelBuilder();
         return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
     }
 
@@ -287,19 +107,19 @@ public class ExcelController : ControllerBase
                 },
 
             Accounts = new List<AccountDto>
+            {
+                new()
                 {
-                   new AccountDto
-                   {
-                        Name="حقوق پایه",
-                        Code="81010"
-                   },
-
-                   new AccountDto
-                   {
-                        Name="اضافه کار",
-                        Code="81011"
-                   }
+                    Name="حقوق پایه",
+                    Code="81010"
                 },
+
+                new()
+                {
+                    Name="اضافه کار",
+                    Code="81011"
+                }
+            },
 
             VoucherStatementItem = new List<VoucherStatementItem>
                 {
