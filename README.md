@@ -259,9 +259,9 @@ Excem Image here
 
 You can download the Excel from here.
 
-So, clearly it is a Compound Excel, not the GridLayout one. In this case, we should fetch all the data from our database, in other words, get the report Db Model (DTO) to convert it to our Excel.
+So, clearly it is a Compound Excel, not the GridLayout one. In this case, we should fetch all the data from our database, in other words, get the report database model (DTO) to show them to our Excel.
 
-### Steps to create CompoundExcelBuilder model:
+### Steps to create `CompoundExcelBuilder` model:
 
 **
 #####1- Analyze Excel Template and Divide It to Sections
