@@ -257,7 +257,7 @@ Let's assume we have an application related to a company financials and we want 
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/accounts-excel-template-report.png" />
 
-You can download the Excel from <a target="blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx" download> here </a>.
+You can download the Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx" download> here </a>.
 
 So, clearly it is a Compound Excel, not the GridLayout one. In this case, we should fetch all the data from our database, in other words, get the report database model (DTO) to show them to our Excel.
 
