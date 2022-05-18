@@ -427,7 +427,8 @@ var tableCreditsDebitsData = new Table
                 {
                     // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
                     // You can see this pattern through the rest of codes
-                    // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
+                    // So that is the reason building these elements should be step by step and from top to bottom 
+                    // Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO, so the row counts cannot be static
                     new("A", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.AccountCode),
                     new("B", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.Debit) { CellContentType = CellContentType.Currency },
                     new("C", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.Credit) { CellContentType = CellContentType.Currency }
