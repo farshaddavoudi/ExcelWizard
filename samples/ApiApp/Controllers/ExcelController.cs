@@ -1,10 +1,10 @@
-﻿using System.Drawing;
-using ApiApp.DocExampleModels;
+﻿using ApiApp.DocExampleModels;
 using ApiApp.Service;
 using ApiApp.SimorghReportModels;
 using ExcelWizard.Models;
 using ExcelWizard.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace ApiApp.Controllers;
 
@@ -171,8 +171,124 @@ public class ExcelController : ControllerBase
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
             }
         };
+        //2.4- Table: Blue bg (+yellow at the end) table
+        var tableBlueBg = new Table
+        {
+            TableRows = new List<Row>
+            {
+                new()
+                {
+                    RowCells = new List<Cell>
+                    {
+                        new("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable(), "Account Name"),
+                        new("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable(), "Account Code"),
+                        new("C", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable(), "Branch 1"),
+                        new("D", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        new("E", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        new("F", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable(), "Branch 2"),
+                        new("G", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        new("H", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        new("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable(), "Average")
+                        {
+                            CellStyle =
+                            {
+                                //BackgroundColor = Color.Yellow, //Bg will set on Merged properties
+                                Font = new TextFont { FontColor = Color.Black }
+                            }
+                        }
+                    },
+                    RowStyle = new RowStyle { RowHeight = 20 }
+                },
+                new()
+                {
+                    RowCells = new List<Cell>
+                    {
+                        new("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1),
+                        new("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1),
+                        new("C", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1, "Before Sharing"),
+                        new("D", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1, "After Sharing"),
+                        new("E", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1, "Sum"),
+                        new("F", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1, "Before Sharing"),
+                        new("G", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1, "After Sharing"),
+                        new("H", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1, "Sum"),
+                        new("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                    },
+                    RowStyle = new RowStyle { RowHeight = 20 }
+                }
+            },
 
+            TableStyle = new TableStyle
+            {
+                BackgroundColor = Color.Blue,
+                Font = new TextFont { FontColor = Color.White }
+            },
 
+            MergedCellsList = new List<MergedCells>
+            {
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("C", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("E", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable())
+                    },
+                    BackgroundColor = Color.DarkBlue
+
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("F", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("H", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable())
+                    },
+                    BackgroundColor = Color.DarkBlue
+                }
+                ,
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                    },
+                    BackgroundColor = Color.Yellow
+                }
+            }
+        };
+        // 2.5- Table with Salaries data with thin borders
+        var tableSalaries = new Table
+        {
+            TableRows = accountsReportDto.AccountSalaryCodes.Select((account, index) => new Row
+            {
+                RowCells = new List<Cell>
+                {
+                    new ("A", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index, account.Name),
+                    new ("B", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index, account.Code)
+                }
+            }).ToList(),
+            TableStyle = new TableStyle
+            {
+                TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
+                InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
+            }
+        };
 
         var excelWizardModel = new CompoundExcelBuilder();
         return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
