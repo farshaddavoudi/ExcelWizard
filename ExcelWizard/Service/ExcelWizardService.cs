@@ -561,7 +561,7 @@ internal class ExcelWizardService : IExcelWizardService
 
                             headerRow.RowCells.Add(new Cell(xLocation, yLocation)
                             {
-                                Value = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
+                                CellValue = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
                                 CellStyle = new CellStyle
                                 {
                                     Font = headerFont,
@@ -592,7 +592,7 @@ internal class ExcelWizardService : IExcelWizardService
                         // Data
                         recordRow.RowCells.Add(new Cell(xLocation, yLocation + 1)
                         {
-                            Value = prop.GetValue(record),
+                            CellValue = prop.GetValue(record),
                             CellContentType = excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text,
                             CellStyle = new CellStyle
                             {
@@ -654,7 +654,7 @@ internal class ExcelWizardService : IExcelWizardService
     {
         // Infer XLDataType and value from "cell" CellType
         XLDataType? xlDataType;
-        object? cellValue = cell.Value;
+        object? cellValue = cell.CellValue;
         switch (cell.CellContentType)
         {
             case CellContentType.Number:

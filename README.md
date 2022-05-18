@@ -360,7 +360,87 @@ multiple merges can be seen here, including:
 These models are `Table` model, `Row` model and `Cell` model. All of them are ExcelWizard models and will be used in generating the main `CompoundExcelBuilder` model (in the next step).
 Note in creating these models that, all properties have proper comments to make them clear and their names also speak for themselves.
 
+**1- Table: Top Header**
+```csharp
+var tableTopHeader = new Table
+        {
+            TableRows = new List<Row>
+            {
+                new()
+                {
+                    RowCells = new List<Cell>
+                    {
+                        new("A", 1, accountsReportDto.ReportName) {
+                            CellStyle = new CellStyle
+                            {
+                                // The Cell TextAlign can be set with below property, but because most of the
+                                // Cells are TextAlign center, the better approach is to set the Sheet default TextAlign
+                                // to Center
+                                CellTextAlign = TextAlign.Center
+                            }
+                        }
+                    }
+                }
+            },
+            //TableStyle = new(), //This table do not have any special styles
+            MergedCellsList = new List<MergedCells>
+            {
+                new()
+                {
+                    MergedBoundaryLocation = new()
+                    {
+                        FirstCellLocation = new CellLocation("A", 1),
+                        LastCellLocation = new CellLocation("H", 2)
+                    }
+                }
+            }
+        };
+```
 
+**2- Row: Gray bg row (table Header)**
+```csharp
+var rowCreditsDebitsTableHeader = new Row
+        {
+            RowCells = new List<Cell>
+            {
+                new("A", 3, "Account Code"),
+                new("B", 3, "Debit"),
+                new("C", 3, "Credit")
+            },
+
+            RowStyle = new RowStyle
+            {
+                BackgroundColor = Color.LightGray
+            }
+        };
+```
+
+**3- Table: Credits, Debits table data**
+```csharp
+var tableCreditsDebitsData = new Table
+        {
+            // Using below format is recommended and make it easy to use Collection data and make dynamic Tables/Rows/Cells
+            // SomeList.Select((item, index) => ...); item: is an item of collection / index: is the loop index
+            TableRows = accountsReportDto.AccountDebitCreditList.Select((item, index) => new Row
+            {
+                RowCells = new List<Cell>
+                {
+                    // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
+                    // You can see this pattern through the rest of codes
+                    // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
+                    new("A", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.AccountCode),
+                    new("B", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.Debit) { CellContentType = CellContentType.Currency },
+                    new("C", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.Credit) { CellContentType = CellContentType.Currency }
+                }
+            }).ToList(),
+
+            TableStyle = new TableStyle
+            {
+                TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
+                InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
+            }
+        };
+```
 
 ## *3- Create `CompoundExcelBuilder` Model*
 

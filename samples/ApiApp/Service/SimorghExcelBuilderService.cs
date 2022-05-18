@@ -60,7 +60,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     RowCells = new List<Cell>
                     {
-                        new("A", 1) { Value = "گزارش تست", CellStyle = new CellStyle
+                        new("A", 1, "گزارش تست") { CellStyle = new CellStyle
                         {
                             CellTextAlign = TextAlign.Center
                         }}
@@ -86,9 +86,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         {
             RowCells = new List<Cell>
             {
-                new("A", 3) {Value = "کد حساب"},
-                new("B", 3) {Value = "بدهکار"},
-                new("C", 3) {Value = "بستانکار"}
+                new("A", 3, "کد حساب"),
+                new("B", 3, "بدهکار"),
+                new("C", 3, "بستانکار")
             },
 
             RowStyle = new RowStyle
@@ -104,9 +104,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             {
                 RowCells = new List<Cell>
                 {
-                    new("A", index + 4) { Value = item.AccountCode },
-                    new("B", index + 4) { Value = item.Debit, CellContentType = CellContentType.Currency },
-                    new("C", index + 4) { Value = item.Credit, CellContentType = CellContentType.Currency }
+                    new("A", index + 4, item.AccountCode),
+                    new("B", index + 4, item.Debit) { CellContentType = CellContentType.Currency },
+                    new("C", index + 4, item.Credit) { CellContentType = CellContentType.Currency }
                 }
             }).ToList(),
 
@@ -122,9 +122,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         {
             RowCells = new List<Cell>
             {
-                new("A", table1St.GetNextVerticalRowNumberAfterTable()) {Value = "کد حساب"},
-                new("B", table1St.GetNextVerticalRowNumberAfterTable()) {Value = "بدهکار"},
-                new("C", table1St.GetNextVerticalRowNumberAfterTable()) {Value = "بستانکار"}
+                new("A", table1St.GetNextVerticalRowNumberAfterTable()) {CellValue = "کد حساب"},
+                new("B", table1St.GetNextVerticalRowNumberAfterTable()) {CellValue = "بدهکار"},
+                new("C", table1St.GetNextVerticalRowNumberAfterTable()) {CellValue = "بستانکار"}
             },
 
             RowStyle = new RowStyle
@@ -140,9 +140,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             {
                 RowCells = new List<Cell>
                 {
-                    new("A", index + rowSecondTableHeader.GetNextRowNumberAfterRow()) { Value = item.AccountCode },
-                    new("B", index + rowSecondTableHeader.GetNextRowNumberAfterRow()) { Value = item.Debit, CellContentType = CellContentType.Currency },
-                    new("C", index + rowSecondTableHeader.GetNextRowNumberAfterRow()) { Value = item.Credit, CellContentType = CellContentType.Currency }
+                    new("A", index + rowSecondTableHeader.GetNextRowNumberAfterRow(), item.AccountCode),
+                    new("B", index + rowSecondTableHeader.GetNextRowNumberAfterRow(),item.Debit) { CellContentType = CellContentType.Currency },
+                    new("C", index + rowSecondTableHeader.GetNextRowNumberAfterRow(),item.Credit) { CellContentType = CellContentType.Currency }
                 }
             }).ToList(),
 
@@ -169,22 +169,25 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     RowCells = new List<Cell>
                     {
-                        new("A", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "نام حساب" },
-                        new("B", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "کد حساب" },
-                        new("C", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "کارخانه دان-51011" },
-                        new("D", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "" },
-                        new("E", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "" },
-                        new("F", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "پرورش پولت-51018" },
-                        new("G", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "" },
-                        new("H", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "" },
-                        new("I", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "تخم گزار تجاری-51035" },
-                        new("J", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "" },
-                        new("K", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "" },
-                        new("L", table2Nd.GetNextVerticalRowNumberAfterTable()) { Value = "میانگین", CellStyle =
+                        new("A", table2Nd.GetNextVerticalRowNumberAfterTable(), "نام حساب"),
+                        new("B", table2Nd.GetNextVerticalRowNumberAfterTable(), "کد حساب"),
+                        new("C", table2Nd.GetNextVerticalRowNumberAfterTable(), "کارخانه دان-51011"),
+                        new("D", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("E", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("F", table2Nd.GetNextVerticalRowNumberAfterTable(), "پرورش پولت-51018"),
+                        new("G", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("H", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("I", table2Nd.GetNextVerticalRowNumberAfterTable(), "تخم گزار تجاری-51035"),
+                        new("J", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("K", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        new("L", table2Nd.GetNextVerticalRowNumberAfterTable(), "میانگین") 
                         {
-                            BackgroundColor = Color.White,
-                            Font = new TextFont { FontColor = Color.Black }
-                        }}
+                            CellStyle =
+                            {
+                                BackgroundColor = Color.White,
+                                Font = new TextFont { FontColor = Color.Black }
+                            }
+                        }
                     },
                     RowStyle = new RowStyle { RowHeight = 20 }
                 },
@@ -192,18 +195,18 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     RowCells = new List<Cell>
                     {
-                        new("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "" },
-                        new("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "" },
-                        new("C", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "قبل از تسهیم" },
-                        new("D", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "بعد از تسهیم" },
-                        new("E", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "جمع" },
-                        new("F", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "قبل از تسهیم" },
-                        new("G", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "بعد از تسهیم" },
-                        new("H", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "جمع" },
-                        new("I", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "قبل از تسهیم" },
-                        new("J", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "بعد از تسهیم" },
-                        new("K", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "جمع" },
-                        new("L", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { Value = "", CellStyle =
+                        new("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1),
+                        new("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1),
+                        new("C", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "قبل از تسهیم"),
+                        new("D", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "بعد از تسهیم"),
+                        new("E", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "جمع"),
+                        new("F", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "قبل از تسهیم"),
+                        new("G", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "بعد از تسهیم"),
+                        new("H", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "جمع"),
+                        new("I", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "قبل از تسهیم"),
+                        new("J", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "بعد از تسهیم"),
+                        new("K", table2Nd.GetNextVerticalRowNumberAfterTable() + 1, "جمع"),
+                        new("L", table2Nd.GetNextVerticalRowNumberAfterTable() + 1) { CellStyle =
                         {
                             BackgroundColor = Color.White
                         }}
@@ -262,8 +265,8 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             {
                 RowCells = new List<Cell>
                 {
-                    new ("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index) { Value = account.Name },
-                    new ("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index) { Value = account.Code }
+                    new ("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index, account.Name),
+                    new ("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index, account.Code)
                 }
             }).ToList(),
             TableStyle = new TableStyle
@@ -282,16 +285,16 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     RowCells = new List<Cell>
                     {
-                        new("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
-                        new("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()) { Value = 504000 },
+                        new("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
+                        new("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable(), 504000),
                     }
                 }
             },

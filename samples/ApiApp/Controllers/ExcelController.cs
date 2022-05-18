@@ -1,4 +1,5 @@
-﻿using ApiApp.DocExampleModels;
+﻿using System.Drawing;
+using ApiApp.DocExampleModels;
 using ApiApp.Service;
 using ApiApp.SimorghReportModels;
 using ExcelWizard.Models;
@@ -81,7 +82,97 @@ public class ExcelController : ControllerBase
         //---------------------------------------------------------------
         // 1- Analyze Excel Template and Divide It into Separate Sections
         //---------------------------------------------------------------
-        // 
+        //1.1- Top header which is a Table (is not a Row because of occupying two Rows i.e. RowNumber 1 and RowNumber 2) which is Merged and became a Unit Cell
+        //1.2 - Having a Row which is the debits credits table Header(It can be part of the debits credits Table model, but it makes it a little hard because the Table data is dynamic and it is better to see the Table header as a Single Row.
+        //1.3 - First table with some dynamic data(debits and credits) which the data is in currency type
+        //1.4 - Now it is the interesting part! the way I like to see it is a big Table from A10 until I11.There are multiple merges can be seen here, including:
+        //A10:A11(Account Name)
+        //B10: B11(Account Code)
+        //C10: E10(Branch 1)
+        //F10: H10(Branch 2)
+        //I10: I11(Average)
+        //1.5 - Bottom Table with thin inside borders having Base Salary and Overtime Salary Data in it.
+        //1.6 - Table with Sharing data which is merged vertically. It can not be considered as Row because, again, being merged and therefore, occupying more than one row.
+        //1.7 - A Row with Reporting datetime info
+        //1.8 - A Cell with my name on it! at the bottom of Excel
+        //-------------------------------------
+        //2 - Create each Section Related Model
+        //-------------------------------------
+        //2.1- Table: Top Header
+        var tableTopHeader = new Table
+        {
+            TableRows = new List<Row>
+            {
+                new()
+                {
+                    RowCells = new List<Cell>
+                    {
+                        new("A", 1, accountsReportDto.ReportName) {
+                            CellStyle = new CellStyle
+                            {
+                                // The Cell TextAlign can be set with below property, but because most of the
+                                // Cells are TextAlign center, the better approach is to set the Sheet default TextAlign
+                                // to Center
+                                CellTextAlign = TextAlign.Center
+                            }
+                        }
+                    }
+                }
+            },
+            //TableStyle = new(), //This table do not have any special styles
+            MergedCellsList = new List<MergedCells>
+            {
+                new()
+                {
+                    MergedBoundaryLocation = new()
+                    {
+                        FirstCellLocation = new CellLocation("A", 1),
+                        LastCellLocation = new CellLocation("H", 2)
+                    }
+                }
+            }
+        };
+        //2.2- Row: Gray bg row (table Header)
+        var rowCreditsDebitsTableHeader = new Row
+        {
+            RowCells = new List<Cell>
+            {
+                new("A", 3, "Account Code"),
+                new("B", 3, "Debit"),
+                new("C", 3, "Credit")
+            },
+
+            RowStyle = new RowStyle
+            {
+                BackgroundColor = Color.LightGray
+            }
+        };
+        //2.3- Table: Credits, Debits table data
+        var tableCreditsDebitsData = new Table
+        {
+            // Using below format is recommended and make it easy to use Collection data and make dynamic Tables/Rows/Cells
+            // SomeList.Select((item, index) => ...); item: is an item of collection / index: is the loop index
+            TableRows = accountsReportDto.AccountDebitCreditList.Select((item, index) => new Row
+            {
+                RowCells = new List<Cell>
+                {
+                    // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
+                    // You can see this pattern through the rest of codes
+                    // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
+                    new("A", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.AccountCode),
+                    new("B", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.Debit) { CellContentType = CellContentType.Currency },
+                    new("C", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index, item.Credit) { CellContentType = CellContentType.Currency }
+                }
+            }).ToList(),
+
+            TableStyle = new TableStyle
+            {
+                TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
+                InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
+            }
+        };
+
+
 
         var excelWizardModel = new CompoundExcelBuilder();
         return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
