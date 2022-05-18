@@ -272,7 +272,7 @@ public class ExcelController : ControllerBase
                 }
             }
         };
-        // 2.5- Table with Salaries data with thin borders
+        //2.5- Table: with Salaries data with thin borders
         var tableSalaries = new Table
         {
             TableRows = accountsReportDto.AccountSalaryCodes.Select((account, index) => new Row
@@ -289,8 +289,169 @@ public class ExcelController : ControllerBase
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
             }
         };
+        //2.6- Table:  Sharing info
+        // Table with sharing before/after data
+        var tableSharingBeforeAfterData = new Table
+        {
+            TableRows = new List<Row>
+            {
+                new()
+                {
+                    RowCells = new List<Cell>
+                    {
+                        new("C", tableBlueBg.GetNextVerticalRowNumberAfterTable(), accountsReportDto.AccountSharingData
+                            .Where(s => s.AccountName == "Branch 1")
+                            .Select(s => s.AccountSharingDetail.BeforeSharing)
+                            .FirstOrDefault()),
+                        new("D", tableBlueBg.GetNextVerticalRowNumberAfterTable(), accountsReportDto.AccountSharingData
+                            .Where(s => s.AccountName == "Branch 1")
+                            .Select(s => s.AccountSharingDetail.AfterSharing)
+                            .FirstOrDefault()),
+                        new("E", tableBlueBg.GetNextVerticalRowNumberAfterTable(), accountsReportDto.AccountSharingData
+                            .Where(s => s.AccountName == "Branch 1")
+                            .Select(s => s.AccountSharingDetail.AfterSharing + s.AccountSharingDetail.BeforeSharing)
+                            .FirstOrDefault()),
+                        new("F", tableBlueBg.GetNextVerticalRowNumberAfterTable(), 11000),
+                        new("G", tableBlueBg.GetNextVerticalRowNumberAfterTable(), 10000),
+                        new("H", tableBlueBg.GetNextVerticalRowNumberAfterTable(), 21000),
+                        new("I", tableBlueBg.GetNextVerticalRowNumberAfterTable(), accountsReportDto.Average)
+                    }
+                }
+            },
+            //TableStyle = new TableStyle { TableTextAlign = TextAlign.Center }, //Inherit from Sheet TextAlign Center
+            MergedCellsList = new List<MergedCells>
+            {
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("D", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("D", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("E", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("E", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("F", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("F", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("G", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("G", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("H", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("H", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                },
+                new()
+                {
+                    MergedBoundaryLocation = new MergedBoundaryLocation
+                    {
+                        FirstCellLocation = new CellLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    }
+                }
+            }
+        };
+        //2.7- Row: Light Green row for report date
+        var rowReportDate = new Row
+        {
+            RowCells = new List<Cell>
+            {
+                new Cell("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1, DateTime.Now)
+            },
+            MergedCellsList = new List<MergedBoundaryLocation>
+            {
+                new()
+                {
+                    FirstCellLocation = new CellLocation("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1),
+                    LastCellLocation = new CellLocation("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
+                }
+            }
+        };
+        //2.8- Cell: User name (me!)
+        var cellUserName = new Cell("E", rowReportDate.GetNextRowNumberAfterRow() + 1, "Farshad Davoudi")
+        {
+            CellStyle = new CellStyle
+            {
+                BackgroundColor = Color.DarkGreen,
+                Font = new TextFont
+                {
+                    FontColor = Color.White
+                },
+                CellBorder = new Border
+                {
+                    BorderLineStyle = LineStyle.Thin,
+                    BorderColor = Color.Red
+                }
+            }
+        };
 
-        var excelWizardModel = new CompoundExcelBuilder();
+        var excelWizardModel = new CompoundExcelBuilder
+        {
+            GeneratedFileName = "AccountsReport",
+            AllSheetsDefaultStyle = new AllSheetsDefaultStyle
+            {
+                AllSheetsDefaultTextAlign = TextAlign.Center
+            },
+            Sheets = new List<Sheet>
+            {
+                new Sheet()
+                {
+                    SheetTables = new List<Table>
+                    {
+                        tableTopHeader,
+
+                        tableCreditsDebitsData,
+
+                        tableBlueBg,
+
+                        tableSalaries,
+
+                        tableSharingBeforeAfterData
+                    },
+
+                    SheetRows = new List<Row>
+                    {
+                        rowCreditsDebitsTableHeader,
+
+                        rowReportDate
+                    },
+
+                    SheetCells = new List<Cell>
+                    {
+                        cellUserName
+                    }
+                }
+            }
+        };
+
         return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
     }
 

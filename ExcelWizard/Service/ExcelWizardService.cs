@@ -754,6 +754,15 @@ internal class ExcelWizardService : IExcelWizardService
 
         if (cell.CellStyle.BackgroundColor is not null)
             locationCell.Style.Fill.SetBackgroundColor(XLColor.FromColor(cell.CellStyle.BackgroundColor.Value));
+
+        // Set Border
+        XLBorderStyleValues? cellBorder = GetXlBorderLineStyle(cell.CellStyle.CellBorder?.BorderLineStyle);
+
+        if (cellBorder is not null)
+        {
+            locationCell.Style.Border.SetOutsideBorder((XLBorderStyleValues)cell.CellStyle.CellBorder!.BorderLineStyle);
+            locationCell.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cell.CellStyle.CellBorder.BorderColor));
+        }
     }
 
     private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
@@ -836,8 +845,10 @@ internal class ExcelWizardService : IExcelWizardService
         }
     }
 
-    private XLBorderStyleValues? GetXlBorderLineStyle(LineStyle borderLineStyle)
+    private XLBorderStyleValues? GetXlBorderLineStyle(LineStyle? borderLineStyle)
     {
+        if (borderLineStyle is null) return null;
+
         return borderLineStyle switch
         {
             LineStyle.DashDotDot => XLBorderStyleValues.DashDotDot,

@@ -20,4 +20,10 @@ public class CellStyle
     /// Set Background Color for Cell. It will override the Table or Row or Column Background Colors. Default inherit
     /// </summary>
     public Color? BackgroundColor { get; set; }
+
+    /// <summary>
+    /// Set outside border of a table. Default is without border.
+    /// </summary>
+    public Border? CellBorder { get; set; }
+
 }
