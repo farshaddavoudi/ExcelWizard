@@ -17,7 +17,7 @@ Or via the dotnet CLI.
 dotnet add package ExcelWizard
 ```
 
-2. Register ExcelWizard Service in your application (API or Blazor) by using the **AddExcelWizardServices** extension.
+2. Register ExcelWizard Service in your application (API or Blazor) by using the **`AddExcelWizardServices`** extension.
 ```csharp
 // Has a `isBlazorApp` argument (default is `false`). 
 // In case of using in Blazor application, pass the true value to register necessary services.
@@ -25,7 +25,7 @@ dotnet add package ExcelWizard
 builder.Services.AddExcelWizardServices(isBlazorApp: false);
 ```
 
-3. Inject `IExcelWizardService` into your class and enjoy it!
+3. Inject **`IExcelWizardService`** into your class and enjoy it!
 
 # How much is it simple to generate/download Excel with ExcelWizard?
 
