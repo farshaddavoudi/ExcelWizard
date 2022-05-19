@@ -7,7 +7,7 @@ Using ExcelWizard, you can easily generate Excel file in a very simple and strai
 # How to Use
 1. Install `ExcelWizard` pacakge from nuget package manager.
 
-2. Register ExcelWizard Service in your application (API or Blazor) by using the AddExcelWizardServices extension.
+2. Register ExcelWizard Service in your application (API or Blazor) by using the **AddExcelWizardServices** extension.
 ```csharp
 // Has a `isBlazorApp` argument (default is `false`). 
 // In case of using in Blazor application, pass the true value to register necessary services.
