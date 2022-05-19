@@ -27,7 +27,7 @@ builder.Services.AddExcelWizardServices(isBlazorApp: false);
 
 3. Inject **`IExcelWizardService`** into your class and enjoy it!
 
-# How much is it simple to generate/download Excel with ExcelWizard?
+### How much is it simple to generate Excel with ExcelWizard?
 
 Assuming you have a collection of a model e.g. `var users = List<User>()` which you normally get it from a database and show them in a Grid or something. Now, 
 you decided to have a live Excel report from it anytime you want. Something like below:
@@ -177,7 +177,7 @@ public interface IExcelWizardService
 }
 ```
 
-# Generate *Single* Sheet Grid-Layout Excel In Details
+# Generate **Single** Sheet Grid-Layout Excel In Details
 
 For single sheet Grid-layout Excel, it is as easy as passing the data (collection of a model like `var myUsers = new List<User>();`, remember?)
 to the `GenerateGridLayoutExcel` method (or `BlazorDownloadGridLayoutExcel` in the case of the Blazor app). It will generate (download in Blazor) a very
@@ -251,7 +251,7 @@ The Result:
 You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
 can use to customize Excel.
 
-# Generate *Multiple* Sheets Grid-Layout Excel In Details
+# Generate **Multiple** Sheets Grid-Layout Excel In Details
 
 It is almost the same with a single sheet, using the second overload of the same `GenerateGridLayoutExcel` method (`BlazorDownloadGridLayoutExcel` method in case of the Blazor app) with the `GridLayoutExcelBuilder` argument 
  that should be provided to configure the Excel file. The Excel customization 
