@@ -5,7 +5,17 @@
 Using ExcelWizard, you can easily generate Excel file in a very simple and straightforward way. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 # How to Use
-1. Install `ExcelWizard` pacakge from nuget package manager.
+1. You can install the package via the nuget package manager just search for *ExcelWizard*. You can also install via powershell using the following command.
+
+```powershell
+Install-Package ExcelWizard
+```
+
+Or via the dotnet CLI.
+
+```bash
+dotnet add package ExcelWizard
+```
 
 2. Register ExcelWizard Service in your application (API or Blazor) by using the **AddExcelWizardServices** extension.
 ```csharp
