@@ -114,7 +114,7 @@ In IndexPage.razor:
 
 # Concepts
 
-### The Excel you want can be two types: 
+### The Excel you want to export can be in two layout types; *Grid-Layout* and *Compound*. 
 
 1. **Grid-layout** like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
