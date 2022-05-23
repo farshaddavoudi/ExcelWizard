@@ -269,7 +269,7 @@ Let's assume we have an application related to a company's financials and we wan
 
 You can download Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx">here</a>.
 
-So, it is a **Compound Excel**, not the **GridLayout** one. 
+So, obviously, it is a **Compound Excel**, not the **Grid-Layout** one. 
 
 We should create our Excel template (`CompoundExcelBuilder` model) using our local app model (here `accountsReportDto`), So At first, we should fetch the report model (DTO) (normally from a database).
 
