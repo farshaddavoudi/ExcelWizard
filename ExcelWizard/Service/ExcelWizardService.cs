@@ -459,9 +459,9 @@ public class ExcelWizardService : IExcelWizardService
 
             if (gridExcelSheet.DataList is IEnumerable records)
             {
-                var headerRow = new Row2();
+                var headerRow = new Row();
 
-                var dataRows = new List<Row2>();
+                var dataRows = new List<Row>();
 
                 // Get Header 
 
@@ -516,7 +516,7 @@ public class ExcelWizardService : IExcelWizardService
 
                     int xLocation = 1;
 
-                    var recordRow = new Row2
+                    var recordRow = new Row
                     {
                         RowStyle = new RowStyle
                         {
@@ -632,7 +632,7 @@ public class ExcelWizardService : IExcelWizardService
                     SheetProtectionLevel = sheetProtectionLevel,
 
                     // Header Row
-                    SheetRows = new List<Row2> { headerRow },
+                    SheetRows = new List<Row> { headerRow },
 
                     // Table Data
                     SheetTables = new List<Table>
@@ -775,7 +775,7 @@ public class ExcelWizardService : IExcelWizardService
         }
     }
 
-    private void ConfigureRow(IXLWorksheet xlSheet, Row2 row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
+    private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
     {
         row.ValidateRowInstance();
 

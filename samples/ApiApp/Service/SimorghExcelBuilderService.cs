@@ -57,9 +57,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // 8- Last Table for Bottom data which again is merged
 
         // Table: Excel Header 
-        var tableHeader = new Table
-        {
-            TableRows = new List<Row2>
+        var tableHeader = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(new List<Row>
             {
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -75,9 +75,8 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     })
                     .NoMergedCells()
                     .Build()
-            },
-            TableStyle = new(),
-            MergedCellsList = new List<MergedCells>
+            })
+            .SetMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -87,8 +86,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         LastCellLocation = new CellLocation("H", 2)
                     }
                 }
-            }
-        };
+            })
+            .NoCustomStyle()
+            .Build();
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - First table Header
         var rowFirstTableHeader = RowBuilder
@@ -106,9 +106,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .Build();
 
         // First table with header of (کد حساب - بدهکار - بستانکار)
-        var table1St = new Table
-        {
-            TableRows = voucherStatement.VoucherStatementItem.Select((item, index) =>
+        var table1St = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
@@ -118,14 +118,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     })
                     .NoMergedCells()
                     .Build()
-            ).ToList(),
-
-            TableStyle = new TableStyle
+            ).ToList())
+            .NoMergedCells()
+            .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
-            }
-        };
+            })
+            .Build();
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - Second table Header
         var rowSecondTableHeader = RowBuilder
@@ -143,9 +143,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .Build();
 
         // Second table with header of (کد حساب - بدهکار - بستانکار)
-        var table2Nd = new Table
-        {
-            TableRows = voucherStatement.VoucherStatementItem.Select((item, index) =>
+        var table2Nd = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
@@ -166,14 +166,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     })
                     .NoMergedCells()
                     .Build()
-            ).ToList(),
-
-            TableStyle = new TableStyle
+            ).ToList())
+            .NoMergedCells()
+            .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
-            }
-        };
+            })
+            .Build();
 
         // Bottom section Data Header (Blue Bg)
         // MERGES:
@@ -183,22 +183,27 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // The same pattern repeats for پرورش پولت and تخم گزاری جوجه
         // And a Vertical Merge for showing sum (K17:K18) 
         // And a Vertical Merge for Average (L17:L18)
-        var tableBottomBlueHeader = new Table
-        {
-            TableRows = new List<Row2>
+        var tableBottomBlueHeader = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(new List<Row>
             {
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
-                        CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("نام حساب").Build(),
-                        CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("کد حساب").Build(),
-                        CellBuilder.SetLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("کارخانه دان-51011").Build(),
+                        CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("نام حساب")
+                            .Build(),
+                        CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("کد حساب")
+                            .Build(),
+                        CellBuilder.SetLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable())
+                            .SetValue("کارخانه دان-51011").Build(),
                         CellBuilder.SetLocation("D", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
                         CellBuilder.SetLocation("E", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
-                        CellBuilder.SetLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("پرورش پولت-51018").Build(),
+                        CellBuilder.SetLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable())
+                            .SetValue("پرورش پولت-51018").Build(),
                         CellBuilder.SetLocation("G", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
                         CellBuilder.SetLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
-                        CellBuilder.SetLocation("I", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("تخم گزار تجاری-51035").Build(),
+                        CellBuilder.SetLocation("I", table2Nd.GetNextVerticalRowNumberAfterTable())
+                            .SetValue("تخم گزار تجاری-51035").Build(),
                         CellBuilder.SetLocation("J", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
                         CellBuilder.SetLocation("K", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
                         CellBuilder.SetLocation("L", table2Nd.GetNextVerticalRowNumberAfterTable())
@@ -206,12 +211,12 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetStyle(new CellStyle
                             {
                                 BackgroundColor = Color.White,
-                                Font = new TextFont { FontColor = Color.Black }
+                                Font = new TextFont {FontColor = Color.Black}
                             })
                             .Build()
                     })
                     .NoMergedCells()
-                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .SetStyle(new RowStyle {RowHeight = 20})
                     .Build(),
 
                 RowBuilder
@@ -219,15 +224,24 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     {
                         CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).Build(),
                         CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).Build(),
-                        CellBuilder.SetLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("قبل از تسهیم").Build(),
-                        CellBuilder.SetLocation("D", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("بعد از تسهیم").Build(),
-                        CellBuilder.SetLocation("E", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("جمع").Build(),
-                        CellBuilder.SetLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("قبل از تسهیم").Build(),
-                        CellBuilder.SetLocation("G", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("بعد از تسهیم").Build(),
-                        CellBuilder.SetLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("جمع").Build(),
-                        CellBuilder.SetLocation("I", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("قبل از تسهیم").Build(),
-                        CellBuilder.SetLocation("J", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("بعد از تسهیم").Build(),
-                        CellBuilder.SetLocation("K", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("جمع").Build(),
+                        CellBuilder.SetLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                            .SetValue("قبل از تسهیم").Build(),
+                        CellBuilder.SetLocation("D", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                            .SetValue("بعد از تسهیم").Build(),
+                        CellBuilder.SetLocation("E", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("جمع")
+                            .Build(),
+                        CellBuilder.SetLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                            .SetValue("قبل از تسهیم").Build(),
+                        CellBuilder.SetLocation("G", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                            .SetValue("بعد از تسهیم").Build(),
+                        CellBuilder.SetLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("جمع")
+                            .Build(),
+                        CellBuilder.SetLocation("I", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                            .SetValue("قبل از تسهیم").Build(),
+                        CellBuilder.SetLocation("J", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                            .SetValue("بعد از تسهیم").Build(),
+                        CellBuilder.SetLocation("K", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).SetValue("جمع")
+                            .Build(),
                         CellBuilder
                             .SetLocation("L", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
                             .SetStyle(new CellStyle
@@ -237,17 +251,10 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             ).Build()
                     })
                     .NoMergedCells()
-                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .SetStyle(new RowStyle {RowHeight = 20})
                     .Build()
-            },
-
-            TableStyle = new TableStyle
-            {
-                BackgroundColor = Color.Blue,
-                Font = new TextFont { FontColor = Color.White }
-            },
-
-            MergedCellsList = new List<MergedCells>
+            })
+            .SetMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -281,137 +288,174 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         LastCellLocation = new CellLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable())
                     }
                 }
-            }
-        };
+            })
+            .SetStyle(new TableStyle
+            {
+                BackgroundColor = Color.Blue,
+                Font = new TextFont { FontColor = Color.White }
+            })
+            .Build();
 
         // Table with Salaries data with thick borders
-        var tableSalaries = new Table
-        {
-            TableRows = voucherStatement.Accounts.Select((account, index) =>
+        var tableSalaries = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(voucherStatement.Accounts.Select((account, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
-                        CellBuilder.SetLocation("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index).SetValue(account.Name).Build(),
-                        CellBuilder.SetLocation("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index).SetValue(account.Code).Build()
+                        CellBuilder.SetLocation("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index)
+                            .SetValue(account.Name).Build(),
+                        CellBuilder.SetLocation("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index)
+                            .SetValue(account.Code).Build()
                     })
                     .NoMergedCells()
                     .Build()
-            ).ToList(),
-            TableStyle = new TableStyle
+            ).ToList())
+            .NoMergedCells()
+            .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
-            }
-        };
+            })
+            .Build();
 
         // Last table with sharing before/after data
-        var tableSharingBeforeAfterData = new Table
-        {
-            TableRows = new List<Row2>
+        var tableSharingBeforeAfterData = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(new List<Row>
             {
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
-                        CellBuilder.SetLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
-                        CellBuilder.SetLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build()
+                        CellBuilder.SetLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build(),
+                        CellBuilder.SetLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                            .SetValue(504000).Build()
                     })
                     .NoMergedCells()
                     .Build()
-            },
-            TableStyle = new TableStyle { TableTextAlign = TextAlign.Center },
-            MergedCellsList = new List<MergedCells>
+            })
+            .SetMergedCells(new List<MergedCells>
             {
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("C",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("D",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("E",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("F",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("G",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("H",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("I",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("J",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("K",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation =
+                            new CellLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("L",
+                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 }
-            }
-        };
-
+            })
+            .SetStyle(new TableStyle { TableTextAlign = TextAlign.Center })
+            .Build();
 
         return new CompoundExcelBuilder
         {

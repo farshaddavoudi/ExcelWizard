@@ -13,19 +13,20 @@ public class Table
     /// <summary>
     /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
     /// </summary>
-    public List<Row2> TableRows { get; set; } = new();
+    public List<Row> TableRows { get; internal set; } = new();
 
     /// <summary>
     /// Set Table Styles e.g. OutsideBorder, etc
     /// </summary>
-    public TableStyle TableStyle { get; set; } = new();
+    public TableStyle TableStyle { get; internal set; } = new();
 
     /// <summary>
-    /// Arbitrary property to define of Merged Cells in the current Table. The property is collection, in case
+    /// Main comment in interface
+    /// Define of Merged Cells in the current Table. The property is collection, in case
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
-    public List<MergedCells> MergedCellsList { get; set; } = new();
+    public List<MergedCells> MergedCellsList { get; internal set; } = new();
 
     // Methods
 

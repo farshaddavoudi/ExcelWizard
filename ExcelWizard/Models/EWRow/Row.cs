@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ExcelWizard.Models.EWRow;
 
-public class Row2
+public class Row
 {
     // Props
 

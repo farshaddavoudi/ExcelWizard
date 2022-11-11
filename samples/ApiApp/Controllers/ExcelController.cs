@@ -104,9 +104,9 @@ public class ExcelController : ControllerBase
         //2 - Create each Section Related Model
         //-------------------------------------
         //2.1- Table: Top Header
-        var tableTopHeader = new Table
-        {
-            TableRows = new List<Row2>
+        var tableTopHeader = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(new List<Row>
             {
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -124,9 +124,8 @@ public class ExcelController : ControllerBase
                     })
                     .NoMergedCells()
                     .Build()
-            },
-            //TableStyle = new(), //This table do not have any special styles
-            MergedCellsList = new List<MergedCells>
+            })
+            .SetMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -136,8 +135,10 @@ public class ExcelController : ControllerBase
                         LastCellLocation = new CellLocation("H", 2)
                     }
                 }
-            }
-        };
+            })
+            .NoCustomStyle()
+            .Build();
+
         //2.2- Row: Gray bg row (table Header)
         var rowCreditsDebitsTableHeader = RowBuilder
             .SetCells(new List<Cell>
@@ -155,43 +156,46 @@ public class ExcelController : ControllerBase
 
 
         //2.3- Table: Credits, Debits table data
-        var tableCreditsDebitsData = new Table
-        {
-            // Using below format is recommended and make it easy to use Collection data and make dynamic Tables/Rows/Cells
-            // SomeList.Select((item, index) => ...); item: is an item of collection / index: is the loop index
-            TableRows = accountsReportDto.AccountDebitCreditList.Select((item, index) =>
-                RowBuilder
-                    .SetCells(new List<Cell>
-                    {
-                        // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
-                        // You can see this pattern through the rest of codes
-                        // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
-                        CellBuilder.SetLocation("A", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
-                            .SetValue(item.AccountCode)
-                            .Build(),
-                        CellBuilder.SetLocation("B", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
-                            .SetValue(item.Debit)
-                            .SetContentType(CellContentType.Currency)
-                            .Build(),
-                        CellBuilder.SetLocation("C", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
-                            .SetValue(item.Credit)
-                            .SetContentType(CellContentType.Currency)
-                            .Build()
-                    })
-                    .NoMergedCells()
-                    .Build()
-                ).ToList(),
+        var tableCreditsDebitsData = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(
+                // Using below format is recommended and make it easy to use Collection data and make dynamic Tables/Rows/Cells
+                // SomeList.Select((item, index) => ...); item: is an item of collection / index: is the loop index
 
-            TableStyle = new TableStyle
+                accountsReportDto.AccountDebitCreditList.Select((item, index) =>
+                    RowBuilder
+                        .SetCells(new List<Cell>
+                        {
+                            // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
+                            // You can see this pattern through the rest of codes
+                            // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
+                            CellBuilder.SetLocation("A", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
+                                .SetValue(item.AccountCode)
+                                .Build(),
+                            CellBuilder.SetLocation("B", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
+                                .SetValue(item.Debit)
+                                .SetContentType(CellContentType.Currency)
+                                .Build(),
+                            CellBuilder.SetLocation("C", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
+                                .SetValue(item.Credit)
+                                .SetContentType(CellContentType.Currency)
+                                .Build()
+                        })
+                        .NoMergedCells()
+                        .Build()
+                ).ToList())
+            .NoMergedCells()
+            .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
-            }
-        };
+            })
+            .Build();
+
         //2.4- Table: Blue bg (+yellow at the end) table
-        var tableBlueBg = new Table
-        {
-            TableRows = new List<Row2>
+        var tableBlueBg = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(new List<Row>
             {
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -233,15 +237,8 @@ public class ExcelController : ControllerBase
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build()
-            },
-
-            TableStyle = new TableStyle
-            {
-                BackgroundColor = Color.Blue,
-                Font = new TextFont { FontColor = Color.White }
-            },
-
-            MergedCellsList = new List<MergedCells>
+            })
+            .SetMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -288,12 +285,18 @@ public class ExcelController : ControllerBase
                     },
                     BackgroundColor = Color.Yellow
                 }
-            }
-        };
+            })
+            .SetStyle(new TableStyle
+            {
+                BackgroundColor = Color.Blue,
+                Font = new TextFont { FontColor = Color.White }
+            })
+            .Build();
+
         //2.5- Table: with Salaries data with thin borders
-        var tableSalaries = new Table
-        {
-            TableRows = accountsReportDto.AccountSalaryCodes.Select((account, index) =>
+        var tableSalaries = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
@@ -304,18 +307,20 @@ public class ExcelController : ControllerBase
                     })
                     .NoMergedCells()
                     .Build()
-            ).ToList(),
-            TableStyle = new TableStyle
+            ).ToList())
+            .NoMergedCells()
+            .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
-            }
-        };
+            })
+            .Build();
+
         //2.6- Table:  Sharing info
         // Table with sharing before/after data
-        var tableSharingBeforeAfterData = new Table
-        {
-            TableRows = new List<Row2>
+        var tableSharingBeforeAfterData = TableBuilder
+            .ConstructStepByStepManually()
+            .SetRows(new List<Row>
             {
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -366,9 +371,8 @@ public class ExcelController : ControllerBase
                     })
                     .NoMergedCells()
                     .Build()
-            },
-            //TableStyle = new TableStyle { TableTextAlign = TextAlign.Center }, //Inherit from Sheet TextAlign Center
-            MergedCellsList = new List<MergedCells>
+            })
+            .SetMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -426,8 +430,10 @@ public class ExcelController : ControllerBase
                         LastCellLocation = new CellLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 }
-            }
-        };
+            })
+            .NoCustomStyle()
+            .Build();
+
         //2.7- Row: Light Green row for report date
         var rowReportDate = RowBuilder
             .SetCells(new List<Cell>
@@ -490,7 +496,7 @@ public class ExcelController : ControllerBase
                         tableSharingBeforeAfterData
                     },
 
-                    SheetRows = new List<Row2>
+                    SheetRows = new List<Row>
                     {
                         rowCreditsDebitsTableHeader,
 

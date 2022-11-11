@@ -8,7 +8,7 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
 {
     private RowBuilder() { }
 
-    private Row2 Row { get; set; } = new();
+    private Row Row { get; set; } = new();
     private bool CanBuild { get; set; }
 
     /// <summary>
@@ -18,7 +18,7 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     {
         return new RowBuilder
         {
-            Row = new Row2
+            Row = new Row
             {
                 RowCells = rowCells
             }
@@ -63,7 +63,7 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
         return this;
     }
 
-    public Row2 Build()
+    public Row Build()
     {
         if (CanBuild is false)
             throw new InvalidOperationException("Cannot build Row because some necessary information not provided");
