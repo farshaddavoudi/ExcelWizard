@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ExcelWizard.Models.EWCell;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWRow;
 
 public class Row
 {

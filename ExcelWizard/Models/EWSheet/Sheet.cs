@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWColumn;
+using ExcelWizard.Models.EWRow;
+using ExcelWizard.Models.EWTable;
+using System.Collections.Generic;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWSheet;
 
 public class Sheet
 {

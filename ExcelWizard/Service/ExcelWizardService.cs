@@ -2,6 +2,10 @@
 using ClosedXML.Excel;
 using ClosedXML.Report.Utils;
 using ExcelWizard.Models;
+using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWColumn;
+using ExcelWizard.Models.EWRow;
+using ExcelWizard.Models.EWSheet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,13 +15,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Border = ExcelWizard.Models.Border;
+using Border = ExcelWizard.Models.EWStyles.Border;
 using Color = System.Drawing.Color;
-using Table = ExcelWizard.Models.Table;
+using Table = ExcelWizard.Models.EWTable.Table;
 
 namespace ExcelWizard.Service;
 
-internal class ExcelWizardService : IExcelWizardService
+public class ExcelWizardService : IExcelWizardService
 {
     private readonly IBlazorDownloadFileService _blazorDownloadFileService;
 
@@ -559,16 +563,19 @@ internal class ExcelWizardService : IExcelWizardService
                                 ? defaultFontWeight != FontWeight.Normal
                                 : excelWizardColumnAttribute.FontWeight == FontWeight.Bold;
 
-                            headerRow.RowCells.Add(new Cell(xLocation, yLocation)
-                            {
-                                CellValue = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
-                                CellStyle = new CellStyle
+                            Cell headerCell = CellBuilder
+                                .SetLocation(xLocation, yLocation)
+                                .SetValue(excelWizardColumnAttribute?.HeaderName ?? prop.Name)
+                                .SetStyle(new CellStyle
                                 {
                                     Font = headerFont,
-                                    CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.HeaderTextAlign)
-                                },
-                                CellContentType = CellContentType.Text,
-                            });
+                                    CellTextAlign = GetCellTextAlign(defaultTextAlign,
+                                        excelWizardColumnAttribute?.HeaderTextAlign)
+                                })
+                                .SetContentType(CellContentType.Text)
+                                .Build();
+
+                            headerRow.RowCells.Add(headerCell);
 
                             headerRow.RowStyle.RowHeight = excelWizardSheetAttribute?.HeaderHeight == 0 ? null : excelWizardSheetAttribute?.HeaderHeight;
 
@@ -590,16 +597,19 @@ internal class ExcelWizardService : IExcelWizardService
                         }
 
                         // Data
-                        recordRow.RowCells.Add(new Cell(xLocation, yLocation + 1)
-                        {
-                            CellValue = prop.GetValue(record),
-                            CellContentType = excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text,
-                            CellStyle = new CellStyle
+                        var dataCell = CellBuilder
+                            .SetLocation(xLocation, yLocation + 1)
+                            .SetValue(prop.GetValue(record))
+                            .SetContentType(excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text)
+                            .SetStyle(new CellStyle
                             {
                                 Font = finalFont,
-                                CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.DataTextAlign)
-                            }
-                        });
+                                CellTextAlign = GetCellTextAlign(defaultTextAlign,
+                                    excelWizardColumnAttribute?.DataTextAlign)
+                            })
+                            .Build();
+
+                        recordRow.RowCells.Add(dataCell);
 
                         xLocation++;
                     }

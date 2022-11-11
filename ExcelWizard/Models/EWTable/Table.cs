@@ -1,9 +1,10 @@
-﻿
+﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWRow;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWTable;
 
 public class Table
 {
@@ -100,7 +101,7 @@ public class Table
 
         return lastTableCell.ColumnNumber + 1;
     }
-    
+
     public int GetNextVerticalRowNumberAfterTable()
     {
         var lastTableCell = GetTableLastCellLocation();

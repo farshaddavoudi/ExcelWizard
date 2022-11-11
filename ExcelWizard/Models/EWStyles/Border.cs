@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWStyles;
 
 public class Border
 {

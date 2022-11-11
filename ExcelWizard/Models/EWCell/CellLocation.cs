@@ -18,9 +18,9 @@ public class CellLocation
         RowNumber = rowNumber;
     }
 
-    public int ColumnNumber { get; set; }
+    public int ColumnNumber { get; }
 
-    public int RowNumber { get; set; }
+    public int RowNumber { get; }
 
     /// <summary>
     /// Get Cell Location Display Name, e.g. "A2" or "B13"
