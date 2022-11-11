@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace ExcelWizard.Models.EWTable;
 
-public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMergedCellsStatusTableBuilder, IExpectStyleTableBuilder
+public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMergedCellsStatusInManualProcessTableBuilder,
+    IExpectStyleTableBuilder, IExpectMergedCellsStatusInModelTableBuilder
 {
     private TableBuilder() { }
 
@@ -14,10 +15,14 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
     /// <summary>
     /// Automatically build the Table using the model data and attributes. Model should be an IEnumerable object i.e. list of an item
     /// </summary>
-    /// <param name="dataList"></param>
-    public static void ConstructUsingModelAutomatically(object dataList)
+    /// <param name="dataList">The model instance of list of an item. The type should b configured by attributes for some styles and other configs </param>
+    /// <param name="tableStartPoint"> The start location of the table. The end point will be calculated dynamically </param>
+    public static IExpectMergedCellsStatusInModelTableBuilder ConstructUsingModelAutomatically(object dataList, CellLocation tableStartPoint)
     {
-
+        return new TableBuilder
+        {
+            Table = new Table()
+        };
     }
 
     /// <summary>
@@ -31,7 +36,7 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         };
     }
 
-    public IExpectMergedCellsStatusTableBuilder SetRows(List<Row> tableRows)
+    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(List<Row> tableRows)
     {
         if (tableRows.Count == 0)
             throw new ArgumentException("Table instance Rows cannot be an empty list");
@@ -41,7 +46,7 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         return this;
     }
 
-    public IExpectStyleTableBuilder SetMergedCells(List<MergedCells> mergedCellsList)
+    public IExpectStyleTableBuilder SetTableMergedCells(List<MergedCells> mergedCellsList)
     {
         if (mergedCellsList.Count > 0)
             CanBuild = true;
@@ -51,7 +56,7 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         return this;
     }
 
-    public IExpectStyleTableBuilder NoMergedCells()
+    public IExpectStyleTableBuilder HasNoMergedCells()
     {
         CanBuild = true;
 
@@ -67,6 +72,23 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
 
     public TableBuilder NoCustomStyle()
     {
+        return this;
+    }
+
+    public TableBuilder SetMergedCells(List<MergedCells> mergedCellsList)
+    {
+        if (mergedCellsList.Count > 0)
+            CanBuild = true;
+
+        Table.MergedCellsList = mergedCellsList;
+
+        return this;
+    }
+
+    public TableBuilder NoMergedCells()
+    {
+        CanBuild = true;
+
         return this;
     }
 

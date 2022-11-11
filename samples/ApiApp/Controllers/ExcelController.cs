@@ -125,7 +125,7 @@ public class ExcelController : ControllerBase
                     .NoMergedCells()
                     .Build()
             })
-            .SetMergedCells(new List<MergedCells>
+            .SetTableMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -184,7 +184,7 @@ public class ExcelController : ControllerBase
                         .NoMergedCells()
                         .Build()
                 ).ToList())
-            .NoMergedCells()
+            .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
@@ -238,7 +238,7 @@ public class ExcelController : ControllerBase
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build()
             })
-            .SetMergedCells(new List<MergedCells>
+            .SetTableMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -308,7 +308,7 @@ public class ExcelController : ControllerBase
                     .NoMergedCells()
                     .Build()
             ).ToList())
-            .NoMergedCells()
+            .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
@@ -372,7 +372,7 @@ public class ExcelController : ControllerBase
                     .NoMergedCells()
                     .Build()
             })
-            .SetMergedCells(new List<MergedCells>
+            .SetTableMergedCells(new List<MergedCells>
             {
                 new()
                 {

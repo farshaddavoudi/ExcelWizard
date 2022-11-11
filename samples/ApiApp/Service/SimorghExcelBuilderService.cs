@@ -76,7 +76,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .Build()
             })
-            .SetMergedCells(new List<MergedCells>
+            .SetTableMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -119,7 +119,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .Build()
             ).ToList())
-            .NoMergedCells()
+            .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
@@ -167,7 +167,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .Build()
             ).ToList())
-            .NoMergedCells()
+            .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
@@ -254,7 +254,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .SetStyle(new RowStyle {RowHeight = 20})
                     .Build()
             })
-            .SetMergedCells(new List<MergedCells>
+            .SetTableMergedCells(new List<MergedCells>
             {
                 new()
                 {
@@ -311,7 +311,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .Build()
             ).ToList())
-            .NoMergedCells()
+            .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
@@ -351,7 +351,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .Build()
             })
-            .SetMergedCells(new List<MergedCells>
+            .SetTableMergedCells(new List<MergedCells>
             {
                 new()
                 {
