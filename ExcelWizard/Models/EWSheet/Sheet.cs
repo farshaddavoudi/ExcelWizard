@@ -23,7 +23,7 @@ public class Sheet
     /// Insert one or more Row(s) records into the Sheet.
     /// Each Row is consist of some Cells with more style options to configure easily
     /// </summary>
-    public List<Row> SheetRows { get; set; } = new();
+    public List<Row2> SheetRows { get; set; } = new();
 
     /// <summary>
     /// Insert one or more Cell(s) items directly into the Sheet.

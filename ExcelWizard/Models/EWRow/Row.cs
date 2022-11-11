@@ -5,29 +5,26 @@ using System.Linq;
 
 namespace ExcelWizard.Models.EWRow;
 
-public class Row
+public class Row2
 {
     // Props
 
     /// <summary>
     /// Each Row contains one or more Cell(s). It is required as Row definition cannot be without Cells.
     /// </summary>
-    public List<Cell> RowCells { get; set; } = new();
+    public List<Cell> RowCells { get; internal set; } = new();
 
     /// <summary>
     /// Set Row Styles including Bg, Font, Height, Borders and etc
     /// </summary>
-    public RowStyle RowStyle { get; set; } = new();
+    public RowStyle RowStyle { get; internal set; } = new();
 
     /// <summary>
     /// Arbitrary property to define Location of Merged Cells in the current Row. The property is collection, in case
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public List<MergedBoundaryLocation> MergedCellsList { get; set; } = new();
-
-    // TODO: R&D about it
-    public string? Formulas { get; set; }
+    public List<MergedBoundaryLocation> MergedCellsList { get; internal set; } = new();
 
     // Methods
 

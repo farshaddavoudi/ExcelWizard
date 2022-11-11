@@ -59,11 +59,10 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // Table: Excel Header 
         var tableHeader = new Table
         {
-            TableRows = new List<Row>
+            TableRows = new List<Row2>
             {
-                new()
-                {
-                    RowCells = new List<Cell>
+                RowBuilder
+                    .SetCells(new List<Cell>
                     {
                         CellBuilder
                             .SetLocation("A", 1)
@@ -73,8 +72,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                                 CellTextAlign = TextAlign.Center
                             })
                             .Build()
-                    }
-                }
+                    })
+                    .NoMergedCells()
+                    .Build()
             },
             TableStyle = new(),
             MergedCellsList = new List<MergedCells>
@@ -91,33 +91,34 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         };
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - First table Header
-        var rowFirstTableHeader = new Row
-        {
-            RowCells = new List<Cell>
+        var rowFirstTableHeader = RowBuilder
+            .SetCells(new List<Cell>
             {
                 CellBuilder.SetLocation("A", 3).SetValue("کد حساب").Build(),
                 CellBuilder.SetLocation("B", 3).SetValue("بدهکار").Build(),
                 CellBuilder.SetLocation("C", 3).SetValue("بستانکار").Build()
-            },
-
-            RowStyle = new RowStyle
+            })
+            .NoMergedCells()
+            .SetStyle(new RowStyle
             {
                 BackgroundColor = Color.Gray
-            }
-        };
+            })
+            .Build();
 
         // First table with header of (کد حساب - بدهکار - بستانکار)
         var table1St = new Table
         {
-            TableRows = voucherStatement.VoucherStatementItem.Select((item, index) => new Row
-            {
-                RowCells = new List<Cell>
-                {
-                    CellBuilder.SetLocation("A", 4).SetValue(item.AccountCode).Build(),
-                    CellBuilder.SetLocation("B", 4).SetValue(item.Debit).SetContentType(CellContentType.Currency).Build(),
-                    CellBuilder.SetLocation("C", 4).SetValue(item.Credit).SetContentType(CellContentType.Currency).Build()
-                }
-            }).ToList(),
+            TableRows = voucherStatement.VoucherStatementItem.Select((item, index) =>
+                RowBuilder
+                    .SetCells(new List<Cell>
+                    {
+                        CellBuilder.SetLocation("A", 4).SetValue(item.AccountCode).Build(),
+                        CellBuilder.SetLocation("B", 4).SetValue(item.Debit).SetContentType(CellContentType.Currency).Build(),
+                        CellBuilder.SetLocation("C", 4).SetValue(item.Credit).SetContentType(CellContentType.Currency).Build()
+                    })
+                    .NoMergedCells()
+                    .Build()
+            ).ToList(),
 
             TableStyle = new TableStyle
             {
@@ -127,43 +128,45 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         };
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - Second table Header
-        var rowSecondTableHeader = new Row
-        {
-            RowCells = new List<Cell>
+        var rowSecondTableHeader = RowBuilder
+            .SetCells(new List<Cell>
             {
                 CellBuilder.SetLocation("A", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("کد حساب").Build(),
                 CellBuilder.SetLocation("B", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بدهکار").Build(),
                 CellBuilder.SetLocation("C", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بستانکار").Build(),
-            },
-            RowStyle = new RowStyle
+            })
+            .NoMergedCells()
+            .SetStyle(new RowStyle
             {
                 BackgroundColor = Color.Gray
-            }
-        };
+            })
+            .Build();
 
         // Second table with header of (کد حساب - بدهکار - بستانکار)
         var table2Nd = new Table
         {
-            TableRows = voucherStatement.VoucherStatementItem.Select((item, index) => new Row
-            {
-                RowCells = new List<Cell>
-                {
-                    CellBuilder
-                        .SetLocation("A", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
-                        .SetValue(item.AccountCode)
-                        .Build(),
-                    CellBuilder
-                        .SetLocation("B", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
-                        .SetValue(item.Debit)
-                        .SetContentType(CellContentType.Currency)
-                        .Build(),
-                    CellBuilder
-                        .SetLocation("C", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
-                        .SetValue(item.Credit)
-                        .SetContentType(CellContentType.Currency)
-                        .Build()
-                }
-            }).ToList(),
+            TableRows = voucherStatement.VoucherStatementItem.Select((item, index) =>
+                RowBuilder
+                    .SetCells(new List<Cell>
+                    {
+                        CellBuilder
+                            .SetLocation("A", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
+                            .SetValue(item.AccountCode)
+                            .Build(),
+                        CellBuilder
+                            .SetLocation("B", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
+                            .SetValue(item.Debit)
+                            .SetContentType(CellContentType.Currency)
+                            .Build(),
+                        CellBuilder
+                            .SetLocation("C", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
+                            .SetValue(item.Credit)
+                            .SetContentType(CellContentType.Currency)
+                            .Build()
+                    })
+                    .NoMergedCells()
+                    .Build()
+            ).ToList(),
 
             TableStyle = new TableStyle
             {
@@ -182,11 +185,10 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // And a Vertical Merge for Average (L17:L18)
         var tableBottomBlueHeader = new Table
         {
-            TableRows = new List<Row>
+            TableRows = new List<Row2>
             {
-                new()
-                {
-                    RowCells = new List<Cell>
+                RowBuilder
+                    .SetCells(new List<Cell>
                     {
                         CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("نام حساب").Build(),
                         CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("کد حساب").Build(),
@@ -207,12 +209,13 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                                 Font = new TextFont { FontColor = Color.Black }
                             })
                             .Build()
-                    },
-                    RowStyle = new RowStyle { RowHeight = 20 }
-                },
-                new()
-                {
-                    RowCells = new List<Cell>
+                    })
+                    .NoMergedCells()
+                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .Build(),
+
+                RowBuilder
+                    .SetCells(new List<Cell>
                     {
                         CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).Build(),
                         CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).Build(),
@@ -228,13 +231,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder
                             .SetLocation("L", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
                             .SetStyle(new CellStyle
-                            {
-                                BackgroundColor = Color.White
-                            }
-                        ).Build()
-                    },
-                    RowStyle = new RowStyle { RowHeight = 20 }
-                }
+                                {
+                                    BackgroundColor = Color.White
+                                }
+                            ).Build()
+                    })
+                    .NoMergedCells()
+                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .Build()
             },
 
             TableStyle = new TableStyle
@@ -283,14 +287,16 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // Table with Salaries data with thick borders
         var tableSalaries = new Table
         {
-            TableRows = voucherStatement.Accounts.Select((account, index) => new Row
-            {
-                RowCells = new List<Cell>
-                {
-                    CellBuilder.SetLocation("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index).SetValue(account.Name).Build(),
-                    CellBuilder.SetLocation("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index).SetValue(account.Code).Build()
-                }
-            }).ToList(),
+            TableRows = voucherStatement.Accounts.Select((account, index) =>
+                RowBuilder
+                    .SetCells(new List<Cell>
+                    {
+                        CellBuilder.SetLocation("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index).SetValue(account.Name).Build(),
+                        CellBuilder.SetLocation("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index).SetValue(account.Code).Build()
+                    })
+                    .NoMergedCells()
+                    .Build()
+            ).ToList(),
             TableStyle = new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
@@ -301,11 +307,10 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // Last table with sharing before/after data
         var tableSharingBeforeAfterData = new Table
         {
-            TableRows = new List<Row>
+            TableRows = new List<Row2>
             {
-                new()
-                {
-                    RowCells = new List<Cell>
+                RowBuilder
+                    .SetCells(new List<Cell>
                     {
                         CellBuilder.SetLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
                         CellBuilder.SetLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
@@ -317,8 +322,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder.SetLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
                         CellBuilder.SetLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build(),
                         CellBuilder.SetLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()).SetValue(504000).Build()
-                    }
-                }
+                    })
+                    .NoMergedCells()
+                    .Build()
             },
             TableStyle = new TableStyle { TableTextAlign = TextAlign.Center },
             MergedCellsList = new List<MergedCells>

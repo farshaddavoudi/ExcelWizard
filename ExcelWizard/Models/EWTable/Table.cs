@@ -13,7 +13,7 @@ public class Table
     /// <summary>
     /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
     /// </summary>
-    public List<Row> TableRows { get; set; } = new();
+    public List<Row2> TableRows { get; set; } = new();
 
     /// <summary>
     /// Set Table Styles e.g. OutsideBorder, etc
