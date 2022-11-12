@@ -39,6 +39,8 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
 
         bool isHeaderAlreadyCalculated = false;
 
+        bool hasHeader = true;
+
         int yLocation = tableStartPoint.RowNumber;
 
         var borderType = LineStyle.Thin;
@@ -55,7 +57,7 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
 
                 var excelTableAttribute = record.GetType().GetCustomAttribute<ExcelTableAttribute>();
 
-                var hasHeader = excelTableAttribute.HasHeader;
+                hasHeader = excelTableAttribute.HasHeader;
 
                 var tableDefaultFontWeight = excelTableAttribute.FontWeight;
 
@@ -184,7 +186,10 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
 
         // End of calculations 
 
-        List<Row> allRows = new List<Row> { headerRow };
+        List<Row> allRows = new List<Row>();
+
+        if (hasHeader)
+            allRows.Add(headerRow);
 
         allRows.AddRange(dataRows);
 
