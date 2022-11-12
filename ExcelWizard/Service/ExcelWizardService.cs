@@ -4,8 +4,10 @@ using ClosedXML.Report.Utils;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWColumn;
+using ExcelWizard.Models.EWGridLayout;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWSheet;
+using ExcelWizard.Models.EWStyles;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -465,7 +467,7 @@ public class ExcelWizardService : IExcelWizardService
 
                 // Get Header 
 
-                bool headerCalculated = false;
+                bool isHeaderAlreadyCalculated = false;
 
                 int yLocation = 1;
 
@@ -485,32 +487,32 @@ public class ExcelWizardService : IExcelWizardService
                 {
                     // Each record is an entire row of Excel
 
-                    var excelWizardSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
+                    var excelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
 
-                    sheetName = excelWizardSheetAttribute?.SheetName;
+                    sheetName = excelSheetAttribute?.SheetName;
 
-                    sheetDirection = excelWizardSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
+                    sheetDirection = excelSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
 
-                    var defaultFontWeight = excelWizardSheetAttribute?.FontWeight;
+                    var defaultFontWeight = excelSheetAttribute?.FontWeight;
 
                     var defaultFont = new TextFont
                     {
-                        FontName = excelWizardSheetAttribute?.FontName,
-                        FontSize = excelWizardSheetAttribute?.FontSize == 0 ? null : excelWizardSheetAttribute?.FontSize,
-                        FontColor = Color.FromKnownColor(excelWizardSheetAttribute?.FontColor ?? KnownColor.Black),
+                        FontName = excelSheetAttribute?.FontName,
+                        FontSize = excelSheetAttribute?.FontSize == 0 ? null : excelSheetAttribute?.FontSize,
+                        FontColor = Color.FromKnownColor(excelSheetAttribute?.FontColor ?? KnownColor.Black),
                         IsBold = defaultFontWeight == FontWeight.Bold
                     };
 
-                    isSheetLocked = excelWizardSheetAttribute?.IsSheetLocked ?? false;
+                    isSheetLocked = excelSheetAttribute?.IsSheetLocked ?? false;
 
-                    var isSheetHardProtected = excelWizardSheetAttribute?.IsSheetHardProtected ?? false;
+                    var isSheetHardProtected = excelSheetAttribute?.IsSheetHardProtected ?? false;
 
                     if (isSheetHardProtected)
                         sheetProtectionLevel.HardProtect = true;
 
-                    borderType = excelWizardSheetAttribute?.BorderType ?? LineStyle.Thin;
+                    borderType = excelSheetAttribute?.BorderType ?? LineStyle.Thin;
 
-                    var defaultTextAlign = excelWizardSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
+                    var defaultTextAlign = excelSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
 
                     PropertyInfo[] properties = record.GetType().GetProperties();
 
@@ -520,17 +522,17 @@ public class ExcelWizardService : IExcelWizardService
                     {
                         RowStyle = new RowStyle
                         {
-                            RowHeight = excelWizardSheetAttribute?.DataRowHeight == 0 ? null : excelWizardSheetAttribute?.DataRowHeight,
-                            BackgroundColor = excelWizardSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.DataBackgroundColor) : Color.Transparent
+                            RowHeight = excelSheetAttribute?.DataRowHeight == 0 ? null : excelSheetAttribute?.DataRowHeight,
+                            BackgroundColor = excelSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(excelSheetAttribute.DataBackgroundColor) : Color.Transparent
                         }
                     };
 
                     // Each loop is a Column
                     foreach (var prop in properties)
                     {
-                        var excelWizardColumnAttribute = (ExcelColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelColumnAttribute);
+                        var excelSheetColumnAttribute = (ExcelSheetColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelSheetColumnAttribute);
 
-                        if (excelWizardColumnAttribute?.Ignore ?? false)
+                        if (excelSheetColumnAttribute?.Ignore ?? false)
                             continue;
 
                         TextAlign GetCellTextAlign(TextAlign defaultAlign, TextAlign? headerOrDataTextAlign)
@@ -544,42 +546,42 @@ public class ExcelWizardService : IExcelWizardService
 
                         var finalFont = new TextFont
                         {
-                            FontName = excelWizardColumnAttribute?.FontName ?? defaultFont.FontName,
-                            FontSize = excelWizardColumnAttribute?.FontSize is null || excelWizardColumnAttribute.FontSize == 0 ? defaultFont.FontSize : excelWizardColumnAttribute.FontSize,
-                            FontColor = excelWizardColumnAttribute is null || excelWizardColumnAttribute.FontColor == KnownColor.Transparent
+                            FontName = excelSheetColumnAttribute?.FontName ?? defaultFont.FontName,
+                            FontSize = excelSheetColumnAttribute?.FontSize is null || excelSheetColumnAttribute.FontSize == 0 ? defaultFont.FontSize : excelSheetColumnAttribute.FontSize,
+                            FontColor = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontColor == KnownColor.Transparent
                             ? defaultFont.FontColor.Value
-                            : Color.FromKnownColor(excelWizardColumnAttribute.FontColor),
-                            IsBold = excelWizardColumnAttribute is null || excelWizardColumnAttribute.FontWeight == FontWeight.Inherit
+                            : Color.FromKnownColor(excelSheetColumnAttribute.FontColor),
+                            IsBold = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontWeight == FontWeight.Inherit
                             ? defaultFont.IsBold
-                            : excelWizardColumnAttribute.FontWeight == FontWeight.Bold
+                            : excelSheetColumnAttribute.FontWeight == FontWeight.Bold
                         };
 
                         // Header
-                        if (headerCalculated is false)
+                        if (isHeaderAlreadyCalculated is false)
                         {
                             var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
 
-                            headerFont.IsBold = excelWizardColumnAttribute is null || excelWizardColumnAttribute.FontWeight == FontWeight.Inherit
+                            headerFont.IsBold = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontWeight == FontWeight.Inherit
                                 ? defaultFontWeight != FontWeight.Normal
-                                : excelWizardColumnAttribute.FontWeight == FontWeight.Bold;
+                                : excelSheetColumnAttribute.FontWeight == FontWeight.Bold;
 
                             Cell headerCell = CellBuilder
                                 .SetLocation(xLocation, yLocation)
-                                .SetValue(excelWizardColumnAttribute?.HeaderName ?? prop.Name)
+                                .SetValue(excelSheetColumnAttribute?.HeaderName ?? prop.Name)
                                 .SetStyle(new CellStyle
                                 {
                                     Font = headerFont,
                                     CellTextAlign = GetCellTextAlign(defaultTextAlign,
-                                        excelWizardColumnAttribute?.HeaderTextAlign)
+                                        excelSheetColumnAttribute?.HeaderTextAlign)
                                 })
                                 .SetContentType(CellContentType.Text)
                                 .Build();
 
                             headerRow.RowCells.Add(headerCell);
 
-                            headerRow.RowStyle.RowHeight = excelWizardSheetAttribute?.HeaderHeight == 0 ? null : excelWizardSheetAttribute?.HeaderHeight;
+                            headerRow.RowStyle.RowHeight = excelSheetAttribute?.HeaderHeight == 0 ? null : excelSheetAttribute?.HeaderHeight;
 
-                            headerRow.RowStyle.BackgroundColor = excelWizardSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
+                            headerRow.RowStyle.BackgroundColor = excelSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
 
                             headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
@@ -590,8 +592,8 @@ public class ExcelWizardService : IExcelWizardService
                             {
                                 ColumnWidth = new ColumnWidth
                                 {
-                                    Width = excelWizardColumnAttribute?.ColumnWidth == 0 ? null : excelWizardColumnAttribute?.ColumnWidth,
-                                    WidthCalculationType = excelWizardColumnAttribute is null || excelWizardColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
+                                    Width = excelSheetColumnAttribute?.ColumnWidth == 0 ? null : excelSheetColumnAttribute?.ColumnWidth,
+                                    WidthCalculationType = excelSheetColumnAttribute is null || excelSheetColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
                                 }
                             });
                         }
@@ -600,12 +602,12 @@ public class ExcelWizardService : IExcelWizardService
                         var dataCell = CellBuilder
                             .SetLocation(xLocation, yLocation + 1)
                             .SetValue(prop.GetValue(record))
-                            .SetContentType(excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text)
+                            .SetContentType(excelSheetColumnAttribute?.ExcelDataContentType ?? CellContentType.Text)
                             .SetStyle(new CellStyle
                             {
                                 Font = finalFont,
                                 CellTextAlign = GetCellTextAlign(defaultTextAlign,
-                                    excelWizardColumnAttribute?.DataTextAlign)
+                                    excelSheetColumnAttribute?.DataTextAlign)
                             })
                             .Build();
 
@@ -618,7 +620,7 @@ public class ExcelWizardService : IExcelWizardService
 
                     yLocation++;
 
-                    headerCalculated = true;
+                    isHeaderAlreadyCalculated = true;
                 }
 
                 excelWizardBuilder.Sheets.Add(new Sheet

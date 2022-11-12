@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace ExcelWizard.Models.EWRow;
 
 public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
+, IExpectBuildMethodRowBuilder, IExpectStyleRowBuilder
 {
     private RowBuilder() { }
 
@@ -31,7 +32,7 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public RowBuilder SetMergedCells(List<MergedBoundaryLocation> mergedCellsList)
+    public IExpectStyleRowBuilder SetMergedCells(List<MergedBoundaryLocation> mergedCellsList)
     {
         if (mergedCellsList.Count > 0)
             CanBuild = true;
@@ -46,20 +47,22 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     /// In case we don't have any merge in the Row 
     /// </summary>
     /// <returns></returns>
-    public RowBuilder NoMergedCells()
+    public IExpectStyleRowBuilder NoMergedCells()
     {
         CanBuild = true;
 
         return this;
     }
 
-    /// <summary>
-    /// Set Row Styles including Bg, Font, Height, Borders and etc
-    /// </summary>
-    public RowBuilder SetStyle(RowStyle rowStyle)
+    public IExpectBuildMethodRowBuilder SetStyle(RowStyle rowStyle)
     {
         Row.RowStyle = rowStyle;
 
+        return this;
+    }
+
+    public IExpectBuildMethodRowBuilder NoCustomStyle()
+    {
         return this;
     }
 
@@ -70,5 +73,4 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
 
         return Row;
     }
-
 }

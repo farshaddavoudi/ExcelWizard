@@ -1,4 +1,6 @@
-﻿namespace ExcelWizard.Models.EWSheet
+﻿using ExcelWizard.Models.EWStyles;
+
+namespace ExcelWizard.Models.EWSheet
 {
     public class AllSheetsDefaultStyle
     {

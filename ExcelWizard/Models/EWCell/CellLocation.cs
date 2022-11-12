@@ -1,4 +1,4 @@
-﻿namespace ExcelWizard.Models;
+﻿namespace ExcelWizard.Models.EWCell;
 
 public class CellLocation
 {
@@ -18,8 +18,14 @@ public class CellLocation
         RowNumber = rowNumber;
     }
 
+    /// <summary>
+    /// X Location
+    /// </summary>
     public int ColumnNumber { get; }
 
+    /// <summary>
+    /// Y Location
+    /// </summary>
     public int RowNumber { get; }
 
     /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace ExcelWizard.Models.EWColumn;
+﻿using ExcelWizard.Models.EWStyles;
+
+namespace ExcelWizard.Models.EWColumn;
 
 public class ColumnStyle
 {

@@ -37,12 +37,12 @@ public interface IExpectStyleTableBuilder
     /// <summary>
     /// Set Table Styles e.g. OutsideBorder, etc
     /// </summary>
-    TableBuilder SetStyle(TableStyle tableStyle);
+    IExpectBuildMethodInManualTableBuilder SetStyle(TableStyle tableStyle);
 
     /// <summary>
     /// No custom styles for the table
     /// </summary>
-    TableBuilder NoCustomStyle();
+    IExpectBuildMethodInManualTableBuilder NoCustomStyle();
 }
 
 public interface IExpectMergedCellsStatusInModelTableBuilder
@@ -52,11 +52,21 @@ public interface IExpectMergedCellsStatusInModelTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
-    TableBuilder SetMergedCells(List<MergedCells> mergedCellsList);
+    IExpectBuildMethodInModelTableBuilder SetMergedCells(List<MergedCells> mergedCellsList);
 
     /// <summary>
     /// In case we don't have any merge in the Table
     /// </summary>
     /// <returns></returns>
-    TableBuilder NoMergedCells();
+    IExpectBuildMethodInModelTableBuilder NoMergedCells();
+}
+
+public interface IExpectBuildMethodInModelTableBuilder
+{
+    Table Build();
+}
+
+public interface IExpectBuildMethodInManualTableBuilder
+{
+    Table Build();
 }

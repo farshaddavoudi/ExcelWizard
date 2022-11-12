@@ -1,26 +1,28 @@
-﻿using System;
+﻿using ExcelWizard.Models.EWStyles;
+using System;
 using System.Drawing;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWTable;
 
 /// <summary>
-/// Configure the Excel Column mapped to this property
+/// Configure the Table Columns 
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class ExcelColumnAttribute : Attribute
+public class ExcelTableColumnAttribute : Attribute
 {
     /// <summary>
-    /// Ignore the Column from being shown in exported Excel
+    /// Ignore the Column from being shown in exported Excel. It also will not occupy any location
     /// </summary>
     public bool Ignore { get; set; }
 
     /// <summary>
-    /// Column Header Name 
+    /// Column Header Name. Default is the property name.
+    /// It will be ignored if Table HasHeader property is set to false 
     /// </summary>
     public string? HeaderName { get; set; }
 
     /// <summary>
-    /// Header Text Align. Will override default one
+    /// Header Text Align. Will override default oneWill be ignored if Table HasHeader property is set to false 
     /// </summary>
     public TextAlign HeaderTextAlign { get; set; } = TextAlign.Inherit;
 
@@ -30,14 +32,9 @@ public class ExcelColumnAttribute : Attribute
     public TextAlign DataTextAlign { get; set; } = TextAlign.Inherit;
 
     /// <summary>
-    ///  Excel Data Type. Default is Text type
+    ///  Table column data type. Default is Text type
     /// </summary>
-    public CellContentType ExcelDataContentType { get; set; } = CellContentType.Text;
-
-    /// <summary>
-    /// Column Width. If 0 it means Width automatically set to AdjustToContents
-    /// </summary>
-    public int ColumnWidth { get; set; }
+    public CellContentType DataContentType { get; set; } = CellContentType.Text;
 
     /// <summary>
     /// Column FontFamily Name
@@ -45,7 +42,7 @@ public class ExcelColumnAttribute : Attribute
     public string? FontName { get; set; }
 
     /// <summary>
-    /// Column FontColor. Transparent color means reverting back to Sheet FontColor
+    /// Column FontColor. Transparent color means reverting back to Table FontColor
     /// </summary>
     public KnownColor FontColor { get; set; } = KnownColor.Transparent;
 
@@ -55,7 +52,7 @@ public class ExcelColumnAttribute : Attribute
     public int FontSize { get; set; }
 
     /// <summary>
-    /// Is Column Font Bold. Inherit means revert back to Sheet Font Weight (IsBold property)
+    /// Is Column Font Bold. Inherit means revert back to Table Font Weight
     /// </summary>
     public FontWeight FontWeight { get; set; } = FontWeight.Inherit;
 }

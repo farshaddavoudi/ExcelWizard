@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ExcelWizard.Models.EWCell;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExcelWizard.Models;
 

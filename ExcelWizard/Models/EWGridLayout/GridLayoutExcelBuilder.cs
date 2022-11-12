@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWGridLayout;
 
 public class GridLayoutExcelBuilder
 {

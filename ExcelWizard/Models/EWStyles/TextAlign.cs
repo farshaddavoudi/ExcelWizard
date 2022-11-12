@@ -1,4 +1,4 @@
-﻿namespace ExcelWizard.Models;
+﻿namespace ExcelWizard.Models.EWStyles;
 
 public enum TextAlign
 {

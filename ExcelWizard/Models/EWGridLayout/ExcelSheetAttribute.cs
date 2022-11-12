@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ExcelWizard.Models.EWStyles;
+using System;
 using System.Drawing;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWGridLayout;
 
 /// <summary>
-/// Configure the Excel generic properties
+/// Configure the Excel generic properties in a grid layout Excel schema
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class ExcelSheetAttribute : Attribute

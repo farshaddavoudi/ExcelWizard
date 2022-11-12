@@ -123,6 +123,7 @@ public class ExcelController : ControllerBase
                             .Build()
                     })
                     .NoMergedCells()
+                    .NoCustomStyle()
                     .Build()
             })
             .SetTableMergedCells(new List<MergedCells>
@@ -139,58 +140,66 @@ public class ExcelController : ControllerBase
             .NoCustomStyle()
             .Build();
 
-        //2.2- Row: Gray bg row (table Header)
-        var rowCreditsDebitsTableHeader = RowBuilder
-            .SetCells(new List<Cell>
-            {
-                CellBuilder.SetLocation("A", 3).SetValue("Account Code").Build(),
-                CellBuilder.SetLocation("B", 3).SetValue("Debit").Build(),
-                CellBuilder.SetLocation("C", 3).SetValue("Credit").Build()
-            })
+
+
+        //2.* New Concept of Model binding
+        Table tableCreditsDebits = TableBuilder
+            .ConstructUsingModelAutomatically(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
             .NoMergedCells()
-            .SetStyle(new RowStyle
-            {
-                BackgroundColor = Color.LightGray
-            })
             .Build();
 
+        ////2.2- Row: Gray bg row (table Header)
+        //var rowCreditsDebitsTableHeader2 = RowBuilder
+        //    .SetCells(new List<Cell>
+        //    {
+        //        CellBuilder.SetLocation("A", 3).SetValue("Account Code").Build(),
+        //        CellBuilder.SetLocation("B", 3).SetValue("Debit").Build(),
+        //        CellBuilder.SetLocation("C", 3).SetValue("Credit").Build()
+        //    })
+        //    .NoMergedCells()
+        //    .SetStyle(new RowStyle
+        //    {
+        //        BackgroundColor = Color.LightGray
+        //    })
+        //    .Build();
 
-        //2.3- Table: Credits, Debits table data
-        var tableCreditsDebitsData = TableBuilder
-            .ConstructStepByStepManually()
-            .SetRows(
-                // Using below format is recommended and make it easy to use Collection data and make dynamic Tables/Rows/Cells
-                // SomeList.Select((item, index) => ...); item: is an item of collection / index: is the loop index
+        ////2.3- Table: Credits, Debits table data
+        //var tableCreditsDebitsData2 = TableBuilder
+        //    .ConstructStepByStepManually()
+        //    .SetRows(
+        //        // Using below format is recommended and make it easy to use Collection data and make dynamic Tables/Rows/Cells
+        //        // SomeList.Select((item, index) => ...); item: is an item of collection / index: is the loop index
 
-                accountsReportDto.AccountDebitCreditList.Select((item, index) =>
-                    RowBuilder
-                        .SetCells(new List<Cell>
-                        {
-                            // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
-                            // You can see this pattern through the rest of codes
-                            // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
-                            CellBuilder.SetLocation("A", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
-                                .SetValue(item.AccountCode)
-                                .Build(),
-                            CellBuilder.SetLocation("B", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
-                                .SetValue(item.Debit)
-                                .SetContentType(CellContentType.Currency)
-                                .Build(),
-                            CellBuilder.SetLocation("C", rowCreditsDebitsTableHeader.GetNextRowNumberAfterRow() + index)
-                                .SetValue(item.Credit)
-                                .SetContentType(CellContentType.Currency)
-                                .Build()
-                        })
-                        .NoMergedCells()
-                        .Build()
-                ).ToList())
-            .HasNoMergedCells()
-            .SetStyle(new TableStyle
-            {
-                TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
-                InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
-            })
-            .Build();
+        //        accountsReportDto.AccountDebitCreditList.Select((item, index) =>
+        //            RowBuilder
+        //                .SetCells(new List<Cell>
+        //                {
+        //                    // Notice in getting the Table RowNumber using its top Section (rowCreditsDebitsTableHeader)
+        //                    // You can see this pattern through the rest of codes
+        //                    // So that is the reason building these elements should be step by step and from top to bottom (Remember the Excel data is dynamic and the number of Credits/Debits rows can be varying according to DTO)
+        //                    CellBuilder.SetLocation("A", rowCreditsDebitsTableHeader2.GetNextRowNumberAfterRow() + index)
+        //                        .SetValue(item.AccountCode)
+        //                        .Build(),
+        //                    CellBuilder.SetLocation("B", rowCreditsDebitsTableHeader2.GetNextRowNumberAfterRow() + index)
+        //                        .SetValue(item.Debit)
+        //                        .SetContentType(CellContentType.Currency)
+        //                        .Build(),
+        //                    CellBuilder.SetLocation("C", rowCreditsDebitsTableHeader2.GetNextRowNumberAfterRow() + index)
+        //                        .SetValue(item.Credit)
+        //                        .SetContentType(CellContentType.Currency)
+        //                        .Build()
+        //                })
+        //                .NoMergedCells()
+        //                .NoCustomStyle()
+        //                .Build()
+        //        ).ToList())
+        //    .HasNoMergedCells()
+        //    .SetStyle(new TableStyle
+        //    {
+        //        TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
+        //        InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
+        //    })
+        //    .Build();
 
         //2.4- Table: Blue bg (+yellow at the end) table
         var tableBlueBg = TableBuilder
@@ -200,15 +209,15 @@ public class ExcelController : ControllerBase
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
-                        CellBuilder.SetLocation("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).SetValue("Account Name").Build(),
-                        CellBuilder.SetLocation("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).SetValue("Account Code").Build(),
-                        CellBuilder.SetLocation("C", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).SetValue("Branch 1").Build(),
-                        CellBuilder.SetLocation("D", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).Build(),
-                        CellBuilder.SetLocation("E", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).Build(),
-                        CellBuilder.SetLocation("F", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).SetValue("Branch 2").Build(),
-                        CellBuilder.SetLocation("G", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).Build(),
-                        CellBuilder.SetLocation("H", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()).Build(),
-                        CellBuilder.SetLocation("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable())
+                        CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).SetValue("Account Name").Build(),
+                        CellBuilder.SetLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).SetValue("Account Code").Build(),
+                        CellBuilder.SetLocation("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).SetValue("Branch 1").Build(),
+                        CellBuilder.SetLocation("D", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).Build(),
+                        CellBuilder.SetLocation("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).Build(),
+                        CellBuilder.SetLocation("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).SetValue("Branch 2").Build(),
+                        CellBuilder.SetLocation("G", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).Build(),
+                        CellBuilder.SetLocation("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).Build(),
+                        CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                             .SetValue("Average")
                             .SetStyle(new CellStyle
                             {
@@ -224,15 +233,15 @@ public class ExcelController : ControllerBase
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
-                        CellBuilder.SetLocation("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).Build(),
-                        CellBuilder.SetLocation("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).Build(),
-                        CellBuilder.SetLocation("C", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Before Sharing").Build(),
-                        CellBuilder.SetLocation("D", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).SetValue("After Sharing").Build(),
-                        CellBuilder.SetLocation("E", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Sum").Build(),
-                        CellBuilder.SetLocation("F", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Before Sharing").Build(),
-                        CellBuilder.SetLocation("G", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).SetValue("After Sharing").Build(),
-                        CellBuilder.SetLocation("H", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Sum").Build(),
-                        CellBuilder.SetLocation("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1).Build()
+                        CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).Build(),
+                        CellBuilder.SetLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).Build(),
+                        CellBuilder.SetLocation("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Before Sharing").Build(),
+                        CellBuilder.SetLocation("D", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).SetValue("After Sharing").Build(),
+                        CellBuilder.SetLocation("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Sum").Build(),
+                        CellBuilder.SetLocation("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Before Sharing").Build(),
+                        CellBuilder.SetLocation("G", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).SetValue("After Sharing").Build(),
+                        CellBuilder.SetLocation("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).SetValue("Sum").Build(),
+                        CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1).Build()
                     })
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
@@ -244,24 +253,24 @@ public class ExcelController : ControllerBase
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("A", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation = new CellLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("B", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation = new CellLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("C", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("E", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable())
+                        FirstCellLocation = new CellLocation("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                     },
                     BackgroundColor = Color.DarkBlue
 
@@ -270,8 +279,8 @@ public class ExcelController : ControllerBase
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("F", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("H", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable())
+                        FirstCellLocation = new CellLocation("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                     },
                     BackgroundColor = Color.DarkBlue
                 }
@@ -280,8 +289,8 @@ public class ExcelController : ControllerBase
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("I", tableCreditsDebitsData.GetNextVerticalRowNumberAfterTable() + 1)
+                        FirstCellLocation = new CellLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
+                        LastCellLocation = new CellLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                     },
                     BackgroundColor = Color.Yellow
                 }
@@ -306,6 +315,7 @@ public class ExcelController : ControllerBase
                             .SetValue(account.Code).Build()
                     })
                     .NoMergedCells()
+                    .NoCustomStyle()
                     .Build()
             ).ToList())
             .HasNoMergedCells()
@@ -370,6 +380,7 @@ public class ExcelController : ControllerBase
                             .Build()
                     })
                     .NoMergedCells()
+                    .NoCustomStyle()
                     .Build()
             })
             .SetTableMergedCells(new List<MergedCells>
@@ -451,6 +462,7 @@ public class ExcelController : ControllerBase
                     LastCellLocation = new CellLocation("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
                 }
             })
+            .NoCustomStyle()
             .Build();
 
         //2.8- Cell: User name (me!)
@@ -487,7 +499,7 @@ public class ExcelController : ControllerBase
                     {
                         tableTopHeader,
 
-                        tableCreditsDebitsData,
+                        tableCreditsDebits,
 
                        tableBlueBg,
 
@@ -498,7 +510,7 @@ public class ExcelController : ControllerBase
 
                     SheetRows = new List<Row>
                     {
-                        rowCreditsDebitsTableHeader,
+                        //rowCreditsDebitsTableHeader,
 
                         rowReportDate
                     },

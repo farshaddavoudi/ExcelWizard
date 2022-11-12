@@ -14,11 +14,29 @@ public interface IExpectMergedCellsStatusRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    RowBuilder SetMergedCells(List<MergedBoundaryLocation> mergedCellsList);
+    IExpectStyleRowBuilder SetMergedCells(List<MergedBoundaryLocation> mergedCellsList);
 
     /// <summary>
     /// In case we don't have any merge in the Row
     /// </summary>
     /// <returns></returns>
-    RowBuilder NoMergedCells();
+    IExpectStyleRowBuilder NoMergedCells();
+}
+
+public interface IExpectStyleRowBuilder
+{
+    /// <summary>
+    /// Set Row Styles including Bg, Font, Height, Borders and etc
+    /// </summary>
+    IExpectBuildMethodRowBuilder SetStyle(RowStyle rowStyle);
+
+    /// <summary>
+    /// No custom styles for the row
+    /// </summary>
+    IExpectBuildMethodRowBuilder NoCustomStyle();
+}
+
+public interface IExpectBuildMethodRowBuilder
+{
+    Row Build();
 }

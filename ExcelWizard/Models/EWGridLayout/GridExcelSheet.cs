@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWGridLayout;
 
 public class GridExcelSheet
 {

@@ -1,5 +1,6 @@
 ﻿using BlazorDownloadFile;
 using ExcelWizard.Models;
+using ExcelWizard.Models.EWGridLayout;
 using System.Threading.Tasks;
 
 namespace ExcelWizard.Service;

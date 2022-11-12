@@ -1,4 +1,6 @@
-﻿namespace ExcelWizard.Models;
+﻿using ExcelWizard.Models.EWStyles;
+
+namespace ExcelWizard.Models;
 
 public class SheetStyle
 {
