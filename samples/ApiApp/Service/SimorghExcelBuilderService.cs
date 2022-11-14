@@ -58,7 +58,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Table: Excel Header 
         var tableHeader = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -108,7 +108,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // First table with header of (کد حساب - بدهکار - بستانکار)
         var table1St = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -146,7 +146,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Second table with header of (کد حساب - بدهکار - بستانکار)
         var table2Nd = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -187,7 +187,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // And a Vertical Merge for showing sum (K17:K18) 
         // And a Vertical Merge for Average (L17:L18)
         var tableBottomBlueHeader = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -301,7 +301,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Table with Salaries data with thick borders
         var tableSalaries = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(voucherStatement.Accounts.Select((account, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -325,7 +325,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Last table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -474,11 +474,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
             Sheets = new List<Sheet>
             {
-                new()
-                {
-                    SheetName = "RemainReport",
-
-                    SheetTables = new()
+                SheetBuilder
+                    .SetName("RemainReport")
+                    .SetTables(new()
                     {
                         tableHeader,
                         table1St,
@@ -486,16 +484,15 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         tableBottomBlueHeader,
                         tableSalaries,
                         tableSharingBeforeAfterData
-                    },
-
-                    SheetRows = new()
+                    })
+                    .SetRows(new()
                     {
                         rowFirstTableHeader,
                         rowSecondTableHeader
-                    },
-
-                    SheetCells = new()
-                }
+                    })
+                    .NoMoreTablesRowsOrCells()
+                    .NoCustomStyle()
+                    .Build()
             }
         };
     }

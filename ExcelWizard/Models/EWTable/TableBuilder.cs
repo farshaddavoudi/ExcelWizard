@@ -20,11 +20,11 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
     private bool CanBuild { get; set; }
 
     /// <summary>
-    /// Automatically build the Table using the model data and attributes. Model should be an IEnumerable object i.e. list of an item
+    /// Automatically construct the Table using a model data and attributes. Model should be an IEnumerable object i.e. list of an item
     /// </summary>
     /// <param name="dataList">The model instance of list of an item. The type should b configured by attributes for some styles and other configs </param>
     /// <param name="tableStartPoint"> The start location of the table. The end point will be calculated dynamically </param>
-    public static IExpectMergedCellsStatusInModelTableBuilder ConstructUsingModelAutomatically(object dataList, CellLocation tableStartPoint)
+    public static IExpectMergedCellsStatusInModelTableBuilder UseAModelToBuild(object dataList, CellLocation tableStartPoint)
     {
         var isObjectDataList = dataList is IEnumerable;
 
@@ -210,7 +210,7 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
     /// <summary>
     /// Manually build the Table defining its properties and styles step by step
     /// </summary>
-    public static IExpectRowsTableBuilder ConstructStepByStepManually()
+    public static IExpectRowsTableBuilder StepByStepManually()
     {
         return new TableBuilder
         {

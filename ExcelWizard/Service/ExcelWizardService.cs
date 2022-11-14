@@ -278,7 +278,7 @@ public class ExcelWizardService : IExcelWizardService
             //-------------------------------------------
             //  Columns properties
             //-------------------------------------------
-            foreach (var columnStyle in sheet.SheetColumnsStyle)
+            foreach (var columnStyle in sheet.SheetStyle.ColumnsStyle)
             {
                 // Infer XLAlignment from "ColumnProp"
                 var columnAlignmentHorizontalValue = columnStyle.ColumnTextAlign switch
@@ -327,7 +327,7 @@ public class ExcelWizardService : IExcelWizardService
 
                 foreach (var tableRow in table.TableRows)
                 {
-                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                    ConfigureRow(xlSheet, tableRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
                 }
 
                 // Config Bg
@@ -418,7 +418,7 @@ public class ExcelWizardService : IExcelWizardService
             //-------------------------------------------
             foreach (var sheetRow in sheet.SheetRows)
             {
-                ConfigureRow(xlSheet, sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureRow(xlSheet, sheetRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
             }
 
             //-------------------------------------------
@@ -429,7 +429,7 @@ public class ExcelWizardService : IExcelWizardService
                 if (cell.IsCellVisible is false)
                     continue;
 
-                ConfigureCell(xlSheet, cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureCell(xlSheet, cell, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
             }
 
             // Apply sheet merges here
@@ -627,7 +627,7 @@ public class ExcelWizardService : IExcelWizardService
                 {
                     SheetName = sheetName,
 
-                    SheetStyle = new SheetStyle { SheetDirection = sheetDirection },
+                    SheetStyle = new SheetStyle { SheetDirection = sheetDirection, ColumnsStyle = columnsStyle },
 
                     IsSheetLocked = isSheetLocked,
 
@@ -647,10 +647,7 @@ public class ExcelWizardService : IExcelWizardService
                                 TableOutsideBorder = new Border { BorderLineStyle = borderType }
                             }
                         }
-                    },
-
-                    // Columns
-                    SheetColumnsStyle = columnsStyle
+                    }
                 });
             }
             else

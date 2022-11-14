@@ -105,7 +105,7 @@ public class ExcelController : ControllerBase
         //-------------------------------------
         //2.1- Table: Top Header
         var tableTopHeader = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -144,7 +144,7 @@ public class ExcelController : ControllerBase
 
         //2.* New Concept of Model binding
         Table tableCreditsDebits = TableBuilder
-            .ConstructUsingModelAutomatically(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
+            .UseAModelToBuild(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
             .NoMergedCells()
             .Build();
 
@@ -203,7 +203,7 @@ public class ExcelController : ControllerBase
 
         //2.4- Table: Blue bg (+yellow at the end) table
         var tableBlueBg = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -304,7 +304,7 @@ public class ExcelController : ControllerBase
 
         //2.5- Table: with Salaries data with thin borders
         var tableSalaries = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -329,7 +329,7 @@ public class ExcelController : ControllerBase
         //2.6- Table:  Sharing info
         // Table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
-            .ConstructStepByStepManually()
+            .StepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -493,33 +493,18 @@ public class ExcelController : ControllerBase
             },
             Sheets = new List<Sheet>
             {
-                new Sheet()
-                {
-                    SheetTables = new List<Table>
-                    {
-                        tableTopHeader,
-
-                        tableCreditsDebits,
-
-                       tableBlueBg,
-
-                        tableSalaries,
-
-                        tableSharingBeforeAfterData
-                    },
-
-                    SheetRows = new List<Row>
-                    {
-                        //rowCreditsDebitsTableHeader,
-
-                        rowReportDate
-                    },
-
-                    SheetCells = new List<Cell>
-                    {
-                        cellUserName
-                    }
-                }
+                SheetBuilder
+                    .SetName("Sheet1")
+                    .SetTable(tableTopHeader)
+                    .SetTable(tableCreditsDebits)
+                    .SetTable(tableBlueBg)
+                    .SetTable(tableSalaries)
+                    .SetTable(tableSharingBeforeAfterData)
+                    .SetRow(rowReportDate)
+                    .SetCell(cellUserName)
+                    .NoMoreTablesRowsOrCells()
+                    .NoCustomStyle()
+                    .Build()
             }
         };
 
