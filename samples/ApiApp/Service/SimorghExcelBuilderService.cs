@@ -41,8 +41,8 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
     private ExcelModel GetExcelModelFromVoucherStatementResult(VoucherStatementResult voucherStatement)
     {
         // It is the heart of using the ExcelWizard package to generate your desired Excel report
-        // You should create your Excel template (CompoundExcelBuilder model) using your local app model (here VoucherStatementResult)
-        // Just start with CompoundExcelBuilder and the properties names speak for themselves. Also note all properties
+        // You should create your Excel template (ExcelBuilder model) using your local app model (here VoucherStatementResult)
+        // Just start with ExcelBuilder and the properties names speak for themselves. Also note all properties
         // have proper comments to make them clear
 
         // Building Excel Parts: Seeing the Excel template At a glance, we can see it is created of below sections:

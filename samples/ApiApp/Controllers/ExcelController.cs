@@ -26,7 +26,7 @@ public class ExcelController : ControllerBase
         _simorghExcelBuilderService = simorghExcelBuilderService;
     }
 
-    [HttpGet("export-compound-excel")]
+    [HttpGet("export-complex-layout-excel")]
     public IActionResult ExportExcelFromExcelWizardModel()
     {
         // Fetch data from db
@@ -535,12 +535,12 @@ public class ExcelController : ControllerBase
         return Ok(generatedExcelFile);
     }
 
-    [HttpGet("export-simorgh-report-compound-excel")]
-    public IActionResult ExportExcelFromSimorghCompoundReport()
+    [HttpGet("export-simorgh-report-complex-layout-excel")]
+    public IActionResult ExportExcelFromSimorghComplexReport()
     {
         var voucherStatementPageResult = new VoucherStatementResult
         {
-            ReportName = "ExcelWizard Compound Report",
+            ReportName = "ExcelWizard Complex Report",
 
             SummaryAccounts = new List<SummaryAccount>
                 {

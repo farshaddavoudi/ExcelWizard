@@ -71,7 +71,7 @@ public interface IExpectStyleSheetBuilder
 public interface IExpectOtherPropsAndBuildSheetBuilder
 {
     /// <summary>
-    /// Will override the CompoundExcelBuilder AreSheetsLockedByDefault value. Default will inherit
+    /// Will override the ExcelBuilder AreSheetsLockedByDefault value. Default will inherit
     /// </summary>
     IExpectOtherPropsAndBuildSheetBuilder SetLockedStatus(bool isLocked);
 
