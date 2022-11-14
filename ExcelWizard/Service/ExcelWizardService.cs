@@ -4,22 +4,14 @@ using ClosedXML.Report.Utils;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWColumn;
-using ExcelWizard.Models.EWGridLayout;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWSheet;
 using ExcelWizard.Models.EWStyles;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Border = ExcelWizard.Models.EWStyles.Border;
-using Color = System.Drawing.Color;
-using Table = ExcelWizard.Models.EWTable.Table;
 
 namespace ExcelWizard.Service;
 
@@ -36,7 +28,7 @@ public class ExcelWizardService : IExcelWizardService
 
     #endregion
 
-    public GeneratedExcelFile GenerateCompoundExcel(ExcelModel excelModel)
+    public GeneratedExcelFile GenerateExcel(ExcelModel excelModel)
     {
         using var xlWorkbook = ClosedXmlEngine(excelModel);
 
@@ -53,7 +45,7 @@ public class ExcelWizardService : IExcelWizardService
         return new GeneratedExcelFile { FileName = excelModel.GeneratedFileName, Content = content };
     }
 
-    public string GenerateCompoundExcel(ExcelModel excelModel, string savePath)
+    public string GenerateExcel(ExcelModel excelModel, string savePath)
     {
         using var xlWorkbook = ClosedXmlEngine(excelModel);
 
@@ -68,69 +60,12 @@ public class ExcelWizardService : IExcelWizardService
         return saveUrl;
     }
 
-    public GeneratedExcelFile GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
+    public async Task<DownloadFileResult> GenerateAndDownloadExcelInBlazor(ExcelModel excelModel)
     {
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(multiSheetsGridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder);
-    }
-
-    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList, string? generatedFileName)
-    {
-        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder
-        {
-            GeneratedFileName = generatedFileName,
-
-            Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
-        };
-
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder);
-    }
-
-    public string GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder, string savePath)
-    {
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(multiSheetsGridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder, savePath);
-    }
-
-    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath, string generatedFileName)
-    {
-        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder
-        {
-            GeneratedFileName = generatedFileName,
-
-            Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
-        };
-
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder, savePath);
-    }
-
-    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
-    {
-        var generatedFile = GenerateGridLayoutExcel(multiSheetsGridLayoutExcelBuilder);
+        var generatedFile = GenerateExcel(excelModel);
 
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
-
-    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null)
-    {
-        var generatedFile = GenerateGridLayoutExcel(singleSheetDataList, generatedFileName);
-
-        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
-    }
-
-    public async Task<DownloadFileResult> BlazorDownloadCompoundExcel(ExcelModel excelModel)
-    {
-        var generatedFile = GenerateCompoundExcel(excelModel);
-
-        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
-    }
-
 
     #region Private Methods
 
@@ -446,217 +381,6 @@ public class ExcelWizardService : IExcelWizardService
         }
 
         return xlWorkbook;
-    }
-
-    private ExcelModel ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
-    {
-        var excelWizardBuilder = new ExcelModel();
-
-        if (gridLayoutExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace() is false)
-            excelWizardBuilder.GeneratedFileName = gridLayoutExcelBuilder.GeneratedFileName;
-
-        foreach (var gridExcelSheet in gridLayoutExcelBuilder.Sheets)
-        {
-            gridExcelSheet.ValidateGridExcelSheetInstance();
-
-            if (gridExcelSheet.DataList is IEnumerable records)
-            {
-                var headerRow = new Row();
-
-                var dataRows = new List<Row>();
-
-                // Get Header 
-
-                bool isHeaderAlreadyCalculated = false;
-
-                int yLocation = 1;
-
-                string? sheetName = null;
-
-                var borderType = LineStyle.Thin;
-
-                var columnsStyle = new List<ColumnStyle>();
-
-                SheetDirection sheetDirection = SheetDirection.LeftToRight;
-
-                bool isSheetLocked = false;
-
-                ProtectionLevel sheetProtectionLevel = new();
-
-                foreach (var record in records)
-                {
-                    // Each record is an entire row of Excel
-
-                    var excelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
-
-                    sheetName = excelSheetAttribute?.SheetName;
-
-                    sheetDirection = excelSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
-
-                    var defaultFontWeight = excelSheetAttribute?.FontWeight;
-
-                    var defaultFont = new TextFont
-                    {
-                        FontName = excelSheetAttribute?.FontName,
-                        FontSize = excelSheetAttribute?.FontSize == 0 ? null : excelSheetAttribute?.FontSize,
-                        FontColor = Color.FromKnownColor(excelSheetAttribute?.FontColor ?? KnownColor.Black),
-                        IsBold = defaultFontWeight == FontWeight.Bold
-                    };
-
-                    isSheetLocked = excelSheetAttribute?.IsSheetLocked ?? false;
-
-                    var isSheetHardProtected = excelSheetAttribute?.IsSheetHardProtected ?? false;
-
-                    if (isSheetHardProtected)
-                        sheetProtectionLevel.HardProtect = true;
-
-                    borderType = excelSheetAttribute?.BorderType ?? LineStyle.Thin;
-
-                    var defaultTextAlign = excelSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
-
-                    PropertyInfo[] properties = record.GetType().GetProperties();
-
-                    int xLocation = 1;
-
-                    var recordRow = new Row
-                    {
-                        RowStyle = new RowStyle
-                        {
-                            RowHeight = excelSheetAttribute?.DataRowHeight == 0 ? null : excelSheetAttribute?.DataRowHeight,
-                            BackgroundColor = excelSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(excelSheetAttribute.DataBackgroundColor) : Color.Transparent
-                        }
-                    };
-
-                    // Each loop is a Column
-                    foreach (var prop in properties)
-                    {
-                        var excelSheetColumnAttribute = (ExcelSheetColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelSheetColumnAttribute);
-
-                        if (excelSheetColumnAttribute?.Ignore ?? false)
-                            continue;
-
-                        TextAlign GetCellTextAlign(TextAlign defaultAlign, TextAlign? headerOrDataTextAlign)
-                        {
-                            return headerOrDataTextAlign switch
-                            {
-                                TextAlign.Inherit => defaultAlign,
-                                _ => headerOrDataTextAlign ?? defaultAlign
-                            };
-                        }
-
-                        var finalFont = new TextFont
-                        {
-                            FontName = excelSheetColumnAttribute?.FontName ?? defaultFont.FontName,
-                            FontSize = excelSheetColumnAttribute?.FontSize is null || excelSheetColumnAttribute.FontSize == 0 ? defaultFont.FontSize : excelSheetColumnAttribute.FontSize,
-                            FontColor = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontColor == KnownColor.Transparent
-                            ? defaultFont.FontColor.Value
-                            : Color.FromKnownColor(excelSheetColumnAttribute.FontColor),
-                            IsBold = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontWeight == FontWeight.Inherit
-                            ? defaultFont.IsBold
-                            : excelSheetColumnAttribute.FontWeight == FontWeight.Bold
-                        };
-
-                        // Header
-                        if (isHeaderAlreadyCalculated is false)
-                        {
-                            var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
-
-                            headerFont.IsBold = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontWeight == FontWeight.Inherit
-                                ? defaultFontWeight != FontWeight.Normal
-                                : excelSheetColumnAttribute.FontWeight == FontWeight.Bold;
-
-                            Cell headerCell = CellBuilder
-                                .SetLocation(xLocation, yLocation)
-                                .SetValue(excelSheetColumnAttribute?.HeaderName ?? prop.Name)
-                                .SetStyle(new CellStyle
-                                {
-                                    Font = headerFont,
-                                    CellTextAlign = GetCellTextAlign(defaultTextAlign,
-                                        excelSheetColumnAttribute?.HeaderTextAlign)
-                                })
-                                .SetContentType(CellContentType.Text)
-                                .Build();
-
-                            headerRow.RowCells.Add(headerCell);
-
-                            headerRow.RowStyle.RowHeight = excelSheetAttribute?.HeaderHeight == 0 ? null : excelSheetAttribute?.HeaderHeight;
-
-                            headerRow.RowStyle.BackgroundColor = excelSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
-
-                            headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
-
-                            headerRow.RowStyle.InsideCellsBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
-
-                            // Calculate Columns style
-                            columnsStyle.Add(new ColumnStyle(xLocation)
-                            {
-                                ColumnWidth = new ColumnWidth
-                                {
-                                    Width = excelSheetColumnAttribute?.ColumnWidth == 0 ? null : excelSheetColumnAttribute?.ColumnWidth,
-                                    WidthCalculationType = excelSheetColumnAttribute is null || excelSheetColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
-                                }
-                            });
-                        }
-
-                        // Data
-                        var dataCell = CellBuilder
-                            .SetLocation(xLocation, yLocation + 1)
-                            .SetValue(prop.GetValue(record))
-                            .SetContentType(excelSheetColumnAttribute?.ExcelDataContentType ?? CellContentType.Text)
-                            .SetStyle(new CellStyle
-                            {
-                                Font = finalFont,
-                                CellTextAlign = GetCellTextAlign(defaultTextAlign,
-                                    excelSheetColumnAttribute?.DataTextAlign)
-                            })
-                            .Build();
-
-                        recordRow.RowCells.Add(dataCell);
-
-                        xLocation++;
-                    }
-
-                    dataRows.Add(recordRow);
-
-                    yLocation++;
-
-                    isHeaderAlreadyCalculated = true;
-                }
-
-                excelWizardBuilder.Sheets.Add(new Sheet
-                {
-                    SheetName = sheetName,
-
-                    SheetStyle = new SheetStyle { SheetDirection = sheetDirection, ColumnsStyle = columnsStyle },
-
-                    IsSheetLocked = isSheetLocked,
-
-                    SheetProtectionLevel = sheetProtectionLevel,
-
-                    // Header Row
-                    SheetRows = new List<Row> { headerRow },
-
-                    // Table Data
-                    SheetTables = new List<Table>
-                    {
-                        new()
-                        {
-                            TableRows = dataRows,
-                            TableStyle= new TableStyle
-                            {
-                                TableOutsideBorder = new Border { BorderLineStyle = borderType }
-                            }
-                        }
-                    }
-                });
-            }
-            else
-            {
-                throw new Exception("GridExcelSheet object should be IEnumerable");
-            }
-        }
-
-        return excelWizardBuilder;
     }
 
     private void ConfigureCell(IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)

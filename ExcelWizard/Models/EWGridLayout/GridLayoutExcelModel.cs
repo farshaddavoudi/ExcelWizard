@@ -2,7 +2,7 @@
 
 namespace ExcelWizard.Models.EWGridLayout;
 
-public class GridLayoutExcelBuilder
+public class GridLayoutExcelModel
 {
     public string? GeneratedFileName { get; set; }
 

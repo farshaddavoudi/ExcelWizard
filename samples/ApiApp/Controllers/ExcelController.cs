@@ -105,7 +105,7 @@ public class ExcelController : ControllerBase
         //-------------------------------------
         //2.1- Table: Top Header
         var tableTopHeader = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -144,7 +144,7 @@ public class ExcelController : ControllerBase
 
         //2.* New Concept of Model binding
         Table tableCreditsDebits = TableBuilder
-            .UseAModelToBuild(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
+            .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
             .NoMergedCells()
             .Build();
 
@@ -203,7 +203,7 @@ public class ExcelController : ControllerBase
 
         //2.4- Table: Blue bg (+yellow at the end) table
         var tableBlueBg = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -304,7 +304,7 @@ public class ExcelController : ControllerBase
 
         //2.5- Table: with Salaries data with thin borders
         var tableSalaries = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -329,7 +329,7 @@ public class ExcelController : ControllerBase
         //2.6- Table:  Sharing info
         // Table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -484,31 +484,25 @@ public class ExcelController : ControllerBase
             })
             .Build();
 
-        var excelWizardModel = new ExcelModel
-        {
-            GeneratedFileName = "AccountsReport",
-            SheetsDefaultStyle = new SheetsDefaultStyle
-            {
-                AllSheetsDefaultTextAlign = TextAlign.Center
-            },
-            Sheets = new List<Sheet>
-            {
-                SheetBuilder
-                    .SetName("Sheet1")
-                    .SetTable(tableTopHeader)
-                    .SetTable(tableCreditsDebits)
-                    .SetTable(tableBlueBg)
-                    .SetTable(tableSalaries)
-                    .SetTable(tableSharingBeforeAfterData)
-                    .SetRow(rowReportDate)
-                    .SetCell(cellUserName)
-                    .NoMoreTablesRowsOrCells()
-                    .NoCustomStyle()
-                    .Build()
-            }
-        };
+        var excelModel = ExcelBuilder
+            .SetGeneratedFileName("Accounts Report")
+            .CreateComplexLayoutExcel()
+            .SetSheet(SheetBuilder
+                .SetName("Sheet1")
+                .SetTable(tableTopHeader)
+                .SetTable(tableCreditsDebits)
+                .SetTable(tableBlueBg)
+                .SetTable(tableSalaries)
+                .SetTable(tableSharingBeforeAfterData)
+                .SetRow(rowReportDate)
+                .SetCell(cellUserName)
+                .NoMoreTablesRowsOrCells()
+                .NoCustomStyle()
+                .Build())
+            .SetSheetsDefaultStyle(new SheetsDefaultStyle { AllSheetsDefaultTextAlign = TextAlign.Center })
+            .Build();
 
-        return Ok(_excelWizardService.GenerateCompoundExcel(excelWizardModel, @"C:\GeneratedExcelSamples"));
+        return Ok(_excelWizardService.GenerateExcel(excelModel, @"C:\GeneratedExcelSamples"));
     }
 
     [HttpGet("export-grid-excel")]
@@ -525,12 +519,18 @@ public class ExcelController : ControllerBase
 
         // Below will create Excel file as byte[] data
         // Just passing your data to method argument and let the rest to the package! hoorya!
-        // This method has an optional parameter `generatedFileName` which is obvious by the name
-        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateGridLayoutExcel(myUsers);
+
+        var usersExcelModel = ExcelBuilder
+            .SetGeneratedFileName("Users")
+            .CreateGridLayoutExcel()
+            .WithOneSheetUsingAModelToBind(myUsers)
+            .Build();
+
+        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(usersExcelModel);
 
         // Below will create Excel file in specified path and return the full path as string
         // The last param is generated file name
-        string fullPathAsString = _excelWizardService.GenerateGridLayoutExcel(myUsers, @"C:\GeneratedExcelSamples", "Users-Excel");
+        string fullPathAsString = _excelWizardService.GenerateExcel(usersExcelModel, @"C:\GeneratedExcelSamples");
 
         return Ok(generatedExcelFile);
     }

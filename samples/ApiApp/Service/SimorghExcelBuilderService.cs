@@ -25,14 +25,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
     {
         var excelModel = GetExcelModelFromVoucherStatementResult(voucherStatement);
 
-        return _excelWizardService.GenerateCompoundExcel(excelModel);
+        return _excelWizardService.GenerateExcel(excelModel);
     }
 
     public string GenerateVoucherStatementExcelReport(VoucherStatementResult voucherStatement, string savePath)
     {
         var excelModel = GetExcelModelFromVoucherStatementResult(voucherStatement);
 
-        return _excelWizardService.GenerateCompoundExcel(excelModel, savePath);
+        return _excelWizardService.GenerateExcel(excelModel, savePath);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Table: Excel Header 
         var tableHeader = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -108,7 +108,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // First table with header of (کد حساب - بدهکار - بستانکار)
         var table1St = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -146,7 +146,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Second table with header of (کد حساب - بدهکار - بستانکار)
         var table2Nd = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -187,7 +187,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // And a Vertical Merge for showing sum (K17:K18) 
         // And a Vertical Merge for Average (L17:L18)
         var tableBottomBlueHeader = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -301,7 +301,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Table with Salaries data with thick borders
         var tableSalaries = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(voucherStatement.Accounts.Select((account, index) =>
                 RowBuilder
                     .SetCells(new List<Cell>
@@ -325,7 +325,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Last table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
-            .StepByStepManually()
+            .CreateStepByStepManually()
             .SetRows(new List<Row>
             {
                 RowBuilder
@@ -462,38 +462,33 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .SetStyle(new TableStyle { TableTextAlign = TextAlign.Center })
             .Build();
 
-        return new ExcelModel
-        {
-            GeneratedFileName = voucherStatement.ReportName,
-
-            SheetsDefaultStyle = new SheetsDefaultStyle
+        return ExcelBuilder
+            .SetGeneratedFileName(voucherStatement.ReportName)
+            .CreateComplexLayoutExcel()
+            .SetSheet(SheetBuilder
+                .SetName("RemainReport")
+                .SetTables(new()
+                {
+                    tableHeader,
+                    table1St,
+                    table2Nd,
+                    tableBottomBlueHeader,
+                    tableSalaries,
+                    tableSharingBeforeAfterData
+                })
+                .SetRows(new()
+                {
+                    rowFirstTableHeader,
+                    rowSecondTableHeader
+                })
+                .NoMoreTablesRowsOrCells()
+                .NoCustomStyle()
+                .Build())
+            .SetSheetsDefaultStyle(new SheetsDefaultStyle
             {
                 AllSheetsDefaultTextAlign = TextAlign.Right,
                 AllSheetsDefaultDirection = SheetDirection.RightToLeft
-            },
-
-            Sheets = new List<Sheet>
-            {
-                SheetBuilder
-                    .SetName("RemainReport")
-                    .SetTables(new()
-                    {
-                        tableHeader,
-                        table1St,
-                        table2Nd,
-                        tableBottomBlueHeader,
-                        tableSalaries,
-                        tableSharingBeforeAfterData
-                    })
-                    .SetRows(new()
-                    {
-                        rowFirstTableHeader,
-                        rowSecondTableHeader
-                    })
-                    .NoMoreTablesRowsOrCells()
-                    .NoCustomStyle()
-                    .Build()
-            }
-        };
+            })
+            .Build();
     }
 }
