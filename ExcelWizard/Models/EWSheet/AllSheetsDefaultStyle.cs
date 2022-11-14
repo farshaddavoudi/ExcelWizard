@@ -2,7 +2,7 @@
 
 namespace ExcelWizard.Models.EWSheet
 {
-    public class AllSheetsDefaultStyle
+    public class SheetsDefaultStyle
     {
         public SheetDirection AllSheetsDefaultDirection { get; set; } = SheetDirection.LeftToRight;
 

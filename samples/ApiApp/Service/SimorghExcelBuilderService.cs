@@ -38,7 +38,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
     /// <summary>
     /// Defined to use for both methods and do not duplicate codes
     /// </summary>
-    private CompoundExcelBuilder GetExcelModelFromVoucherStatementResult(VoucherStatementResult voucherStatement)
+    private ExcelModel GetExcelModelFromVoucherStatementResult(VoucherStatementResult voucherStatement)
     {
         // It is the heart of using the ExcelWizard package to generate your desired Excel report
         // You should create your Excel template (CompoundExcelBuilder model) using your local app model (here VoucherStatementResult)
@@ -462,11 +462,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .SetStyle(new TableStyle { TableTextAlign = TextAlign.Center })
             .Build();
 
-        return new CompoundExcelBuilder
+        return new ExcelModel
         {
             GeneratedFileName = voucherStatement.ReportName,
 
-            AllSheetsDefaultStyle = new AllSheetsDefaultStyle
+            SheetsDefaultStyle = new SheetsDefaultStyle
             {
                 AllSheetsDefaultTextAlign = TextAlign.Right,
                 AllSheetsDefaultDirection = SheetDirection.RightToLeft

@@ -44,17 +44,17 @@ public interface IExcelWizardService
     /// <summary>
     /// Generate Compound Excel consisting multiple parts like some Rows, Tables, Special Cells, etc each in different Excel Location
     /// </summary>
-    /// <param name="compoundExcelBuilder"></param>
+    /// <param name="excelModel"></param>
     /// <returns></returns>
-    public GeneratedExcelFile GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder);
+    public GeneratedExcelFile GenerateCompoundExcel(ExcelModel excelModel);
 
     /// <summary>
     /// Generate Excel file and save it in path and return the saved url
     /// </summary>
-    /// <param name="compoundExcelBuilder"></param>
+    /// <param name="excelModel"></param>
     /// <param name="savePath"></param>
     /// <returns></returns>
-    public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder, string savePath);
+    public string GenerateCompoundExcel(ExcelModel excelModel, string savePath);
 
 
     #region Blazor Application
@@ -77,9 +77,9 @@ public interface IExcelWizardService
     /// <summary>
     /// [Blazor only] Generate and Download instantly from Browser the Compound Excel consisting multiple parts like some Rows, Tables, Special Cells, etc each in different Excel Location in Blazor apps
     /// </summary>
-    /// <param name="compoundExcelBuilder"></param>
+    /// <param name="excelModel"></param>
     /// <returns></returns>
-    public Task<DownloadFileResult> BlazorDownloadCompoundExcel(CompoundExcelBuilder compoundExcelBuilder);
+    public Task<DownloadFileResult> BlazorDownloadCompoundExcel(ExcelModel excelModel);
 
 
 

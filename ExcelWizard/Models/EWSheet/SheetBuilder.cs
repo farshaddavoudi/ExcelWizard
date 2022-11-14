@@ -79,18 +79,12 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectStyleSheetBuilder SetMergedCells(List<string> mergedCells)
+    public IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(List<string> mergedCells)
     {
         Sheet.MergedCells = mergedCells;
 
         return this;
     }
-
-    public IExpectStyleSheetBuilder IgnoreMerges()
-    {
-        return this;
-    }
-
 
     public IExpectOtherPropsAndBuildSheetBuilder SetStyle(SheetStyle sheetStyle)
     {
@@ -108,14 +102,14 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public SheetBuilder SetLockedStatus(bool isLocked)
+    public IExpectOtherPropsAndBuildSheetBuilder SetLockedStatus(bool isLocked)
     {
         Sheet.IsSheetLocked = isLocked;
 
         return this;
     }
 
-    public SheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel)
+    public IExpectOtherPropsAndBuildSheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel)
     {
         Sheet.SheetProtectionLevel = protectionLevel;
 
@@ -125,7 +119,7 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
     public Sheet Build()
     {
         if (CanBuild is false)
-            throw new InvalidOperationException("Cannot build Sheet because some necessary information not provided");
+            throw new InvalidOperationException("Cannot build Sheet because some necessary information are not provided");
 
         return Sheet;
     }

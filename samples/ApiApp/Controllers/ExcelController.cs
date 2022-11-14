@@ -484,10 +484,10 @@ public class ExcelController : ControllerBase
             })
             .Build();
 
-        var excelWizardModel = new CompoundExcelBuilder
+        var excelWizardModel = new ExcelModel
         {
             GeneratedFileName = "AccountsReport",
-            AllSheetsDefaultStyle = new AllSheetsDefaultStyle
+            SheetsDefaultStyle = new SheetsDefaultStyle
             {
                 AllSheetsDefaultTextAlign = TextAlign.Center
             },

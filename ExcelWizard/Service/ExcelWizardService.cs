@@ -36,9 +36,9 @@ public class ExcelWizardService : IExcelWizardService
 
     #endregion
 
-    public GeneratedExcelFile GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
+    public GeneratedExcelFile GenerateCompoundExcel(ExcelModel excelModel)
     {
-        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
+        using var xlWorkbook = ClosedXmlEngine(excelModel);
 
         // Save
         using var stream = new MemoryStream();
@@ -47,20 +47,20 @@ public class ExcelWizardService : IExcelWizardService
 
         var content = stream.ToArray();
 
-        if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
+            excelModel.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
-        return new GeneratedExcelFile { FileName = compoundExcelBuilder.GeneratedFileName, Content = content };
+        return new GeneratedExcelFile { FileName = excelModel.GeneratedFileName, Content = content };
     }
 
-    public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder, string savePath)
+    public string GenerateCompoundExcel(ExcelModel excelModel, string savePath)
     {
-        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
+        using var xlWorkbook = ClosedXmlEngine(excelModel);
 
-        if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
+            excelModel.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
-        var saveUrl = $"{savePath}\\{compoundExcelBuilder.GeneratedFileName}.xlsx";
+        var saveUrl = $"{savePath}\\{excelModel.GeneratedFileName}.xlsx";
 
         // Save
         xlWorkbook.SaveAs(saveUrl);
@@ -124,9 +124,9 @@ public class ExcelWizardService : IExcelWizardService
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
 
-    public async Task<DownloadFileResult> BlazorDownloadCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
+    public async Task<DownloadFileResult> BlazorDownloadCompoundExcel(ExcelModel excelModel)
     {
-        var generatedFile = GenerateCompoundExcel(compoundExcelBuilder);
+        var generatedFile = GenerateCompoundExcel(excelModel);
 
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
@@ -134,24 +134,24 @@ public class ExcelWizardService : IExcelWizardService
 
     #region Private Methods
 
-    private XLWorkbook ClosedXmlEngine(CompoundExcelBuilder compoundExcelBuilder)
+    private XLWorkbook ClosedXmlEngine(ExcelModel excelModel)
     {
         //-------------------------------------------
         //  Create Workbook (integrated with using statement)
         //-------------------------------------------
         var xlWorkbook = new XLWorkbook
         {
-            RightToLeft = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
-            ColumnWidth = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
-            RowHeight = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
+            RightToLeft = excelModel.SheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
+            ColumnWidth = excelModel.SheetsDefaultStyle.AllSheetsDefaultColumnWidth,
+            RowHeight = excelModel.SheetsDefaultStyle.AllSheetsDefaultRowHeight
         };
 
         // Check any sheet available
-        if (compoundExcelBuilder.Sheets.Count == 0)
+        if (excelModel.Sheets.Count == 0)
             throw new Exception("No sheet is available to create Excel workbook");
 
         // Check sheet names are unique
-        var sheetNames = compoundExcelBuilder.Sheets
+        var sheetNames = excelModel.Sheets
             .Where(s => s.SheetName.IsNullOrWhiteSpace() is false)
             .Select(s => s.SheetName)
             .ToList();
@@ -164,7 +164,7 @@ public class ExcelWizardService : IExcelWizardService
         // Auto naming for sheets
 
         int i = 1;
-        foreach (Sheet sheet in compoundExcelBuilder.Sheets)
+        foreach (Sheet sheet in excelModel.Sheets)
         {
             if (sheet.SheetName.IsNullOrWhiteSpace())
             {
@@ -174,7 +174,7 @@ public class ExcelWizardService : IExcelWizardService
                 {
                     var possibleName = $"Sheet{i}";
 
-                    isNameOk = compoundExcelBuilder.Sheets.Any(s => s.SheetName == possibleName) is false;
+                    isNameOk = excelModel.Sheets.Any(s => s.SheetName == possibleName) is false;
 
                     if (isNameOk)
                         sheet.SheetName = possibleName;
@@ -187,7 +187,7 @@ public class ExcelWizardService : IExcelWizardService
         //-------------------------------------------
         //  Add Sheets one by one to ClosedXML Workbook instance
         //-------------------------------------------
-        foreach (var sheet in compoundExcelBuilder.Sheets)
+        foreach (var sheet in excelModel.Sheets)
         {
             // Set name
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
@@ -264,7 +264,7 @@ public class ExcelWizardService : IExcelWizardService
             };
 
             // Set TextAlign
-            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
+            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? excelModel.SheetsDefaultStyle.AllSheetsDefaultTextAlign;
 
             xlSheet.Columns().Style.Alignment.Horizontal = textAlign switch
             {
@@ -327,7 +327,7 @@ public class ExcelWizardService : IExcelWizardService
 
                 foreach (var tableRow in table.TableRows)
                 {
-                    ConfigureRow(xlSheet, tableRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                    ConfigureRow(xlSheet, tableRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
                 }
 
                 // Config Bg
@@ -418,7 +418,7 @@ public class ExcelWizardService : IExcelWizardService
             //-------------------------------------------
             foreach (var sheetRow in sheet.SheetRows)
             {
-                ConfigureRow(xlSheet, sheetRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureRow(xlSheet, sheetRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
             }
 
             //-------------------------------------------
@@ -429,7 +429,7 @@ public class ExcelWizardService : IExcelWizardService
                 if (cell.IsCellVisible is false)
                     continue;
 
-                ConfigureCell(xlSheet, cell, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureCell(xlSheet, cell, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
             }
 
             // Apply sheet merges here
@@ -448,9 +448,9 @@ public class ExcelWizardService : IExcelWizardService
         return xlWorkbook;
     }
 
-    private CompoundExcelBuilder ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
+    private ExcelModel ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
     {
-        var excelWizardBuilder = new CompoundExcelBuilder();
+        var excelWizardBuilder = new ExcelModel();
 
         if (gridLayoutExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace() is false)
             excelWizardBuilder.GeneratedFileName = gridLayoutExcelBuilder.GeneratedFileName;

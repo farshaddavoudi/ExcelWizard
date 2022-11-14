@@ -73,18 +73,18 @@ public interface IExpectOtherPropsAndBuildSheetBuilder
     /// <summary>
     /// Will override the CompoundExcelBuilder AreSheetsLockedByDefault value. Default will inherit
     /// </summary>
-    SheetBuilder SetLockedStatus(bool isLocked);
+    IExpectOtherPropsAndBuildSheetBuilder SetLockedStatus(bool isLocked);
 
     /// <summary>
     /// Set Sheet protection level
     /// </summary>
-    SheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel);
+    IExpectOtherPropsAndBuildSheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel);
 
     /// <summary>
     /// Merged Cells in the Sheet e.g. new List { "L16:L18" } will merge starting from L16 Cell until L18 Cell (MergeStartCell:MergeEndCell).
     /// We prefer merging cells in Table or Row sub-models but in some scenarios this option would be helpful
     /// </summary>
-    IExpectStyleSheetBuilder SetMergedCells(List<string> mergedCells);
+    IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(List<string> mergedCells);
 
     Sheet Build();
 }
