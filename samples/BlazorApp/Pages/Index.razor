@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using ExcelWizard.Service
 @using BlazorDownloadFile
+@using ExcelWizard.Models
 
 <PageTitle>Index</PageTitle>
 
@@ -26,6 +27,12 @@ Welcome to your new app.
             new() { Id = 3, FullName = "مارسل دسایی", PersonnelCode = "941126" }
         };
 
-        return ExcelWizardService.BlazorDownloadGridLayoutExcel(fetchDataFromApi, "my-custom-report");
+        var exampleExcel = ExcelBuilder
+            .SetGeneratedFileName("my-custom-report")
+            .CreateGridLayoutExcel()
+            .WithOneSheetUsingAModelToBind(fetchDataFromApi)
+            .Build();
+
+        return ExcelWizardService.GenerateAndDownloadExcelInBlazor(exampleExcel);
     }
 }

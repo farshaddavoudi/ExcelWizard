@@ -104,6 +104,7 @@ public class ExcelController : ControllerBase
         //2 - Create each Section Related Model
         //-------------------------------------
         //2.1- Table: Top Header
+
         var tableTopHeader = TableBuilder
             .CreateStepByStepManually()
             .SetRows(new List<Row>
@@ -139,8 +140,6 @@ public class ExcelController : ControllerBase
             })
             .NoCustomStyle()
             .Build();
-
-
 
         //2.* New Concept of Model binding
         Table tableCreditsDebits = TableBuilder
