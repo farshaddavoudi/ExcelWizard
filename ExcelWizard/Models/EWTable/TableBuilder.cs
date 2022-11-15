@@ -1,4 +1,5 @@
 ﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWStyles;
 using System;
@@ -228,12 +229,12 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         return this;
     }
 
-    public IExpectStyleTableBuilder SetTableMergedCells(List<MergedCells> mergedCellsList)
+    public IExpectStyleTableBuilder SetTableMergedCells(params MergedCells[] mergedCells)
     {
-        if (mergedCellsList.Count > 0)
+        if (mergedCells.Length > 0)
             CanBuild = true;
 
-        Table.MergedCellsList = mergedCellsList;
+        Table.MergedCellsList = mergedCells.ToList();
 
         return this;
     }
@@ -257,12 +258,12 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         return this;
     }
 
-    public IExpectBuildMethodInModelTableBuilder SetMergedCells(List<MergedCells> mergedCellsList)
+    public IExpectBuildMethodInModelTableBuilder SetMergedCells(params MergedCells[] mergedCells)
     {
-        if (mergedCellsList.Count > 0)
+        if (mergedCells.Length > 0)
             CanBuild = true;
 
-        Table.MergedCellsList = mergedCellsList;
+        Table.MergedCellsList = mergedCells.ToList();
 
         return this;
     }

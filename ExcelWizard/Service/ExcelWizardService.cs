@@ -302,10 +302,10 @@ public class ExcelWizardService : IExcelWizardService
                 // Apply table merges here
                 foreach (var mergedCells in table.MergedCellsList)
                 {
-                    var mergedTableRange = xlSheet.Range(mergedCells.MergedBoundaryLocation.FirstCellLocation!.RowNumber,
-                        mergedCells.MergedBoundaryLocation.FirstCellLocation.ColumnNumber,
-                        mergedCells.MergedBoundaryLocation.LastCellLocation!.RowNumber,
-                        mergedCells.MergedBoundaryLocation.LastCellLocation.ColumnNumber).Merge();
+                    var mergedTableRange = xlSheet.Range(mergedCells.MergedBoundaryLocation.StartCellLocation!.RowNumber,
+                        mergedCells.MergedBoundaryLocation.StartCellLocation.ColumnNumber,
+                        mergedCells.MergedBoundaryLocation.FinishCellLocation!.RowNumber,
+                        mergedCells.MergedBoundaryLocation.FinishCellLocation.ColumnNumber).Merge();
 
                     // Config Outside-Border Specified for Merged Cells
                     if (mergedCells.OutsideBorder is not null)
@@ -513,11 +513,11 @@ public class ExcelWizardService : IExcelWizardService
         // Configure merged cells in the row
         foreach (var cellsToMerge in row.MergedCellsList)
         {
-            var firstCellRow = cellsToMerge.FirstCellLocation!.RowNumber;
-            var firstCellColumn = cellsToMerge.FirstCellLocation.ColumnNumber;
+            var firstCellRow = cellsToMerge.StartCellLocation!.RowNumber;
+            var firstCellColumn = cellsToMerge.StartCellLocation.ColumnNumber;
 
-            var lastCellRow = cellsToMerge.LastCellLocation!.RowNumber;
-            var lastCellColumn = cellsToMerge.LastCellLocation!.ColumnNumber;
+            var lastCellRow = cellsToMerge.FinishCellLocation!.RowNumber;
+            var lastCellColumn = cellsToMerge.FinishCellLocation!.ColumnNumber;
 
             xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
         }

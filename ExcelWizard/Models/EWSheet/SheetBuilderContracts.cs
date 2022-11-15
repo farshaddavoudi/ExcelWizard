@@ -22,7 +22,7 @@ public interface IExpectSetComponentsSheetBuilder
     /// Insert one or more Table(s) data into the Sheet.
     /// Each Table is consist of some Rows and Cells with more style options to configure easily
     /// </summary>
-    IExpectSetComponentsSheetBuilder SetTables(List<Table> tables);
+    IExpectSetComponentsSheetBuilder SetTables(params Table[] tables);
 
     /// <summary>
     /// Insert one Row record into the Sheet.
@@ -34,7 +34,7 @@ public interface IExpectSetComponentsSheetBuilder
     /// Insert one or more Row(s) records into the Sheet.
     /// Each Row is consist of some Cells with more style options to configure easily
     /// </summary>
-    IExpectSetComponentsSheetBuilder SetRows(List<Row> rows);
+    IExpectSetComponentsSheetBuilder SetRows(params Row[] rows);
 
     /// <summary>
     /// Insert a Cell item directly into the Sheet.
@@ -46,7 +46,7 @@ public interface IExpectSetComponentsSheetBuilder
     /// Insert one or more Cell(s) items directly into the Sheet.
     /// All data can be inserted with this property, but using  Tables and Rows add more options to configure style and functionality of generated Sheet.
     /// </summary>
-    IExpectSetComponentsSheetBuilder SetCells(List<Cell> cells);
+    IExpectSetComponentsSheetBuilder SetCells(params Cell[] cells);
 
     /// <summary>
     /// Finish composing Sheet with smaller components i.e. Table(s), Row(s) and Cell(s)

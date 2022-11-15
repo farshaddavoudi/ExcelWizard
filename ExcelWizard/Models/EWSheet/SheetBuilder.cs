@@ -39,7 +39,7 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetTables(List<Table> tables)
+    public IExpectSetComponentsSheetBuilder SetTables(params Table[] tables)
     {
         Sheet.SheetTables.AddRange(tables);
 
@@ -53,7 +53,7 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetRows(List<Row> rows)
+    public IExpectSetComponentsSheetBuilder SetRows(params Row[] rows)
     {
         Sheet.SheetRows.AddRange(rows);
 
@@ -67,7 +67,7 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetCells(List<Cell> cells)
+    public IExpectSetComponentsSheetBuilder SetCells(params Cell[] cells)
     {
         Sheet.SheetCells.AddRange(cells);
 

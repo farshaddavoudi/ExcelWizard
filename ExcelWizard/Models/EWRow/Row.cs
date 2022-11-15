@@ -1,4 +1,5 @@
 ﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -96,13 +97,13 @@ public class Row
 
         foreach (var cellsToMerge in MergedCellsList)
         {
-            if (cellsToMerge.FirstCellLocation is null || cellsToMerge.LastCellLocation is null)
+            if (cellsToMerge.StartCellLocation is null || cellsToMerge.FinishCellLocation is null)
                 throw new ValidationException("Something is not right about MergedCells format. FirstCellLocation and LastCellLocations cannot be null");
 
-            if (cellsToMerge.FirstCellLocation!.RowNumber != currentRowNumber)
+            if (cellsToMerge.StartCellLocation!.RowNumber != currentRowNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The RowNumber of FirstCellLocation should be equal with the Row RowNumber!");
 
-            if (cellsToMerge.LastCellLocation!.RowNumber != currentRowNumber)
+            if (cellsToMerge.FinishCellLocation!.RowNumber != currentRowNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The RowNumber of LastCellLocation should be equal with the Row RowNumber!");
         }
 

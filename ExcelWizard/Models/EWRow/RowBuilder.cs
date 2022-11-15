@@ -1,4 +1,5 @@
 ﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using System;
 using System.Collections.Generic;
 
@@ -32,7 +33,7 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public IExpectStyleRowBuilder SetMergedCells(List<MergedBoundaryLocation> mergedCellsList)
+    public IExpectStyleRowBuilder SetRowMergedCells(List<MergedBoundaryLocation> mergedCellsList)
     {
         if (mergedCellsList.Count > 0)
             CanBuild = true;
@@ -69,7 +70,7 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     public Row Build()
     {
         if (CanBuild is false)
-            throw new InvalidOperationException("Cannot build Row because some necessary information not provided");
+            throw new InvalidOperationException("Cannot build Row because some necessary information are not provided");
 
         return Row;
     }

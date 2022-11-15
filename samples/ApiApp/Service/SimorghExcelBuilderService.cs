@@ -1,6 +1,7 @@
 ﻿using ApiApp.SimorghReportModels;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWSheet;
 using ExcelWizard.Models.EWStyles;
@@ -80,8 +81,8 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new()
                     {
-                        FirstCellLocation = new CellLocation("A", 1),
-                        LastCellLocation = new CellLocation("H", 2)
+                        StartCellLocation = new CellLocation("A", 1),
+                        FinishCellLocation = new CellLocation("H", 2)
                     }
                 }
             })
@@ -259,32 +260,32 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                        StartCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        FinishCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                        StartCellLocation = new CellLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        FinishCellLocation = new CellLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("E", table2Nd.GetNextVerticalRowNumberAfterTable())
+                        StartCellLocation = new CellLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        FinishCellLocation = new CellLocation("E", table2Nd.GetNextVerticalRowNumberAfterTable())
                     }
                 },
                 new()
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation = new CellLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable())
+                        StartCellLocation = new CellLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable()),
+                        FinishCellLocation = new CellLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable())
                     }
                 }
             })
@@ -357,9 +358,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("C",
+                        FinishCellLocation = new CellLocation("C",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -367,9 +368,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("D",
+                        FinishCellLocation = new CellLocation("D",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -377,9 +378,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("E",
+                        FinishCellLocation = new CellLocation("E",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -387,9 +388,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("F",
+                        FinishCellLocation = new CellLocation("F",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -397,9 +398,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("G",
+                        FinishCellLocation = new CellLocation("G",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -407,9 +408,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("H",
+                        FinishCellLocation = new CellLocation("H",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -417,9 +418,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("I",
+                        FinishCellLocation = new CellLocation("I",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -427,9 +428,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("J",
+                        FinishCellLocation = new CellLocation("J",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -437,9 +438,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("K",
+                        FinishCellLocation = new CellLocation("K",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 },
@@ -447,9 +448,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 {
                     MergedBoundaryLocation = new MergedBoundaryLocation
                     {
-                        FirstCellLocation =
+                        StartCellLocation =
                             new CellLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        LastCellLocation = new CellLocation("L",
+                        FinishCellLocation = new CellLocation("L",
                             tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     }
                 }
@@ -460,22 +461,17 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         return ExcelBuilder
             .SetGeneratedFileName(voucherStatement.ReportName)
             .CreateComplexLayoutExcel()
-            .SetSheet(SheetBuilder
+            .SetSheets(SheetBuilder
                 .SetName("RemainReport")
-                .SetTables(new()
-                {
+                .SetTables(
                     tableHeader,
                     table1St,
                     table2Nd,
                     tableBottomBlueHeader,
                     tableSalaries,
                     tableSharingBeforeAfterData
-                })
-                .SetRows(new()
-                {
-                    rowFirstTableHeader,
-                    rowSecondTableHeader
-                })
+                    )
+                .SetRows(rowFirstTableHeader, rowSecondTableHeader)
                 .NoMoreTablesRowsOrCells()
                 .NoCustomStyle()
                 .Build())

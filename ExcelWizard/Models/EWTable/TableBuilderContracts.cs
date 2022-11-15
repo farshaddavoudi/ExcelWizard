@@ -1,5 +1,5 @@
-﻿using ExcelWizard.Models.EWRow;
-using System.Collections.Generic;
+﻿using ExcelWizard.Models.EWMerge;
+using ExcelWizard.Models.EWRow;
 
 namespace ExcelWizard.Models.EWTable;
 
@@ -23,7 +23,7 @@ public interface IExpectMergedCellsStatusInManualProcessTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
-    IExpectStyleTableBuilder SetTableMergedCells(List<MergedCells> mergedCellsList);
+    IExpectStyleTableBuilder SetTableMergedCells(params MergedCells[] mergedCells);
 
     /// <summary>
     /// In case we don't have any merge in the Table
@@ -52,7 +52,7 @@ public interface IExpectMergedCellsStatusInModelTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
-    IExpectBuildMethodInModelTableBuilder SetMergedCells(List<MergedCells> mergedCellsList);
+    IExpectBuildMethodInModelTableBuilder SetMergedCells(params MergedCells[] mergedCells);
 
     /// <summary>
     /// In case we don't have any merge in the Table

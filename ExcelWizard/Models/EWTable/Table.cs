@@ -1,4 +1,5 @@
 ﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -48,7 +49,7 @@ public class Table
 
         // Order priority is based on RowNumber rather than ColumnNumber
 
-        var firstRowOfMergedCells = MergedCellsList.Select(mc => mc.MergedBoundaryLocation.FirstCellLocation!.RowNumber).ToList().Min();
+        var firstRowOfMergedCells = MergedCellsList.Select(mc => mc.MergedBoundaryLocation.StartCellLocation!.RowNumber).ToList().Min();
 
         if (firstRowOfMergedCells >= firstCellLocationFromTableWithoutConsideringMergedCells.RowNumber)
             return firstCellLocationFromTableWithoutConsideringMergedCells;
@@ -56,8 +57,8 @@ public class Table
         // Now we know about our target location RowNumber. Lets find its ColumnNumber
         // Notice: Cell does not exist in Table location territory
         var firstColumnNumberOfMergedCells = MergedCellsList
-            .Where(mc => mc.MergedBoundaryLocation.FirstCellLocation!.RowNumber == firstRowOfMergedCells)
-            .Select(mc => mc.MergedBoundaryLocation.FirstCellLocation!.ColumnNumber)
+            .Where(mc => mc.MergedBoundaryLocation.StartCellLocation!.RowNumber == firstRowOfMergedCells)
+            .Select(mc => mc.MergedBoundaryLocation.StartCellLocation!.ColumnNumber)
             .Min();
 
         return new CellLocation(firstColumnNumberOfMergedCells, firstRowOfMergedCells);
@@ -81,7 +82,7 @@ public class Table
 
         // Order priority is based on RowNumber rather than ColumnNumber
 
-        var lastRowOfMergedCells = MergedCellsList.Select(mc => mc.MergedBoundaryLocation.LastCellLocation!.RowNumber).ToList().Max();
+        var lastRowOfMergedCells = MergedCellsList.Select(mc => mc.MergedBoundaryLocation.FinishCellLocation!.RowNumber).ToList().Max();
 
         if (lastRowOfMergedCells <= lastCellLocationFromTableWithoutConsideringMergedCells.RowNumber)
             return lastCellLocationFromTableWithoutConsideringMergedCells;
@@ -89,8 +90,8 @@ public class Table
         // Now we know about our target location RowNumber. Lets find its ColumnNumber
         // Notice: Cell does not exist in Table location territory
         var lastColumnNumberOfMergedCells = MergedCellsList
-            .Where(mc => mc.MergedBoundaryLocation.LastCellLocation!.RowNumber == lastRowOfMergedCells)
-            .Select(mc => mc.MergedBoundaryLocation.LastCellLocation!.ColumnNumber)
+            .Where(mc => mc.MergedBoundaryLocation.FinishCellLocation!.RowNumber == lastRowOfMergedCells)
+            .Select(mc => mc.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber)
             .Max();
 
         return new CellLocation(lastColumnNumberOfMergedCells, lastRowOfMergedCells);
@@ -131,8 +132,8 @@ public class Table
         if (MergedCellsList.Count != 0)
         {
             if (MergedCellsList.Any(mc =>
-                    mc.MergedBoundaryLocation.FirstCellLocation is null ||
-                    mc.MergedBoundaryLocation.LastCellLocation is null))
+                    mc.MergedBoundaryLocation.StartCellLocation is null ||
+                    mc.MergedBoundaryLocation.FinishCellLocation is null))
             {
                 throw new ValidationException("Table Merged Cells start and end locations are required");
             }
@@ -141,19 +142,19 @@ public class Table
         // Check Merged Cells
         foreach (var cellsToMerge in MergedCellsList)
         {
-            if (cellsToMerge.MergedBoundaryLocation.FirstCellLocation is null || cellsToMerge.MergedBoundaryLocation.LastCellLocation is null)
+            if (cellsToMerge.MergedBoundaryLocation.StartCellLocation is null || cellsToMerge.MergedBoundaryLocation.FinishCellLocation is null)
                 throw new ValidationException("Something is not right about MergedCells format. FirstCellLocation and LastCellLocations cannot be null");
 
-            if (cellsToMerge.MergedBoundaryLocation.FirstCellLocation!.RowNumber < GetTableFirstCellLocation().RowNumber)
+            if (cellsToMerge.MergedBoundaryLocation.StartCellLocation!.RowNumber < GetTableFirstCellLocation().RowNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The RowNumber of FirstCellLocation cannot be little than TableFirstCellLocation");
 
-            if (cellsToMerge.MergedBoundaryLocation.FirstCellLocation!.ColumnNumber < GetTableFirstCellLocation().ColumnNumber)
+            if (cellsToMerge.MergedBoundaryLocation.StartCellLocation!.ColumnNumber < GetTableFirstCellLocation().ColumnNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The ColumnNumber of FirstCellLocation cannot be little than TableFirstCellLocation");
 
-            if (cellsToMerge.MergedBoundaryLocation.LastCellLocation!.RowNumber > GetTableLastCellLocation().RowNumber)
+            if (cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.RowNumber > GetTableLastCellLocation().RowNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The RowNumber of LastCellLocation cannot be greater than TableLastCellLocation");
 
-            if (cellsToMerge.MergedBoundaryLocation.LastCellLocation!.ColumnNumber > GetTableLastCellLocation().ColumnNumber)
+            if (cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber > GetTableLastCellLocation().ColumnNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The ColumnNumber of LastCellLocation cannot be greater than TableLastCellLocation");
         }
 

@@ -92,18 +92,9 @@ public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilde
         return this;
     }
 
-    public IExpectStyleExcelBuilder SetSheet(Sheet sheet)
+    public IExpectStyleExcelBuilder SetSheets(params Sheet[] sheets)
     {
-        CanBuild = true;
-
-        ExcelModel.Sheets.Add(sheet);
-
-        return this;
-    }
-
-    public IExpectStyleExcelBuilder SetSheets(List<Sheet> sheets)
-    {
-        if (sheets.Count == 0)
+        if (sheets.Length == 0)
             throw new InvalidOperationException("Excel Sheets cannot be an empty list");
 
         CanBuild = true;
