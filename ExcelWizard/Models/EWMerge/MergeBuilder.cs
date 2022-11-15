@@ -12,6 +12,11 @@ public class MergeBuilder : IMergeBuilder, IExpectMergingFinishPointMergeBuilder
     private MergedCells MergedCells { get; set; } = new();
     private bool CanBuild { get; set; }
 
+    /// <summary>
+    /// Set merging start location cell
+    /// </summary>
+    /// <param name="columnLetterOrNumber"> Start location column letter or number, e.g. "A" or 1 </param>
+    /// <param name="rowNumber"> Start location row number, e.g. 1 </param>
     public static IExpectMergingFinishPointMergeBuilder SetMergingStartPoint(dynamic columnLetterOrNumber, int rowNumber)
     {
         return new MergeBuilder
@@ -42,7 +47,7 @@ public class MergeBuilder : IMergeBuilder, IExpectMergingFinishPointMergeBuilder
         return this;
     }
 
-    public IExpectStylesOrBuildMergeBuilder SetMergingOutsideBorderStyle(LineStyle borderLineStyle = LineStyle.Thin, Color borderColor = new())
+    public IExpectStylesOrBuildMergeBuilder SetMergingOutsideBorder(LineStyle borderLineStyle = LineStyle.Thin, Color borderColor = new())
     {
         if (borderColor.IsEmpty)
             borderColor = Color.Black;

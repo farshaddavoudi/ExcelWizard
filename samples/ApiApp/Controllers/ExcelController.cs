@@ -126,17 +126,12 @@ public class ExcelController : ControllerBase
                 .NoMergedCells()
                 .NoCustomStyle()
                 .Build())
-            .SetTableMergedCells(new List<MergedCells>
-            {
-                new()
-                {
-                    MergedBoundaryLocation = new()
-                    {
-                        StartCellLocation = new CellLocation("A", 1),
-                        FinishCellLocation = new CellLocation("H", 2)
-                    }
-                }
-            })
+            .SetTableMergedCells(
+                MergeBuilder
+                    .SetMergingStartPoint("A", 1)
+                    .SetMergingFinishPoint("H", 2)
+                    .Build()
+            )
             .NoCustomStyle()
             .Build();
 
@@ -256,31 +251,30 @@ public class ExcelController : ControllerBase
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build())
             .SetTableMergedCells(
-                new MergedCells(
-                    new CellLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    new CellLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
-                ),
-                new MergedCells(
-                    new CellLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    new CellLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
-                ),
-                new MergedCells(
-                    new CellLocation("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    new CellLocation("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    Color.DarkBlue
-                ),
-                new MergedCells(
-                    new CellLocation("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    new CellLocation("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    Color.DarkBlue
-                ),
-                new MergedCells(
-                    new CellLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()),
-                    new CellLocation("I",
-                        tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1),
-                    Color.Yellow
-                )
-    )
+            MergeBuilder
+                .SetMergingStartPoint("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingFinishPoint("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
+                .Build(),
+            MergeBuilder
+                .SetMergingStartPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingFinishPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
+                .Build(),
+            MergeBuilder
+                .SetMergingStartPoint("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingFinishPoint("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingAreaBackgroundColor(Color.DarkBlue)
+                .Build(),
+            MergeBuilder
+                .SetMergingStartPoint("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingFinishPoint("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingAreaBackgroundColor(Color.DarkBlue)
+                .Build(),
+            MergeBuilder
+                .SetMergingStartPoint("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                .SetMergingFinishPoint("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
+                .SetMergingAreaBackgroundColor(Color.Yellow)
+                .Build()
+            )
 
     .SetStyle(new TableStyle
     {
@@ -367,65 +361,36 @@ public class ExcelController : ControllerBase
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build())
-            .SetTableMergedCells(new List<MergedCells>
-            {
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("D", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("D", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("E", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("E", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("F", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("F", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("G", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("G", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("H", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("H", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                }
-            })
+            .SetTableMergedCells(
+                MergeBuilder
+                    .SetMergingStartPoint("C", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("C", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("D", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("D", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("E", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("E", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("F", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("F", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("G", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("G", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("H", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("H", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build()
+            )
             .NoCustomStyle()
             .Build();
 

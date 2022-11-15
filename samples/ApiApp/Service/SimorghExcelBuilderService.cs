@@ -75,17 +75,12 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 .NoMergedCells()
                 .NoCustomStyle()
                 .Build())
-            .SetTableMergedCells(new List<MergedCells>
-            {
-                new()
-                {
-                    MergedBoundaryLocation = new()
-                    {
-                        StartCellLocation = new CellLocation("A", 1),
-                        FinishCellLocation = new CellLocation("H", 2)
-                    }
-                }
-            })
+            .SetTableMergedCells(
+                MergeBuilder
+                .SetMergingStartPoint("A", 1)
+                .SetMergingFinishPoint("H", 2)
+                .Build()
+                )
             .NoCustomStyle()
             .Build();
 
@@ -254,41 +249,23 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build()
                 )
-            .SetTableMergedCells(new List<MergedCells>
-            {
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("E", table2Nd.GetNextVerticalRowNumberAfterTable())
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation = new CellLocation("F", table2Nd.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("H", table2Nd.GetNextVerticalRowNumberAfterTable())
-                    }
-                }
-            })
+            .SetTableMergedCells(
+                MergeBuilder
+                    .SetMergingStartPoint("A", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("B", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("C", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("E", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("F", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("H", table2Nd.GetNextVerticalRowNumberAfterTable())
+                    .Build())
             .SetStyle(new TableStyle
             {
                 BackgroundColor = Color.Blue,
@@ -352,109 +329,47 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoCustomStyle()
                     .Build()
                 )
-            .SetTableMergedCells(new List<MergedCells>
-            {
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("C",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("D",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("E",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("F",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("G",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("H",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("I",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("J",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("K",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                },
-                new()
-                {
-                    MergedBoundaryLocation = new MergedBoundaryLocation
-                    {
-                        StartCellLocation =
-                            new CellLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable()),
-                        FinishCellLocation = new CellLocation("L",
-                            tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
-                    }
-                }
-            })
+            .SetTableMergedCells(
+                MergeBuilder
+                    .SetMergingStartPoint("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("E", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("F", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("G", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("H", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("I", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("J", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("K", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build())
             .SetStyle(new TableStyle { TableTextAlign = TextAlign.Center })
             .Build();
 
