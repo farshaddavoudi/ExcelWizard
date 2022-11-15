@@ -25,7 +25,7 @@ public class Row
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public List<MergedBoundaryLocation> MergedCellsList { get; internal set; } = new();
+    public List<MergedCells> MergedCellsList { get; internal set; } = new();
 
     // Methods
 
@@ -97,13 +97,13 @@ public class Row
 
         foreach (var cellsToMerge in MergedCellsList)
         {
-            if (cellsToMerge.StartCellLocation is null || cellsToMerge.FinishCellLocation is null)
+            if (cellsToMerge.MergedBoundaryLocation.StartCellLocation is null || cellsToMerge.MergedBoundaryLocation.FinishCellLocation is null)
                 throw new ValidationException("Something is not right about MergedCells format. FirstCellLocation and LastCellLocations cannot be null");
 
-            if (cellsToMerge.StartCellLocation!.RowNumber != currentRowNumber)
+            if (cellsToMerge.MergedBoundaryLocation.StartCellLocation!.RowNumber != currentRowNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The RowNumber of FirstCellLocation should be equal with the Row RowNumber!");
 
-            if (cellsToMerge.FinishCellLocation!.RowNumber != currentRowNumber)
+            if (cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.RowNumber != currentRowNumber)
                 throw new ValidationException("Something is not right about MergedCells format. The RowNumber of LastCellLocation should be equal with the Row RowNumber!");
         }
 

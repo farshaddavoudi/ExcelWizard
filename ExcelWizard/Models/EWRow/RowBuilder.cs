@@ -2,6 +2,7 @@
 using ExcelWizard.Models.EWMerge;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExcelWizard.Models.EWRow;
 
@@ -33,12 +34,12 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public IExpectStyleRowBuilder SetRowMergedCells(List<MergedBoundaryLocation> mergedCellsList)
+    public IExpectStyleRowBuilder SetRowMergedCells(params MergedCells[] mergedCells)
     {
-        if (mergedCellsList.Count > 0)
+        if (mergedCells.Length > 0)
             CanBuild = true;
 
-        Row.MergedCellsList = mergedCellsList;
+        Row.MergedCellsList = mergedCells.ToList();
 
         return this;
     }

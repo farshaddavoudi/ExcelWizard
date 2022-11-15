@@ -1,5 +1,4 @@
 ﻿using ExcelWizard.Models.EWMerge;
-using System.Collections.Generic;
 
 namespace ExcelWizard.Models.EWRow;
 
@@ -15,7 +14,7 @@ public interface IExpectMergedCellsStatusRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    IExpectStyleRowBuilder SetRowMergedCells(List<MergedBoundaryLocation> mergedCellsList);
+    IExpectStyleRowBuilder SetRowMergedCells(params MergedCells[] mergedCells);
 
     /// <summary>
     /// In case we don't have any merge in the Row

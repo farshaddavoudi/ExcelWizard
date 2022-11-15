@@ -403,14 +403,10 @@ public class ExcelController : ControllerBase
                     .SetValue(DateTime.Now)
                     .Build()
             })
-            .SetRowMergedCells(new List<MergedBoundaryLocation>
-            {
-                new()
-                {
-                    StartCellLocation = new CellLocation("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1),
-                    FinishCellLocation = new CellLocation("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
-                }
-            })
+            .SetRowMergedCells(MergeBuilder
+                .SetMergingStartPoint("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
+                .SetMergingFinishPoint("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
+                .Build())
             .NoCustomStyle()
             .Build();
 

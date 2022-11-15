@@ -513,13 +513,32 @@ public class ExcelWizardService : IExcelWizardService
         // Configure merged cells in the row
         foreach (var cellsToMerge in row.MergedCellsList)
         {
-            var firstCellRow = cellsToMerge.StartCellLocation!.RowNumber;
-            var firstCellColumn = cellsToMerge.StartCellLocation.ColumnNumber;
+            var firstCellRow = cellsToMerge.MergedBoundaryLocation.StartCellLocation!.RowNumber;
+            var firstCellColumn = cellsToMerge.MergedBoundaryLocation.StartCellLocation.ColumnNumber;
 
-            var lastCellRow = cellsToMerge.FinishCellLocation!.RowNumber;
-            var lastCellColumn = cellsToMerge.FinishCellLocation!.ColumnNumber;
+            var lastCellRow = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.RowNumber;
+            var lastCellColumn = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber;
 
-            xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
+            var mergedRowRange = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
+
+            // Config Outside-Border Specified for Merged Cells
+            if (cellsToMerge.OutsideBorder is not null)
+            {
+                XLBorderStyleValues? mergedOutsideBorder = GetXlBorderLineStyle(cellsToMerge.OutsideBorder!.BorderLineStyle);
+
+                if (mergedOutsideBorder is not null)
+                {
+                    mergedRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)mergedOutsideBorder);
+                    mergedRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cellsToMerge.OutsideBorder.BorderColor));
+                }
+            }
+
+            // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
+            mergedRowRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
+
+            // Set Bg Color
+            if (cellsToMerge.BackgroundColor is not null)
+                mergedRowRange.Style.Fill.BackgroundColor = XLColor.FromColor(cellsToMerge.BackgroundColor.Value);
         }
 
         if (row.RowCells.Count != 0)
