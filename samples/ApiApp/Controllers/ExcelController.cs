@@ -107,26 +107,23 @@ public class ExcelController : ControllerBase
 
         var tableTopHeader = TableBuilder
             .CreateStepByStepManually()
-            .SetRows(new List<Row>
-            {
-                RowBuilder
-                    .SetCells(new List<Cell>
-                    {
-                        CellBuilder.SetLocation("A", 1)
-                            .SetValue(accountsReportDto.ReportName)
-                            .SetStyle(new CellStyle
-                            {
-                                // The Cell TextAlign can be set with below property, but because most of the
-                                // Cells are TextAlign center, the better approach is to set the Sheet default TextAlign
-                                // to Center
-                                CellTextAlign = TextAlign.Center
-                            })
-                            .Build()
-                    })
-                    .NoMergedCells()
-                    .NoCustomStyle()
-                    .Build()
-            })
+            .SetRows(RowBuilder
+                .SetCells(new List<Cell>
+                {
+                    CellBuilder.SetLocation("A", 1)
+                        .SetValue(accountsReportDto.ReportName)
+                        .SetStyle(new CellStyle
+                        {
+                            // The Cell TextAlign can be set with below property, but because most of the
+                            // Cells are TextAlign center, the better approach is to set the Sheet default TextAlign
+                            // to Center
+                            CellTextAlign = TextAlign.Center
+                        })
+                        .Build()
+                })
+                .NoMergedCells()
+                .NoCustomStyle()
+                .Build())
             .SetTableMergedCells(new List<MergedCells>
             {
                 new()
@@ -203,9 +200,7 @@ public class ExcelController : ControllerBase
         //2.4- Table: Blue bg (+yellow at the end) table
         var tableBlueBg = TableBuilder
             .CreateStepByStepManually()
-            .SetRows(new List<Row>
-            {
-                RowBuilder
+            .SetRows(RowBuilder
                     .SetCells(new List<Cell>
                     {
                         CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).SetValue("Account Name").Build(),
@@ -244,8 +239,7 @@ public class ExcelController : ControllerBase
                     })
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
-                    .Build()
-            })
+                    .Build())
             .SetTableMergedCells(new List<MergedCells>
             {
                 new()
@@ -316,7 +310,7 @@ public class ExcelController : ControllerBase
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
-            ).ToList())
+            ).ToArray())
             .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
@@ -329,9 +323,7 @@ public class ExcelController : ControllerBase
         // Table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
             .CreateStepByStepManually()
-            .SetRows(new List<Row>
-            {
-                RowBuilder
+            .SetRows(RowBuilder
                     .SetCells(new List<Cell>
                     {
                         CellBuilder
@@ -380,8 +372,7 @@ public class ExcelController : ControllerBase
                     })
                     .NoMergedCells()
                     .NoCustomStyle()
-                    .Build()
-            })
+                    .Build())
             .SetTableMergedCells(new List<MergedCells>
             {
                 new()

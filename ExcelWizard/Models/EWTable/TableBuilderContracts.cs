@@ -13,7 +13,7 @@ public interface IExpectRowsTableBuilder
     /// <summary>
     /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
     /// </summary>
-    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(List<Row> tableRows);
+    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params Row[] tableRows);
 }
 
 public interface IExpectMergedCellsStatusInManualProcessTableBuilder

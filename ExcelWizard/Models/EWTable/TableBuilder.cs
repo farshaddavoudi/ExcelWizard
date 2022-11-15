@@ -22,11 +22,11 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
     /// <summary>
     /// Automatically construct the Table using a model data and attributes. Attributes to configure are [ExcelTable] and [ExcelTableColumn]
     /// </summary>
-    /// <param name="dataList">The model instance which should be list of an item. The type should be configured by attributes for some styles and other configs </param>
+    /// <param name="bindingDataListModel">The model instance which should be list of an item. The type should be configured by attributes for some styles and other configs </param>
     /// <param name="tableStartPoint"> The start location of the table. The end point will be calculated dynamically </param>
-    public static IExpectMergedCellsStatusInModelTableBuilder CreateUsingAModelToBind(object dataList, CellLocation tableStartPoint)
+    public static IExpectMergedCellsStatusInModelTableBuilder CreateUsingAModelToBind(object bindingDataListModel, CellLocation tableStartPoint)
     {
-        var isObjectDataList = dataList is IEnumerable;
+        var isObjectDataList = bindingDataListModel is IEnumerable;
 
         if (isObjectDataList is false)
             throw new InvalidOperationException("Provided data for table is not a valid data list");
@@ -49,7 +49,7 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
 
         Border insideBorder = new();
 
-        if (dataList is IEnumerable records)
+        if (bindingDataListModel is IEnumerable records)
         {
             foreach (var record in records)
             {
@@ -218,12 +218,12 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         };
     }
 
-    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(List<Row> tableRows)
+    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params Row[] tableRows)
     {
-        if (tableRows.Count == 0)
+        if (tableRows.Length == 0)
             throw new ArgumentException("Table instance Rows cannot be an empty list");
 
-        Table.TableRows = tableRows;
+        Table.TableRows = tableRows.ToList();
 
         return this;
     }

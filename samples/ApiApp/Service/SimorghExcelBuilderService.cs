@@ -59,24 +59,21 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // Table: Excel Header 
         var tableHeader = TableBuilder
             .CreateStepByStepManually()
-            .SetRows(new List<Row>
-            {
-                RowBuilder
-                    .SetCells(new List<Cell>
-                    {
-                        CellBuilder
-                            .SetLocation("A", 1)
-                            .SetValue("گزارش تست")
-                            .SetStyle(new CellStyle
-                            {
-                                CellTextAlign = TextAlign.Center
-                            })
-                            .Build()
-                    })
-                    .NoMergedCells()
-                    .NoCustomStyle()
-                    .Build()
-            })
+            .SetRows(RowBuilder
+                .SetCells(new List<Cell>
+                {
+                    CellBuilder
+                        .SetLocation("A", 1)
+                        .SetValue("گزارش تست")
+                        .SetStyle(new CellStyle
+                        {
+                            CellTextAlign = TextAlign.Center
+                        })
+                        .Build()
+                })
+                .NoMergedCells()
+                .NoCustomStyle()
+                .Build())
             .SetTableMergedCells(new List<MergedCells>
             {
                 new()
@@ -120,7 +117,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
-            ).ToList())
+            ).ToArray())
             .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
@@ -169,7 +166,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
-            ).ToList())
+            ).ToArray())
             .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
@@ -188,8 +185,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // And a Vertical Merge for Average (L17:L18)
         var tableBottomBlueHeader = TableBuilder
             .CreateStepByStepManually()
-            .SetRows(new List<Row>
-            {
+            .SetRows(
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
@@ -219,7 +215,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .Build()
                     })
                     .NoMergedCells()
-                    .SetStyle(new RowStyle {RowHeight = 20})
+                    .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
                 RowBuilder
@@ -254,9 +250,9 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             ).Build()
                     })
                     .NoMergedCells()
-                    .SetStyle(new RowStyle {RowHeight = 20})
+                    .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build()
-            })
+                )
             .SetTableMergedCells(new List<MergedCells>
             {
                 new()
@@ -314,7 +310,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
-            ).ToList())
+            ).ToArray())
             .HasNoMergedCells()
             .SetStyle(new TableStyle
             {
@@ -326,8 +322,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // Last table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
             .CreateStepByStepManually()
-            .SetRows(new List<Row>
-            {
+            .SetRows(
                 RowBuilder
                     .SetCells(new List<Cell>
                     {
@@ -355,7 +350,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
-            })
+                )
             .SetTableMergedCells(new List<MergedCells>
             {
                 new()
