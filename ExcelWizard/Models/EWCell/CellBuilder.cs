@@ -2,7 +2,7 @@
 
 namespace ExcelWizard.Models.EWCell;
 
-public class CellBuilder : ICellBuilder
+public class CellBuilder
 {
     private CellBuilder() { }
 

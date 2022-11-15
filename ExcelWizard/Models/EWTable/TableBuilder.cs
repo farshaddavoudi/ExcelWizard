@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace ExcelWizard.Models.EWTable;
 
-public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMergedCellsStatusInManualProcessTableBuilder,
+public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInManualProcessTableBuilder,
     IExpectStyleTableBuilder, IExpectMergedCellsStatusInModelTableBuilder,
     IExpectBuildMethodInModelTableBuilder, IExpectBuildMethodInManualTableBuilder
 {
@@ -219,22 +219,22 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         };
     }
 
-    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params Row[] tableRows)
+    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] tableRows)
     {
         if (tableRows.Length == 0)
             throw new ArgumentException("Table instance Rows cannot be an empty list");
 
-        Table.TableRows = tableRows.ToList();
+        Table.TableRows = tableRows.Select(r => (Row)r).ToList();
 
         return this;
     }
 
-    public IExpectStyleTableBuilder SetTableMergedCells(params MergedCells[] mergedCells)
+    public IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] merges)
     {
-        if (mergedCells.Length > 0)
+        if (merges.Length > 0)
             CanBuild = true;
 
-        Table.MergedCellsList = mergedCells.ToList();
+        Table.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
 
         return this;
     }
@@ -258,12 +258,12 @@ public class TableBuilder : ITableBuilder, IExpectRowsTableBuilder, IExpectMerge
         return this;
     }
 
-    public IExpectBuildMethodInModelTableBuilder SetMergedCells(params MergedCells[] mergedCells)
+    public IExpectBuildMethodInModelTableBuilder SetMergedCells(params IMergeBuilder[] merges)
     {
-        if (mergedCells.Length > 0)
+        if (merges.Length > 0)
             CanBuild = true;
 
-        Table.MergedCellsList = mergedCells.ToList();
+        Table.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
 
         return this;
     }

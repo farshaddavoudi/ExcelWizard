@@ -1,6 +1,6 @@
 ﻿namespace ExcelWizard.Models.EWCell;
 
-public class Cell
+public class Cell : ICellBuilder
 {
     /// <summary>
     /// An arbitrary property to distinguish the Cells. For example can be the db Id (which are not suppose to be shown in the Excel)

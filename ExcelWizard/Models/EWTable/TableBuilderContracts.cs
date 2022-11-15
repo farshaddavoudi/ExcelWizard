@@ -13,7 +13,7 @@ public interface IExpectRowsTableBuilder
     /// <summary>
     /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
     /// </summary>
-    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params Row[] tableRows);
+    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] tableRows);
 }
 
 public interface IExpectMergedCellsStatusInManualProcessTableBuilder
@@ -23,7 +23,7 @@ public interface IExpectMergedCellsStatusInManualProcessTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
-    IExpectStyleTableBuilder SetTableMergedCells(params MergedCells[] mergedCells);
+    IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] merges);
 
     /// <summary>
     /// In case we don't have any merge in the Table
@@ -52,7 +52,7 @@ public interface IExpectMergedCellsStatusInModelTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
-    IExpectBuildMethodInModelTableBuilder SetMergedCells(params MergedCells[] mergedCells);
+    IExpectBuildMethodInModelTableBuilder SetMergedCells(params IMergeBuilder[] merges);
 
     /// <summary>
     /// In case we don't have any merge in the Table

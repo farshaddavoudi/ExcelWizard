@@ -110,8 +110,7 @@ public class ExcelController : ControllerBase
         var tableTopHeader = TableBuilder
             .CreateStepByStepManually()
             .SetRows(RowBuilder
-                .SetCells(new List<Cell>
-                {
+                .SetCells(
                     CellBuilder.SetLocation("A", 1)
                         .SetValue(accountsReportDto.ReportName)
                         .SetStyle(new CellStyle
@@ -121,8 +120,7 @@ public class ExcelController : ControllerBase
                             // to Center
                             CellTextAlign = TextAlign.Center
                         })
-                        .Build()
-                })
+                        .Build())
                 .NoMergedCells()
                 .NoCustomStyle()
                 .Build())
@@ -198,8 +196,7 @@ public class ExcelController : ControllerBase
         var tableBlueBg = TableBuilder
             .CreateStepByStepManually()
             .SetRows(RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                             .SetValue("Account Name").Build(),
                         CellBuilder.SetLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
@@ -217,17 +214,16 @@ public class ExcelController : ControllerBase
                             .SetStyle(new CellStyle
                             {
                                 //BackgroundColor = Color.Yellow, //Bg will set on Merged properties
-                                Font = new TextFont {FontColor = Color.Black}
+                                Font = new TextFont { FontColor = Color.Black }
                             })
                             .Build()
-                    })
+                        )
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                             .Build(),
                         CellBuilder.SetLocation("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
@@ -246,7 +242,7 @@ public class ExcelController : ControllerBase
                             .SetValue("Sum").Build(),
                         CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                             .Build()
-                    })
+                        )
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build())
@@ -288,13 +284,12 @@ public class ExcelController : ControllerBase
             .CreateStepByStepManually()
             .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
                             .SetValue(account.Name).Build(),
                         CellBuilder.SetLocation("B", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
                             .SetValue(account.Code).Build()
-                    })
+                        )
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
@@ -312,8 +307,7 @@ public class ExcelController : ControllerBase
         var tableSharingBeforeAfterData = TableBuilder
             .CreateStepByStepManually()
             .SetRows(RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder
                             .SetLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable())
                             .SetValue(accountsReportDto.AccountSharingData
@@ -357,7 +351,7 @@ public class ExcelController : ControllerBase
                             .SetLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable())
                             .SetValue(accountsReportDto.Average)
                             .Build()
-                    })
+                        )
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build())
@@ -396,13 +390,12 @@ public class ExcelController : ControllerBase
 
         //2.7- Row: Light Green row for report date
         var rowReportDate = RowBuilder
-            .SetCells(new List<Cell>
-            {
+            .SetCells(
                 CellBuilder
                     .SetLocation("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
                     .SetValue(DateTime.Now)
                     .Build()
-            })
+                )
             .SetRowMergedCells(MergeBuilder
                 .SetMergingStartPoint("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
                 .SetMergingFinishPoint("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)

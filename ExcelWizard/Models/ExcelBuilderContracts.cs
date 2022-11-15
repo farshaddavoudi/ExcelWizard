@@ -26,7 +26,7 @@ public interface IExpectSheetsExcelBuilder
     /// <summary>
     /// Add one or more Sheets to Excel
     /// </summary>
-    IExpectStyleExcelBuilder SetSheets(params Sheet[] sheets);
+    IExpectStyleExcelBuilder SetSheets(params ISheetBuilder[] sheets);
 }
 
 public interface IExpectStyleExcelBuilder

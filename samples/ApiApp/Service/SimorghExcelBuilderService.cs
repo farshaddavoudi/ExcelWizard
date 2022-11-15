@@ -61,8 +61,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         var tableHeader = TableBuilder
             .CreateStepByStepManually()
             .SetRows(RowBuilder
-                .SetCells(new List<Cell>
-                {
+                .SetCells(
                     CellBuilder
                         .SetLocation("A", 1)
                         .SetValue("گزارش تست")
@@ -71,7 +70,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             CellTextAlign = TextAlign.Center
                         })
                         .Build()
-                })
+                    )
                 .NoMergedCells()
                 .NoCustomStyle()
                 .Build())
@@ -86,12 +85,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - First table Header
         var rowFirstTableHeader = RowBuilder
-            .SetCells(new List<Cell>
-            {
+            .SetCells(
                 CellBuilder.SetLocation("A", 3).SetValue("کد حساب").Build(),
                 CellBuilder.SetLocation("B", 3).SetValue("بدهکار").Build(),
                 CellBuilder.SetLocation("C", 3).SetValue("بستانکار").Build()
-            })
+                )
             .NoMergedCells()
             .SetStyle(new RowStyle
             {
@@ -104,12 +102,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .CreateStepByStepManually()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", 4).SetValue(item.AccountCode).Build(),
                         CellBuilder.SetLocation("B", 4).SetValue(item.Debit).SetContentType(CellContentType.Currency).Build(),
                         CellBuilder.SetLocation("C", 4).SetValue(item.Credit).SetContentType(CellContentType.Currency).Build()
-                    })
+                        )
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
@@ -124,12 +121,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - Second table Header
         var rowSecondTableHeader = RowBuilder
-            .SetCells(new List<Cell>
-            {
+            .SetCells(
                 CellBuilder.SetLocation("A", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("کد حساب").Build(),
                 CellBuilder.SetLocation("B", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بدهکار").Build(),
-                CellBuilder.SetLocation("C", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بستانکار").Build(),
-            })
+                CellBuilder.SetLocation("C", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بستانکار").Build()
+            )
             .NoMergedCells()
             .SetStyle(new RowStyle
             {
@@ -142,8 +138,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .CreateStepByStepManually()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder
                             .SetLocation("A", index + rowSecondTableHeader.GetNextRowNumberAfterRow())
                             .SetValue(item.AccountCode)
@@ -158,7 +153,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetValue(item.Credit)
                             .SetContentType(CellContentType.Currency)
                             .Build()
-                    })
+                        )
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
@@ -183,8 +178,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .CreateStepByStepManually()
             .SetRows(
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("نام حساب")
                             .Build(),
                         CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable()).SetValue("کد حساب")
@@ -206,17 +200,16 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetStyle(new CellStyle
                             {
                                 BackgroundColor = Color.White,
-                                Font = new TextFont {FontColor = Color.Black}
+                                Font = new TextFont { FontColor = Color.Black }
                             })
                             .Build()
-                    })
+                        )
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).Build(),
                         CellBuilder.SetLocation("B", table2Nd.GetNextVerticalRowNumberAfterTable() + 1).Build(),
                         CellBuilder.SetLocation("C", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
@@ -240,11 +233,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder
                             .SetLocation("L", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
                             .SetStyle(new CellStyle
-                                {
-                                    BackgroundColor = Color.White
-                                }
+                            {
+                                BackgroundColor = Color.White
+                            }
                             ).Build()
-                    })
+                        )
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build()
@@ -278,13 +271,12 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .CreateStepByStepManually()
             .SetRows(voucherStatement.Accounts.Select((account, index) =>
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("A", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index)
                             .SetValue(account.Name).Build(),
                         CellBuilder.SetLocation("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index)
                             .SetValue(account.Code).Build()
-                    })
+                        )
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()
@@ -302,8 +294,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
             .CreateStepByStepManually()
             .SetRows(
                 RowBuilder
-                    .SetCells(new List<Cell>
-                    {
+                    .SetCells(
                         CellBuilder.SetLocation("C", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
                             .SetValue(504000).Build(),
                         CellBuilder.SetLocation("D", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
@@ -324,7 +315,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetValue(504000).Build(),
                         CellBuilder.SetLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
                             .SetValue(504000).Build()
-                    })
+                        )
                     .NoMergedCells()
                     .NoCustomStyle()
                     .Build()

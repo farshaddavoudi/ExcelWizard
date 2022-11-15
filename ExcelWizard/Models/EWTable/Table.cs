@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ExcelWizard.Models.EWTable;
 
-public class Table
+public class Table : ITableBuilder
 {
     // Props
 

@@ -92,14 +92,14 @@ public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilde
         return this;
     }
 
-    public IExpectStyleExcelBuilder SetSheets(params Sheet[] sheets)
+    public IExpectStyleExcelBuilder SetSheets(params ISheetBuilder[] sheets)
     {
         if (sheets.Length == 0)
             throw new InvalidOperationException("Excel Sheets cannot be an empty list");
 
         CanBuild = true;
 
-        ExcelModel.Sheets.AddRange(sheets);
+        ExcelModel.Sheets.AddRange(sheets.Select(s => (Sheet)s));
 
         return this;
     }

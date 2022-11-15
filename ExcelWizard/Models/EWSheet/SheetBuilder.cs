@@ -1,12 +1,13 @@
 ﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWTable;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace ExcelWizard.Models.EWSheet;
 
-public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
+public class SheetBuilder : IExpectSetComponentsSheetBuilder,
     IExpectStyleSheetBuilder, IExpectOtherPropsAndBuildSheetBuilder
 {
     private SheetBuilder() { }
@@ -32,44 +33,44 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         };
     }
 
-    public IExpectSetComponentsSheetBuilder SetTable(Table table)
+    public IExpectSetComponentsSheetBuilder SetTable(ITableBuilder table)
     {
-        Sheet.SheetTables.Add(table);
+        Sheet.SheetTables.Add((Table)table);
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetTables(params Table[] tables)
+    public IExpectSetComponentsSheetBuilder SetTables(params ITableBuilder[] tables)
     {
-        Sheet.SheetTables.AddRange(tables);
+        Sheet.SheetTables.AddRange(tables.Select(t => (Table)t));
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetRow(Row row)
+    public IExpectSetComponentsSheetBuilder SetRow(IRowBuilder row)
     {
-        Sheet.SheetRows.Add(row);
+        Sheet.SheetRows.Add((Row)row);
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetRows(params Row[] rows)
+    public IExpectSetComponentsSheetBuilder SetRows(params IRowBuilder[] rows)
     {
-        Sheet.SheetRows.AddRange(rows);
+        Sheet.SheetRows.AddRange(rows.Select(r => (Row)r));
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetCell(Cell cell)
+    public IExpectSetComponentsSheetBuilder SetCell(ICellBuilder cell)
     {
-        Sheet.SheetCells.Add(cell);
+        Sheet.SheetCells.Add((Cell)cell);
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetCells(params Cell[] cells)
+    public IExpectSetComponentsSheetBuilder SetCells(params ICellBuilder[] cells)
     {
-        Sheet.SheetCells.AddRange(cells);
+        Sheet.SheetCells.AddRange(cells.Select(c => (Cell)c).ToList());
 
         return this;
     }
@@ -79,9 +80,9 @@ public class SheetBuilder : ISheetBuilder, IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(List<string> mergedCells)
+    public IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(params IMergeBuilder[] merges)
     {
-        Sheet.MergedCells = mergedCells;
+        Sheet.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
 
         return this;
     }

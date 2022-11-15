@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace ExcelWizard.Models.EWMerge;
 
-public class MergeBuilder : IMergeBuilder, IExpectMergingFinishPointMergeBuilder, IExpectStylesOrBuildMergeBuilder
+public class MergeBuilder : IExpectMergingFinishPointMergeBuilder, IExpectStylesOrBuildMergeBuilder
 {
     private MergeBuilder() { }
 

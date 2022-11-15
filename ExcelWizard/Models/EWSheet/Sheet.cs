@@ -1,11 +1,12 @@
 ﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWTable;
 using System.Collections.Generic;
 
 namespace ExcelWizard.Models.EWSheet;
 
-public class Sheet
+public class Sheet : ISheetBuilder
 {
     /// <summary>
     /// Sheet name
@@ -36,9 +37,9 @@ public class Sheet
     public SheetStyle SheetStyle { get; internal set; } = new();
 
     /// <summary>
-    /// Merged Cells in the Sheet e.g. new List { "L16:L18" } will merge starting from L16 Cell until L18 Cell (MergeStartCell:MergeEndCell)
+    /// Merged Cells in the Sheet. If it is possible to write Merges on the Table or Row models, manage to do that instead of here
     /// </summary>
-    public List<string> MergedCells { get; internal set; } = new();
+    public List<MergedCells> MergedCellsList { get; internal set; } = new();
 
     /// <summary>
     /// Will override the ExcelBuilder AreSheetsLockedByDefault value. Default will inherit

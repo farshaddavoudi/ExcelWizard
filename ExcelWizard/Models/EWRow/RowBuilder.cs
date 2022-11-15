@@ -1,13 +1,11 @@
 ﻿using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWMerge;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ExcelWizard.Models.EWRow;
 
-public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
-, IExpectBuildMethodRowBuilder, IExpectStyleRowBuilder
+public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IExpectBuildMethodRowBuilder, IExpectStyleRowBuilder
 {
     private RowBuilder() { }
 
@@ -17,13 +15,13 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     /// <summary>
     /// Each Row contains one or more Cell(s). It is required as Row definition cannot be without Cells.
     /// </summary>
-    public static IExpectMergedCellsStatusRowBuilder SetCells(List<Cell> rowCells)
+    public static IExpectMergedCellsStatusRowBuilder SetCells(params ICellBuilder[] rowCells)
     {
         return new RowBuilder
         {
             Row = new Row
             {
-                RowCells = rowCells
+                RowCells = rowCells.Select(c => (Cell)c).ToList()
             }
         };
     }
@@ -34,12 +32,12 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public IExpectStyleRowBuilder SetRowMergedCells(params MergedCells[] mergedCells)
+    public IExpectStyleRowBuilder SetRowMergedCells(params IMergeBuilder[] merges)
     {
-        if (mergedCells.Length > 0)
+        if (merges.Length > 0)
             CanBuild = true;
 
-        Row.MergedCellsList = mergedCells.ToList();
+        Row.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
 
         return this;
     }

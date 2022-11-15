@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace ExcelWizard.Models.EWMerge;
 
-public class MergedCells
+public class MergedCells : IMergeBuilder
 {
     /// <summary>
     /// Merged Cells Start and End Location
