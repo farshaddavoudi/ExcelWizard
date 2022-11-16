@@ -52,7 +52,7 @@ public interface IExpectOtherPropsAndBuildExcelBuilder : IExpectBuildExcelBuilde
 
 public interface IExpectBuildExcelBuilder
 {
-    ExcelModel Build();
+    IExcelBuilder Build();
 }
 
 public interface IExpectGridLayoutExcelBuilder
@@ -60,15 +60,15 @@ public interface IExpectGridLayoutExcelBuilder
     /// <summary>
     /// Generate Simple Single Sheet Grid layout Excel file from special model configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
     /// </summary>
-    /// <param name="bindingDataListModel"> List of data (should be something like List{Person}()) </param>
-    IExpectBuildExcelBuilder WithOneSheetUsingAModelToBind(object bindingDataListModel);
+    /// <param name="bindingListModel"> List of data (should be something like List{Person}()) </param>
+    IExpectBuildExcelBuilder WithOneSheetUsingAModelToBind(object bindingListModel);
 
     /// <summary>
     /// Generate Grid layout Excel having multiple Sheets from special model configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
     /// </summary>
-    /// <param name="listOfBindingDataListModel"></param>
+    /// <param name="listOfBindingListModel"></param>
     /// <returns> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </returns>
-    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelListToBind(List<object> listOfBindingDataListModel);
+    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelListToBind(List<object> listOfBindingListModel);
 
     /// <summary>
     /// Generate Grid layout Excel in usual way by create Sheets manually step by step and without model binding

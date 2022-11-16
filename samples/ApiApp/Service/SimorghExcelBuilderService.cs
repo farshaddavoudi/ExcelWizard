@@ -24,22 +24,22 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
     public GeneratedExcelFile GenerateVoucherStatementExcelReport(VoucherStatementResult voucherStatement)
     {
-        var excelModel = GetExcelModelFromVoucherStatementResult(voucherStatement);
+        IExcelBuilder excelBuilder = GetExcelModelFromVoucherStatementResult(voucherStatement);
 
-        return _excelWizardService.GenerateExcel(excelModel);
+        return _excelWizardService.GenerateExcel(excelBuilder);
     }
 
     public string GenerateVoucherStatementExcelReport(VoucherStatementResult voucherStatement, string savePath)
     {
-        var excelModel = GetExcelModelFromVoucherStatementResult(voucherStatement);
+        var excelBuilder = GetExcelModelFromVoucherStatementResult(voucherStatement);
 
-        return _excelWizardService.GenerateExcel(excelModel, savePath);
+        return _excelWizardService.GenerateExcel(excelBuilder, savePath);
     }
 
     /// <summary>
     /// Defined to use for both methods and do not duplicate codes
     /// </summary>
-    private ExcelModel GetExcelModelFromVoucherStatementResult(VoucherStatementResult voucherStatement)
+    private IExcelBuilder GetExcelModelFromVoucherStatementResult(VoucherStatementResult voucherStatement)
     {
         // It is the heart of using the ExcelWizard package to generate your desired Excel report
         // You should create your Excel template (ExcelBuilder model) using your local app model (here VoucherStatementResult)

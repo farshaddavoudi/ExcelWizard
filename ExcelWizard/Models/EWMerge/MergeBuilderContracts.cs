@@ -34,5 +34,5 @@ public interface IExpectStylesOrBuildMergeBuilder
     /// <param name="borderColor"></param>
     IExpectStylesOrBuildMergeBuilder SetMergingOutsideBorder(LineStyle borderLineStyle = LineStyle.Thin, Color borderColor = new());
 
-    MergedCells Build();
+    IMergeBuilder Build();
 }

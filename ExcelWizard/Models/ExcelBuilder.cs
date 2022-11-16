@@ -16,7 +16,7 @@ using System.Text.Json;
 
 namespace ExcelWizard.Models;
 
-public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilder, IExpectSheetsExcelBuilder
+public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheetsExcelBuilder
     , IExpectStyleExcelBuilder, IExpectOtherPropsAndBuildExcelBuilder, IExpectBuildExcelBuilder
     , IExpectGridLayoutExcelBuilder
 {
@@ -48,7 +48,7 @@ public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilde
         return this;
     }
 
-    public IExpectBuildExcelBuilder WithOneSheetUsingAModelToBind(object bindingDataListModel)
+    public IExpectBuildExcelBuilder WithOneSheetUsingAModelToBind(object bindingListModel)
     {
         CanBuild = true;
 
@@ -56,7 +56,7 @@ public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilde
         {
             GeneratedFileName = ExcelModel.GeneratedFileName,
 
-            Sheets = new List<GridExcelSheet> { new() { DataList = bindingDataListModel } }
+            Sheets = new List<GridExcelSheet> { new() { DataList = bindingListModel } }
         };
 
         ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel);
@@ -64,11 +64,11 @@ public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilde
         return this;
     }
 
-    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelListToBind(List<object> listOfBindingDataListModel)
+    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelListToBind(List<object> listOfBindingListModel)
     {
         CanBuild = true;
 
-        List<GridExcelSheet> gridSheets = listOfBindingDataListModel.Select(l => new GridExcelSheet { DataList = l }).ToList();
+        List<GridExcelSheet> gridSheets = listOfBindingListModel.Select(l => new GridExcelSheet { DataList = l }).ToList();
 
         GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel
         {
@@ -123,7 +123,7 @@ public class ExcelBuilder : IExcelBuilder, IExpectGeneratingExcelTypeExcelBuilde
         return this;
     }
 
-    public ExcelModel Build()
+    public IExcelBuilder Build()
     {
         if (CanBuild is false)
             throw new InvalidOperationException("Cannot build Excel model because some necessary information are not provided");

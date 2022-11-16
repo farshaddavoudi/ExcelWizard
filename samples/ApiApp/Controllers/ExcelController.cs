@@ -134,7 +134,7 @@ public class ExcelController : ControllerBase
             .Build();
 
         //2.* New Concept of Model binding
-        Table tableCreditsDebits = TableBuilder
+        ITableBuilder tableCreditsDebits = TableBuilder
             .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
             .NoMergedCells()
             .Build();
@@ -218,7 +218,11 @@ public class ExcelController : ControllerBase
                             })
                             .Build()
                         )
-                    .NoMergedCells()
+                    .SetRowMergedCells(MergeBuilder
+                        .SetMergingStartPoint("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                        .SetMergingFinishPoint("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                        .SetMergingAreaBackgroundColor(Color.Red)
+                        .Build())
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
@@ -255,11 +259,7 @@ public class ExcelController : ControllerBase
                 .SetMergingStartPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                 .SetMergingFinishPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                 .Build(),
-            MergeBuilder
-                .SetMergingStartPoint("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingFinishPoint("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingAreaBackgroundColor(Color.DarkBlue)
-                .Build(),
+
             MergeBuilder
                 .SetMergingStartPoint("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                 .SetMergingFinishPoint("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
@@ -458,17 +458,17 @@ public class ExcelController : ControllerBase
         // Below will create Excel file as byte[] data
         // Just passing your data to method argument and let the rest to the package! hoorya!
 
-        var usersExcelModel = ExcelBuilder
+        var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Users")
             .CreateGridLayoutExcel()
             .WithOneSheetUsingAModelToBind(myUsers)
             .Build();
 
-        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(usersExcelModel);
+        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);
 
         // Below will create Excel file in specified path and return the full path as string
         // The last param is generated file name
-        string fullPathAsString = _excelWizardService.GenerateExcel(usersExcelModel, @"C:\GeneratedExcelSamples");
+        string fullPathAsString = _excelWizardService.GenerateExcel(excelBuilder, @"C:\GeneratedExcelSamples");
 
         return Ok(generatedExcelFile);
     }

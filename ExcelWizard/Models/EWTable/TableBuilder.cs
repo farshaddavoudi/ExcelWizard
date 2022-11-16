@@ -23,11 +23,11 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
     /// <summary>
     /// Automatically construct the Table using a model data and attributes. Attributes to configure are [ExcelTable] and [ExcelTableColumn]
     /// </summary>
-    /// <param name="bindingDataListModel">The model instance which should be list of an item. The type should be configured by attributes for some styles and other configs </param>
+    /// <param name="bindingListModel">The model instance which should be list of an item. The type should be configured by attributes for some styles and other configs </param>
     /// <param name="tableStartPoint"> The start location of the table. The end point will be calculated dynamically </param>
-    public static IExpectMergedCellsStatusInModelTableBuilder CreateUsingAModelToBind(object bindingDataListModel, CellLocation tableStartPoint)
+    public static IExpectMergedCellsStatusInModelTableBuilder CreateUsingAModelToBind(object bindingListModel, CellLocation tableStartPoint)
     {
-        var isObjectDataList = bindingDataListModel is IEnumerable;
+        var isObjectDataList = bindingListModel is IEnumerable;
 
         if (isObjectDataList is false)
             throw new InvalidOperationException("Provided data for table is not a valid data list");
@@ -50,7 +50,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
 
         Border insideBorder = new();
 
-        if (bindingDataListModel is IEnumerable records)
+        if (bindingListModel is IEnumerable records)
         {
             foreach (var record in records)
             {
@@ -219,22 +219,22 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         };
     }
 
-    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] tableRows)
+    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] rowBuilders)
     {
-        if (tableRows.Length == 0)
+        if (rowBuilders.Length == 0)
             throw new ArgumentException("Table instance Rows cannot be an empty list");
 
-        Table.TableRows = tableRows.Select(r => (Row)r).ToList();
+        Table.TableRows = rowBuilders.Select(r => (Row)r).ToList();
 
         return this;
     }
 
-    public IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] merges)
+    public IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] mergeBuilders)
     {
-        if (merges.Length > 0)
+        if (mergeBuilders.Length > 0)
             CanBuild = true;
 
-        Table.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
+        Table.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
 
         return this;
     }
@@ -258,12 +258,12 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         return this;
     }
 
-    public IExpectBuildMethodInModelTableBuilder SetMergedCells(params IMergeBuilder[] merges)
+    public IExpectBuildMethodInModelTableBuilder SetMergedCells(params IMergeBuilder[] mergeBuilders)
     {
-        if (merges.Length > 0)
+        if (mergeBuilders.Length > 0)
             CanBuild = true;
 
-        Table.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
+        Table.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
 
         return this;
     }
@@ -275,7 +275,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         return this;
     }
 
-    public Table Build()
+    public ITableBuilder Build()
     {
         if (CanBuild is false)
             throw new InvalidOperationException("Cannot build Table because some necessary information not provided");

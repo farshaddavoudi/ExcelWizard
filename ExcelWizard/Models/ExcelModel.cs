@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ExcelWizard.Models;
 
-public class ExcelModel
+public class ExcelModel : IExcelBuilder
 {
     /// <summary>
     /// Excel file name without .Xlsx extension. Excel file will be generated with this file name

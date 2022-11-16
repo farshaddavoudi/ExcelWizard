@@ -33,9 +33,9 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         };
     }
 
-    public IExpectSetComponentsSheetBuilder SetTable(ITableBuilder table)
+    public IExpectSetComponentsSheetBuilder SetTable(ITableBuilder tableBuilder)
     {
-        Sheet.SheetTables.Add((Table)table);
+        Sheet.SheetTables.Add((Table)tableBuilder);
 
         return this;
     }
@@ -47,30 +47,30 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetRow(IRowBuilder row)
+    public IExpectSetComponentsSheetBuilder SetRow(IRowBuilder rowBuilder)
     {
-        Sheet.SheetRows.Add((Row)row);
+        Sheet.SheetRows.Add((Row)rowBuilder);
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetRows(params IRowBuilder[] rows)
+    public IExpectSetComponentsSheetBuilder SetRows(params IRowBuilder[] rowBuilders)
     {
-        Sheet.SheetRows.AddRange(rows.Select(r => (Row)r));
+        Sheet.SheetRows.AddRange(rowBuilders.Select(r => (Row)r));
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetCell(ICellBuilder cell)
+    public IExpectSetComponentsSheetBuilder SetCell(ICellBuilder cellBuilder)
     {
-        Sheet.SheetCells.Add((Cell)cell);
+        Sheet.SheetCells.Add((Cell)cellBuilder);
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetCells(params ICellBuilder[] cells)
+    public IExpectSetComponentsSheetBuilder SetCells(params ICellBuilder[] cellBuilders)
     {
-        Sheet.SheetCells.AddRange(cells.Select(c => (Cell)c).ToList());
+        Sheet.SheetCells.AddRange(cellBuilders.Select(c => (Cell)c).ToList());
 
         return this;
     }
@@ -80,9 +80,9 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(params IMergeBuilder[] merges)
+    public IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(params IMergeBuilder[] mergeBuilders)
     {
-        Sheet.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
+        Sheet.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
 
         return this;
     }
@@ -117,7 +117,7 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public Sheet Build()
+    public ISheetBuilder Build()
     {
         if (CanBuild is false)
             throw new InvalidOperationException("Cannot build Sheet because some necessary information are not provided");

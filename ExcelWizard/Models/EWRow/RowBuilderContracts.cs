@@ -1,10 +1,33 @@
-﻿using ExcelWizard.Models.EWMerge;
+﻿using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWMerge;
 
 namespace ExcelWizard.Models.EWRow;
 
 public interface IRowBuilder
 {
+    /// <summary>
+    /// Get Current Row Y Location (RowNumber)
+    /// </summary>
+    /// <returns></returns>
+    int GetRowNumber();
 
+    int GetNextRowNumberAfterRow();
+
+    /// <summary>
+    /// Get current Row Starting Cell Automatically by its Cells Location
+    /// </summary>
+    /// <returns></returns>
+    CellLocation GetRowFirstCellLocation();
+
+    /// <summary>
+    /// Get current Row Ending Cell Automatically by its Cells Location
+    /// </summary>
+    /// <returns></returns>
+    CellLocation GetRowLastCellLocation();
+
+    CellLocation GetNextHorizontalCellLocationAfterRow();
+    Cell? GetRowCellByColumnNumber(int columnNumber);
+    void ValidateRowInstance();
 }
 
 public interface IExpectMergedCellsStatusRowBuilder
@@ -14,7 +37,8 @@ public interface IExpectMergedCellsStatusRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    IExpectStyleRowBuilder SetRowMergedCells(params IMergeBuilder[] merges);
+    /// <param name="mergeBuilders"> MergeBuilder(s) with Build() method at the end of them </param>
+    IExpectStyleRowBuilder SetRowMergedCells(params IMergeBuilder[] mergeBuilders);
 
     /// <summary>
     /// In case we don't have any merge in the Row
@@ -38,5 +62,5 @@ public interface IExpectStyleRowBuilder
 
 public interface IExpectBuildMethodRowBuilder
 {
-    Row Build();
+    IRowBuilder Build();
 }

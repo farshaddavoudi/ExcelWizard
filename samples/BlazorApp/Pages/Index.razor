@@ -27,12 +27,12 @@ Welcome to your new app.
             new() { Id = 3, FullName = "مارسل دسایی", PersonnelCode = "941126" }
         };
 
-        var exampleExcel = ExcelBuilder
+        var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("my-custom-report")
             .CreateGridLayoutExcel()
             .WithOneSheetUsingAModelToBind(fetchDataFromApi)
             .Build();
 
-        return ExcelWizardService.GenerateAndDownloadExcelInBlazor(exampleExcel);
+        return ExcelWizardService.GenerateAndDownloadExcelInBlazor(excelBuilder);
     }
 }

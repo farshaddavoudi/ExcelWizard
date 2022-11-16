@@ -57,7 +57,7 @@ public class MergeBuilder : IExpectMergingFinishPointMergeBuilder, IExpectStyles
         return this;
     }
 
-    public MergedCells Build()
+    public IMergeBuilder Build()
     {
         if (CanBuild is false)
             throw new InvalidOperationException("Cannot build MergedCells because some necessary information are not provided");

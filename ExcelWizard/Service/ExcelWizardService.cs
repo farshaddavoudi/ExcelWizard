@@ -28,8 +28,10 @@ public class ExcelWizardService : IExcelWizardService
 
     #endregion
 
-    public GeneratedExcelFile GenerateExcel(ExcelModel excelModel)
+    public GeneratedExcelFile GenerateExcel(IExcelBuilder excelBuilder)
     {
+        var excelModel = (ExcelModel)excelBuilder;
+
         using var xlWorkbook = ClosedXmlEngine(excelModel);
 
         // Save
@@ -45,8 +47,10 @@ public class ExcelWizardService : IExcelWizardService
         return new GeneratedExcelFile { FileName = excelModel.GeneratedFileName, Content = content };
     }
 
-    public string GenerateExcel(ExcelModel excelModel, string savePath)
+    public string GenerateExcel(IExcelBuilder excelBuilder, string savePath)
     {
+        var excelModel = (ExcelModel)excelBuilder;
+
         using var xlWorkbook = ClosedXmlEngine(excelModel);
 
         if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
@@ -60,9 +64,9 @@ public class ExcelWizardService : IExcelWizardService
         return saveUrl;
     }
 
-    public async Task<DownloadFileResult> GenerateAndDownloadExcelInBlazor(ExcelModel excelModel)
+    public async Task<DownloadFileResult> GenerateAndDownloadExcelInBlazor(IExcelBuilder excelBuilder)
     {
-        var generatedFile = GenerateExcel(excelModel);
+        var generatedFile = GenerateExcel((ExcelModel)excelBuilder);
 
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
@@ -535,37 +539,6 @@ public class ExcelWizardService : IExcelWizardService
             ConfigureCell(xlSheet, rowCell, columnsStyleList, isSheetLocked);
         }
 
-        // Configure merged cells in the row
-        foreach (var cellsToMerge in row.MergedCellsList)
-        {
-            var firstCellRow = cellsToMerge.MergedBoundaryLocation.StartCellLocation!.RowNumber;
-            var firstCellColumn = cellsToMerge.MergedBoundaryLocation.StartCellLocation.ColumnNumber;
-
-            var lastCellRow = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.RowNumber;
-            var lastCellColumn = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber;
-
-            var mergedRowRange = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
-
-            // Config Outside-Border Specified for Merged Cells
-            if (cellsToMerge.OutsideBorder is not null)
-            {
-                XLBorderStyleValues? mergedOutsideBorder = GetXlBorderLineStyle(cellsToMerge.OutsideBorder!.BorderLineStyle);
-
-                if (mergedOutsideBorder is not null)
-                {
-                    mergedRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)mergedOutsideBorder);
-                    mergedRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cellsToMerge.OutsideBorder.BorderColor));
-                }
-            }
-
-            // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
-            mergedRowRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
-
-            // Set Bg Color
-            if (cellsToMerge.BackgroundColor is not null)
-                mergedRowRange.Style.Fill.BackgroundColor = XLColor.FromColor(cellsToMerge.BackgroundColor.Value);
-        }
-
         if (row.RowCells.Count != 0)
         {
             var xlRow = xlSheet.Row(row.RowCells.First().CellLocation.RowNumber);
@@ -619,6 +592,37 @@ public class ExcelWizardService : IExcelWizardService
                     _ => throw new ArgumentOutOfRangeException()
                 };
             }
+        }
+
+        // Configure merged cells in the row
+        foreach (var cellsToMerge in row.MergedCellsList)
+        {
+            var firstCellRow = cellsToMerge.MergedBoundaryLocation.StartCellLocation!.RowNumber;
+            var firstCellColumn = cellsToMerge.MergedBoundaryLocation.StartCellLocation.ColumnNumber;
+
+            var lastCellRow = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.RowNumber;
+            var lastCellColumn = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber;
+
+            var mergedRowRange = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
+
+            // Config Outside-Border Specified for Merged Cells
+            if (cellsToMerge.OutsideBorder is not null)
+            {
+                XLBorderStyleValues? mergedOutsideBorder = GetXlBorderLineStyle(cellsToMerge.OutsideBorder!.BorderLineStyle);
+
+                if (mergedOutsideBorder is not null)
+                {
+                    mergedRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)mergedOutsideBorder);
+                    mergedRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cellsToMerge.OutsideBorder.BorderColor));
+                }
+            }
+
+            // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
+            mergedRowRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
+
+            // Set Bg Color
+            if (cellsToMerge.BackgroundColor is not null)
+                mergedRowRange.Style.Fill.BackgroundColor = XLColor.FromColor(cellsToMerge.BackgroundColor.Value);
         }
     }
 
