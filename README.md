@@ -4,7 +4,7 @@
 
 Using ExcelWizard, you can easily generate Excel file in a very simple and straightforward way, even without any previous Excel knowledge. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
-## Version >= 3.0.0 Change
+## Version >= 3.0.0 Breakthrough Changes
 #### The package has completely rewritten with advanced *builder design pattern* to be more user friendly and easier to use and extremely less complex.
 
 # How to Use
