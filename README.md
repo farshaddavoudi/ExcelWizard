@@ -141,7 +141,7 @@ in different Excel locations. The first type is easier and most straightforward.
 
 ### Generated Excel Return Type
 
-##### Also, you can have different scenario in saving or retrieving generated Excel file:
+#### Also, you can have different scenario in saving or retrieving generated Excel file:
 
 1. Get the *`byte[]`* of the Excel file and use it for your use case, e.g. sending to another client to be shown or saving in a database, etc.
 
@@ -185,8 +185,8 @@ public interface IExcelWizardService
 
 # Create Excel In Action
 
-It do not matter which type our target Excel is, either grid-layout or complex-layout, we always start with ExcelBuilder
-and will be guided step by step by chained methods of builder easily until we call the Build() method at the end. All
+It do not matter which type our target Excel is, either grid-layout or complex-layout, we always start with `ExcelBuilder`
+and will be guided step by step by chained methods of builder easily until we call the `Build()` method at the end. All
 methods are well documented and commented and will come up in a logical order so it is simpler and easier to use without 
 fear of errors or missing something.
 
@@ -261,13 +261,10 @@ public class User
 The Result:
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-2.png" />
 
-You do not need to remember all the properties. Just use the attribute and intellisense will show you all the available options you 
-can use to customize Excel.
-
 ## Generate **Complex-Layout** Excel
 You can create any customized Excel file. Just go along with the `ExcelBuilder` chained methods and provide the necessary methods for your Excel.
 
-Tip: We do not use any attributes (`[ExcelSheet]` and `[ExcelSheetColumn]`) here.
+*Tip*: We **do not** use the Grid-Layout configurable attributes (`[ExcelSheet]` and `[ExcelSheetColumn]`) here.
 
 ### Complete Example of Building Complex-Layout Excel from Scratch
 Let's assume we have an application related to a company's financials and we want to have a custom Excel report like the below format:
@@ -276,9 +273,9 @@ Let's assume we have an application related to a company's financials and we wan
 
 You can download Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/ComplexExcelTemplate.xlsx">here</a>.
 
-So, obviously, it is a **Complex-Layout Excel**, not the **Grid-Layout** one. 
+So, obviously, it is a Complex-Layout Excel, not the Grid-Layout one. 
 
-We want create our `IExcelBuilder` argument using our dynamic local app model (here `accountsReportDto`), So At first, we should fetch the report model (DTO) (normally from a database).
+We want to create our `IExcelBuilder` argument using our dynamic local app model (here `accountsReportDto`), So At first, we should fetch the report model (DTO) (normally from a database).
 
 In our example, the data is like below:
 
@@ -338,15 +335,15 @@ Now that we have our report data, we can create our Excel step by step.
 ### Steps to Generate the Complex Excel Filled with DTO data: 
 
 **1- Analyze Excel Template and Divide It into Separate Sections (Sub-Components), including Table(s), Row(s) and Cell(s) <br />
-2- Create each defined Section Builder, e.g. ITableBuilder <br />
-3- Create main model necessary to generate Excel, i.e. `IExcelBuilder` (Using ExcelBuilder and its chained methods) <br />
+2- Create each defined Section Builder, e.g. `ITableBuilder` <br />
+3- Create main model necessary to generate Excel, i.e. `IExcelBuilder` (Using `ExcelBuilder` and its chained methods) <br />
 4- Generate Excel using `ExcelWizardService` and `IExcelBuilder` model (provided at step 3)**
 
 ## *1- Analyze Excel Template and Divide It into Separate Sections*
 
-Analyze the Excel template and divide it into **Table**s, **Row**s, and **Cell**s sections. The priority here is with Table, then Row and at last Cell, meaning if you
+Analyze the Excel template and divide it into **Table**s, **Row**s, and **Cell**s sections. The priority here is with *Table*, then *Row* and at last *Cell*, meaning if you
 can define a section as a Table, don't consider it as multiple Rows! or even a lot of Cells! not that it is impossible
-and some error will be thrown, but because it makes it harder for you to create your desired Excel using many small components
+to create the Excel model that way or some error will be thrown, but because it makes it harder for you to create your desired Excel using many small components
 rather than one bigger component.
 
 In the next step, each section will be mapped to its Builder equivalent, i.e. **ITableBuilder**, **IRowBuilder** and **ICellBuilder**. 
@@ -715,7 +712,7 @@ var excelBuilder = ExcelBuilder
     .Build();
 ```
 
-## *4- Finally Generate Excel using `ExcelWizardService` *
+## *4- Finally Generate Excel using `ExcelWizardService`*
 
 At last, we create our gorgeous Excel! by injecting `IExcelWizardService` and use one of its methods. It is the easiest part! 
 
