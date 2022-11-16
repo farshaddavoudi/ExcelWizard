@@ -127,14 +127,14 @@ In IndexPage.razor:
 # Concepts
 
 #### The Excel you want to export can be in two layout types; *Grid-Layout* and *Complex-Layout*. 
-The reason behind this seperation is the much easier process of generating Excel for Grid-Layout comparing to Complex-Layout because of ability to be created with model binding in this type which is extremely easy. 
+The reason behind this seperation is the much easier process of generating Excel for Grid-Layout comparing to Complex-Layout because of ability to be created with model binding in this type which is pretty easy. 
 
-1. **Grid-layout** like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
+1. **Grid-Layout** like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-3.png">
 
-2. **Complex Excel**; a little more complex than the previous Grid-layout one. This Excel type can divided to smaller sections including Table(s), Row(s) and Cell(s) each placed
+2. **Complex-Layout**; a little more complex than the previous Grid-layout one. This Excel type can divided to smaller sections including Table(s), Row(s) and Cell(s) each placed
 in different Excel locations. The first type is easier and most straightforward.
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-4.png">
@@ -274,7 +274,7 @@ Let's assume we have an application related to a company's financials and we wan
 
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/accounts-excel-template-report.png" />
 
-You can download Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/CompoundExcelTemplate.xlsx">here</a>.
+You can download Excel from <a target="_blank" href="https://github.com/farshaddavoudi/ExcelWizard/blob/main/templates/ComplexExcelTemplate.xlsx">here</a>.
 
 So, obviously, it is a **Complex-Layout Excel**, not the **Grid-Layout** one. 
 
@@ -715,7 +715,7 @@ var excelBuilder = ExcelBuilder
     .Build();
 ```
 
-## *4- Generate Excel using `ExcelWizardService` and `CompoundExcelBuilder` model (step 3)*
+## *4- Finally Generate Excel using `ExcelWizardService` *
 
 At last, we create our gorgeous Excel! by injecting `IExcelWizardService` and use one of its methods. It is the easiest part! 
 
