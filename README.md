@@ -5,7 +5,7 @@
 Using ExcelWizard, you can easily generate Excel file in a very simple and straightforward way, even without any previous Excel knowledge. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 ## Version >= 3.0.0 Breakthrough Changes
-#### The package has completely rewritten with advanced *builder design pattern* to be more user friendly and easier to use and extremely less complex with some added new features like easily and dynamically create Table using model binding
+#### The package has completely rewritten with advanced *builder design pattern* to be more user friendly and easier to use and extremely less complex with some added new features like easily and dynamically create Table component using model binding.
 
 # How to Use
 1. You can install the package via the nuget package manager just search for *ExcelWizard*. You can also install via powershell using the following command.
@@ -76,11 +76,9 @@ public class UserController : ControllerBase
         };
 
         // Below will create Excel file as byte[] data
-        // Just passing your data to method argument and let the rest to the package! hoorya!
         // This method has a `IExcelBuilder` argument. We just need to provide the argument by using ExcelBuilder
-        // The chained methods of ExcelBuilder which are in order and have proper comments will guide us through the process of creating the model
-
-        var excelBuilder = ExcelBuilder
+        // The chained methods of ExcelBuilder which are in logical order and have proper comments will guide us through the process of creating the model
+        IExcelBuilder excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Users")
             .CreateGridLayoutExcel()
             .WithOneSheetUsingAModelToBind(myUsers)
@@ -115,7 +113,7 @@ In IndexPage.razor:
         // Get your data from API usually by Http call
         var myUsers = await apiService.GetMyUsers();
 
-        var excelBuilder = ExcelBuilder
+        IExcelBuilder excelBuilder = ExcelBuilder
             .SetGeneratedFileName("my-custom-report")
             .CreateGridLayoutExcel()
             .WithOneSheetUsingAModelToBind(fetchDataFromApi)
@@ -128,7 +126,8 @@ In IndexPage.razor:
 
 # Concepts
 
-### The Excel you want to export can be in two layout types; *Grid-Layout* and *Complex-Layout*. 
+#### The Excel you want to export can be in two layout types; *Grid-Layout* and *Complex-Layout*. 
+The reason behind this seperation is the much easier process of generating Excel for Grid-Layout comparing to Complex-Layout because of ability to be created with model binding in this type which is extremely easy. 
 
 1. **Grid-layout** like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
