@@ -217,7 +217,7 @@ public class ExcelController : ControllerBase
                                 Font = new TextFont { FontColor = Color.Black }
                             })
                             .Build()
-                        )
+                    )
                     .SetRowMergedCells(MergeBuilder
                         .SetMergingStartPoint("C", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                         .SetMergingFinishPoint("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
@@ -246,37 +246,37 @@ public class ExcelController : ControllerBase
                             .SetValue("Sum").Build(),
                         CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                             .Build()
-                        )
+                    )
                     .NoMergedCells()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build())
             .SetTableMergedCells(
-            MergeBuilder
-                .SetMergingStartPoint("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingFinishPoint("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
-                .Build(),
-            MergeBuilder
-                .SetMergingStartPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingFinishPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
-                .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("B", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
+                    .Build(),
 
-            MergeBuilder
-                .SetMergingStartPoint("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingFinishPoint("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingAreaBackgroundColor(Color.DarkBlue)
-                .Build(),
-            MergeBuilder
-                .SetMergingStartPoint("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
-                .SetMergingFinishPoint("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
-                .SetMergingAreaBackgroundColor(Color.Yellow)
-                .Build()
+                MergeBuilder
+                    .SetMergingStartPoint("F", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingAreaBackgroundColor(Color.DarkBlue)
+                    .Build(),
+                MergeBuilder
+                    .SetMergingStartPoint("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
+                    .SetMergingFinishPoint("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
+                    .SetMergingAreaBackgroundColor(Color.Yellow)
+                    .Build()
             )
 
-    .SetStyle(new TableStyle
-    {
-        BackgroundColor = Color.Blue,
-        Font = new TextFont { FontColor = Color.White }
-    })
+            .SetStyle(new TableStyle
+            {
+                BackgroundColor = Color.Blue,
+                Font = new TextFont { FontColor = Color.White }
+            })
             .Build();
 
         //2.5- Table: with Salaries data with thin borders
@@ -404,7 +404,7 @@ public class ExcelController : ControllerBase
             .Build();
 
         //2.8- Cell: User name (me!)
-        var cellUserName = CellBuilder
+        ICellBuilder cellUserName = CellBuilder
             .SetLocation("E", rowReportDate.GetNextRowNumberAfterRow() + 1)
             .SetValue("Farshad Davoudi")
             .SetStyle(new CellStyle
@@ -422,7 +422,7 @@ public class ExcelController : ControllerBase
             })
             .Build();
 
-        var excelModel = ExcelBuilder
+        var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Accounts Report")
             .CreateComplexLayoutExcel()
             .SetSheets(SheetBuilder
@@ -440,7 +440,7 @@ public class ExcelController : ControllerBase
             .SetSheetsDefaultStyle(new SheetsDefaultStyle { AllSheetsDefaultTextAlign = TextAlign.Center })
             .Build();
 
-        return Ok(_excelWizardService.GenerateExcel(excelModel, @"C:\GeneratedExcelSamples"));
+        return Ok(_excelWizardService.GenerateExcel(excelBuilder, @"C:\GeneratedExcelSamples"));
     }
 
     [HttpGet("export-grid-excel")]
