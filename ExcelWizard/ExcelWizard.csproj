@@ -18,6 +18,7 @@
 		<!-- Add README.md to nuget package -->
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>MIT License</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryURL>https://github.com/farshaddavoudi/ExcelWizard</RepositoryURL>
 	</PropertyGroup>
 
