@@ -44,7 +44,7 @@ public interface IExpectMergedCellsStatusRowBuilder
     /// In case we don't have any merge in the Row
     /// </summary>
     /// <returns></returns>
-    IExpectStyleRowBuilder NoMergedCells();
+    IExpectStyleRowBuilder RowHasNoMerging();
 }
 
 public interface IExpectStyleRowBuilder

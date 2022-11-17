@@ -368,6 +368,8 @@ multiple merges can be seen here, including:
 - `I10:I11 (Average)`
 We create this table manually without binding (this table cannot be bound to any model due to its complex layout)
 
+*Important tip:* It can be seen not this way I consider it. For example one table for Accounts and another for Salaries, etc and it is still completely valid.
+
 4- Bottom **Table** with thin inside borders having *Base Salary* and *Overtime Salary* Data in it.
 
 5- **Table** with *Sharing data* which is merged vertically. It can not be considered as Row because, again, being merged and therefore, occupying more than one row.

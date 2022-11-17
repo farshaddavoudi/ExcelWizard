@@ -42,42 +42,42 @@ public class ExcelController : ControllerBase
             ReportName = "Accounts Report",
 
             AccountDebitCreditList = new List<AccountDebitCredit>
-            {
-                new() {AccountCode = "13351", Debit = 0, Credit = 50000},
-                new() {AccountCode = "21253", Debit = 50000, Credit = 0},
-                new() {AccountCode = "13556", Debit = 0, Credit = 1000000},
-                new() {AccountCode = "13500", Debit = 0, Credit = 1000000},
-                new() {AccountCode = "13499", Debit = 0, Credit = 2000000},
-                new() {AccountCode = "22500", Debit = 4000000, Credit = 0}
-            },
+                        {
+                            new() {AccountCode = "13351", Debit = 0, Credit = 50000},
+                            new() {AccountCode = "21253", Debit = 50000, Credit = 0},
+                            new() {AccountCode = "13556", Debit = 0, Credit = 1000000},
+                            new() {AccountCode = "13500", Debit = 0, Credit = 1000000},
+                            new() {AccountCode = "13499", Debit = 0, Credit = 2000000},
+                            new() {AccountCode = "22500", Debit = 4000000, Credit = 0}
+                        },
 
             AccountSalaryCodes = new List<AccountSalaryCode>
-            {
-                new() {Code = "81010", Name = "Base Salari"},
-                new() {Code = "81011", Name = "Overtime Salari"}
-            },
+                        {
+                            new() {Code = "81010", Name = "Base Salari"},
+                            new() {Code = "81011", Name = "Overtime Salari"}
+                        },
 
             AccountSharingData = new List<AccountSharingData>
-            {
-                new()
-                {
-                    AccountName = "Branch 1",
-                    AccountSharingDetail = new AccountSharingDetail
-                    {
-                        BeforeSharing = 504000,
-                        AfterSharing = 51353
-                    }
-                },
-                new()
-                {
-                    AccountName = "Branch 2",
-                    AccountSharingDetail = new AccountSharingDetail
-                    {
-                        BeforeSharing = 11000,
-                        AfterSharing = 10000
-                    }
-                }
-            },
+                        {
+                            new()
+                            {
+                                AccountName = "Branch 1",
+                                AccountSharingDetail = new AccountSharingDetail
+                                {
+                                    BeforeSharing = 504000,
+                                    AfterSharing = 51353
+                                }
+                            },
+                            new()
+                            {
+                                AccountName = "Branch 2",
+                                AccountSharingDetail = new AccountSharingDetail
+                                {
+                                    BeforeSharing = 11000,
+                                    AfterSharing = 10000
+                                }
+                            }
+                        },
 
             Average = 32000
         };
@@ -121,7 +121,7 @@ public class ExcelController : ControllerBase
                             CellTextAlign = TextAlign.Center
                         })
                         .Build())
-                .NoMergedCells()
+                .RowHasNoMerging()
                 .NoCustomStyle()
                 .Build())
             .SetTableMergedCells(
@@ -136,7 +136,7 @@ public class ExcelController : ControllerBase
         //2.* New Concept of Model binding
         ITableBuilder tableCreditsDebits = TableBuilder
             .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
-            .NoMergedCells()
+            .BoundTableHasNoMerging()
             .Build();
 
         ////2.2- Row: Gray bg row (table Header)
@@ -193,6 +193,7 @@ public class ExcelController : ControllerBase
         //    .Build();
 
         //2.4- Table: Blue bg (+yellow at the end) table
+
         var tableBlueBg = TableBuilder
             .CreateStepByStepManually()
             .SetRows(RowBuilder
@@ -247,7 +248,7 @@ public class ExcelController : ControllerBase
                         CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                             .Build()
                     )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build())
             .SetTableMergedCells(
@@ -290,11 +291,11 @@ public class ExcelController : ControllerBase
                         CellBuilder.SetLocation("B", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
                             .SetValue(account.Code).Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .NoCustomStyle()
                     .Build()
             ).ToArray())
-            .HasNoMergedCells()
+            .TableHasNoMerging()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
@@ -352,7 +353,7 @@ public class ExcelController : ControllerBase
                             .SetValue(accountsReportDto.Average)
                             .Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .NoCustomStyle()
                     .Build())
             .SetTableMergedCells(
@@ -387,6 +388,7 @@ public class ExcelController : ControllerBase
             )
             .NoCustomStyle()
             .Build();
+
 
         //2.7- Row: Light Green row for report date
         var rowReportDate = RowBuilder
@@ -427,13 +429,9 @@ public class ExcelController : ControllerBase
             .CreateComplexLayoutExcel()
             .SetSheets(SheetBuilder
                 .SetName("Sheet1")
-                .SetTable(tableTopHeader)
-                .SetTable(tableCreditsDebits)
-                .SetTable(tableBlueBg)
-                .SetTable(tableSalaries)
-                .SetTable(tableSharingBeforeAfterData)
-                .SetRow(rowReportDate)
-                .SetCell(cellUserName)
+                .SetTables(tableTopHeader, tableCreditsDebits, tableBlueBg, tableSalaries, tableSharingBeforeAfterData)
+                .SetRows(rowReportDate)
+                .SetCells(cellUserName)
                 .NoMoreTablesRowsOrCells()
                 .NoCustomStyle()
                 .Build())
