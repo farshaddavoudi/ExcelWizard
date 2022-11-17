@@ -60,14 +60,14 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IExpectBuildMethod
         return this;
     }
 
-    public IExpectBuildMethodRowBuilder SetStyle(RowStyle rowStyle)
+    public IExpectBuildMethodRowBuilder SetRowStyle(RowStyle rowStyle)
     {
         Row.RowStyle = rowStyle;
 
         return this;
     }
 
-    public IExpectBuildMethodRowBuilder NoCustomStyle()
+    public IExpectBuildMethodRowBuilder RowHasNoCustomStyle()
     {
         return this;
     }

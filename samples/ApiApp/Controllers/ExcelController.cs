@@ -113,7 +113,7 @@ public class ExcelController : ControllerBase
                 .SetCells(
                     CellBuilder.SetLocation("A", 1)
                         .SetValue(accountsReportDto.ReportName)
-                        .SetStyle(new CellStyle
+                        .SetCellStyle(new CellStyle
                         {
                             // The Cell TextAlign can be set with below property, but because most of the
                             // Cells are TextAlign center, the better approach is to set the Sheet default TextAlign
@@ -122,7 +122,7 @@ public class ExcelController : ControllerBase
                         })
                         .Build())
                 .RowHasNoMerging()
-                .NoCustomStyle()
+                .RowHasNoCustomStyle()
                 .Build())
             .SetTableMergedCells(
                 MergeBuilder
@@ -130,7 +130,7 @@ public class ExcelController : ControllerBase
                     .SetMergingFinishPoint("H", 2)
                     .Build()
             )
-            .NoCustomStyle()
+            .TableHasNoCustomStyle()
             .Build();
 
         //2.* New Concept of Model binding
@@ -212,7 +212,7 @@ public class ExcelController : ControllerBase
                         CellBuilder.SetLocation("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).Build(),
                         CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                             .SetValue("Average")
-                            .SetStyle(new CellStyle
+                            .SetCellStyle(new CellStyle
                             {
                                 //BackgroundColor = Color.Yellow, //Bg will set on Merged properties
                                 Font = new TextFont { FontColor = Color.Black }
@@ -224,7 +224,7 @@ public class ExcelController : ControllerBase
                         .SetMergingFinishPoint("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                         .SetMergingAreaBackgroundColor(Color.Red)
                         .Build())
-                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .SetRowStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
                 RowBuilder
@@ -249,7 +249,7 @@ public class ExcelController : ControllerBase
                             .Build()
                     )
                     .RowHasNoMerging()
-                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .SetRowStyle(new RowStyle { RowHeight = 20 })
                     .Build())
             .SetTableMergedCells(
                 MergeBuilder
@@ -273,7 +273,7 @@ public class ExcelController : ControllerBase
                     .Build()
             )
 
-            .SetStyle(new TableStyle
+            .SetTableStyle(new TableStyle
             {
                 BackgroundColor = Color.Blue,
                 Font = new TextFont { FontColor = Color.White }
@@ -292,11 +292,11 @@ public class ExcelController : ControllerBase
                             .SetValue(account.Code).Build()
                         )
                     .RowHasNoMerging()
-                    .NoCustomStyle()
+                    .RowHasNoCustomStyle()
                     .Build()
             ).ToArray())
             .TableHasNoMerging()
-            .SetStyle(new TableStyle
+            .SetTableStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
@@ -354,7 +354,7 @@ public class ExcelController : ControllerBase
                             .Build()
                         )
                     .RowHasNoMerging()
-                    .NoCustomStyle()
+                    .RowHasNoCustomStyle()
                     .Build())
             .SetTableMergedCells(
                 MergeBuilder
@@ -386,7 +386,7 @@ public class ExcelController : ControllerBase
                     .SetMergingFinishPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
                     .Build()
             )
-            .NoCustomStyle()
+            .TableHasNoCustomStyle()
             .Build();
 
 
@@ -402,14 +402,14 @@ public class ExcelController : ControllerBase
                 .SetMergingStartPoint("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
                 .SetMergingFinishPoint("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
                 .Build())
-            .NoCustomStyle()
+            .RowHasNoCustomStyle()
             .Build();
 
         //2.8- Cell: User name (me!)
         ICellBuilder cellUserName = CellBuilder
             .SetLocation("E", rowReportDate.GetNextRowNumberAfterRow() + 1)
             .SetValue("Farshad Davoudi")
-            .SetStyle(new CellStyle
+            .SetCellStyle(new CellStyle
             {
                 BackgroundColor = Color.DarkGreen,
                 Font = new TextFont
@@ -433,7 +433,7 @@ public class ExcelController : ControllerBase
                 .SetRows(rowReportDate)
                 .SetCells(cellUserName)
                 .NoMoreTablesRowsOrCells()
-                .NoCustomStyle()
+                .SheetHasNoCustomStyle()
                 .Build())
             .SetSheetsDefaultStyle(new SheetsDefaultStyle { AllSheetsDefaultTextAlign = TextAlign.Center })
             .Build();

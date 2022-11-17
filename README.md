@@ -393,7 +393,7 @@ var tableTopHeader = TableBuilder
         .SetCells(
             CellBuilder.SetLocation("A", 1)
                 .SetValue(accountsReportDto.ReportName)
-                .SetStyle(new CellStyle
+                .SetCellStyle(new CellStyle
                 {
                     // The Cell TextAlign can be set with below property, but because most of the
                     // Cells are TextAlign center, the better approach is to set the Sheet default TextAlign
@@ -401,8 +401,8 @@ var tableTopHeader = TableBuilder
                     CellTextAlign = TextAlign.Center
                 })
                 .Build())
-        .NoMergedCells()
-        .NoCustomStyle()
+        .RowHasNoMerging()
+        .RowHasNoCustomStyle()
         .Build())
     .SetTableMergedCells(
         MergeBuilder
@@ -410,16 +410,16 @@ var tableTopHeader = TableBuilder
             .SetMergingFinishPoint("H", 2)
             .Build()
     )
-    .NoCustomStyle()
+    .TableHasNoCustomStyle()
     .Build();
 ```
 
 **2- Table: Credits Debits table with new concept of model binding**
 ```csharp
 ITableBuilder tableCreditsDebits = TableBuilder
-            .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
-            .NoMergedCells()
-            .Build();
+    .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
+    .BoundTableHasNoMerging()
+    .Build();
 ```
 
 By the way the binded model of `AccountDebitCredit` is like below:
@@ -468,7 +468,7 @@ var tableBlueBg = TableBuilder
                 CellBuilder.SetLocation("H", tableCreditsDebits.GetNextVerticalRowNumberAfterTable()).Build(),
                 CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                     .SetValue("Average")
-                    .SetStyle(new CellStyle
+                    .SetCellStyle(new CellStyle
                     {
                         //BackgroundColor = Color.Yellow, //Bg will set on Merged properties
                         Font = new TextFont { FontColor = Color.Black }
@@ -480,7 +480,7 @@ var tableBlueBg = TableBuilder
                 .SetMergingFinishPoint("E", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
                 .SetMergingAreaBackgroundColor(Color.Red)
                 .Build())
-            .SetStyle(new RowStyle { RowHeight = 20 })
+            .SetRowStyle(new RowStyle { RowHeight = 20 })
             .Build(),
 
         RowBuilder
@@ -504,8 +504,8 @@ var tableBlueBg = TableBuilder
                 CellBuilder.SetLocation("I", tableCreditsDebits.GetNextVerticalRowNumberAfterTable() + 1)
                     .Build()
             )
-            .NoMergedCells()
-            .SetStyle(new RowStyle { RowHeight = 20 })
+            .RowHasNoMerging()
+            .SetRowStyle(new RowStyle { RowHeight = 20 })
             .Build())
     .SetTableMergedCells(
         MergeBuilder
@@ -529,7 +529,7 @@ var tableBlueBg = TableBuilder
             .Build()
     )
 
-    .SetStyle(new TableStyle
+    .SetTableStyle(new TableStyle
     {
         BackgroundColor = Color.Blue,
         Font = new TextFont { FontColor = Color.White }
@@ -539,114 +539,115 @@ var tableBlueBg = TableBuilder
 
 **4- Table: with Salaries data with thin borders**
 ```csharp
+//2.5- Table: with Salaries data with thin borders
 var tableSalaries = TableBuilder
-            .CreateStepByStepManually()
-            .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
-                RowBuilder
-                    .SetCells(
-                        CellBuilder.SetLocation("A", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
-                            .SetValue(account.Name).Build(),
-                        CellBuilder.SetLocation("B", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
-                            .SetValue(account.Code).Build()
-                        )
-                    .NoMergedCells()
-                    .NoCustomStyle()
-                    .Build()
-            ).ToArray())
-            .HasNoMergedCells()
-            .SetStyle(new TableStyle
-            {
-                TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
-                InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
-            })
-            .Build();
+    .CreateStepByStepManually()
+    .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
+        RowBuilder
+            .SetCells(
+                CellBuilder.SetLocation("A", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
+                    .SetValue(account.Name).Build(),
+                CellBuilder.SetLocation("B", tableBlueBg.GetNextVerticalRowNumberAfterTable() + index)
+                    .SetValue(account.Code).Build()
+                )
+            .RowHasNoMerging()
+            .RowHasNoCustomStyle()
+            .Build()
+    ).ToArray())
+    .TableHasNoMerging()
+    .SetTableStyle(new TableStyle
+    {
+        TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
+        InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
+    })
+    .Build();
 ```
 **5- Table:  Sharing info**
 Table with sharing before/after data
 ```csharp
-        var tableSharingBeforeAfterData = TableBuilder
-            .CreateStepByStepManually()
-            .SetRows(RowBuilder
-                    .SetCells(
-                        CellBuilder
-                            .SetLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(accountsReportDto.AccountSharingData
-                                .Where(s => s.AccountName == "Branch 1")
-                                .Select(s => s.AccountSharingDetail.BeforeSharing)
-                                .FirstOrDefault())
-                            .Build(),
-
-                        CellBuilder
-                            .SetLocation("D", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(accountsReportDto.AccountSharingData
-                                .Where(s => s.AccountName == "Branch 1")
-                                .Select(s => s.AccountSharingDetail.AfterSharing)
-                                .FirstOrDefault())
-                            .Build(),
-
-                        CellBuilder
-                            .SetLocation("E", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(accountsReportDto.AccountSharingData
-                                .Where(s => s.AccountName == "Branch 1")
-                                .Select(s => s.AccountSharingDetail.AfterSharing + s.AccountSharingDetail.BeforeSharing)
-                                .FirstOrDefault())
-                            .Build(),
-
-                        CellBuilder
-                            .SetLocation("F", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(11000)
-                            .Build(),
-
-                        CellBuilder
-                            .SetLocation("G", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(10000)
-                            .Build(),
-
-                        CellBuilder
-                            .SetLocation("H", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(21000)
-                            .Build(),
-
-                        CellBuilder
-                            .SetLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                            .SetValue(accountsReportDto.Average)
-                            .Build()
-                        )
-                    .NoMergedCells()
-                    .NoCustomStyle()
-                    .Build())
-            .SetTableMergedCells(
-                MergeBuilder
-                    .SetMergingStartPoint("C", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("C", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+var tableSharingBeforeAfterData = TableBuilder
+    .CreateStepByStepManually()
+    .SetRows(RowBuilder
+            .SetCells(
+                CellBuilder
+                    .SetLocation("C", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(accountsReportDto.AccountSharingData
+                        .Where(s => s.AccountName == "Branch 1")
+                        .Select(s => s.AccountSharingDetail.BeforeSharing)
+                        .FirstOrDefault())
                     .Build(),
-                MergeBuilder
-                    .SetMergingStartPoint("D", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("D", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+
+                CellBuilder
+                    .SetLocation("D", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(accountsReportDto.AccountSharingData
+                        .Where(s => s.AccountName == "Branch 1")
+                        .Select(s => s.AccountSharingDetail.AfterSharing)
+                        .FirstOrDefault())
                     .Build(),
-                MergeBuilder
-                    .SetMergingStartPoint("E", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("E", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+
+                CellBuilder
+                    .SetLocation("E", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(accountsReportDto.AccountSharingData
+                        .Where(s => s.AccountName == "Branch 1")
+                        .Select(s => s.AccountSharingDetail.AfterSharing + s.AccountSharingDetail.BeforeSharing)
+                        .FirstOrDefault())
                     .Build(),
-                MergeBuilder
-                    .SetMergingStartPoint("F", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("F", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+
+                CellBuilder
+                    .SetLocation("F", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(11000)
                     .Build(),
-                MergeBuilder
-                    .SetMergingStartPoint("G", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("G", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+
+                CellBuilder
+                    .SetLocation("G", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(10000)
                     .Build(),
-                MergeBuilder
-                    .SetMergingStartPoint("H", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("H", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+
+                CellBuilder
+                    .SetLocation("H", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(21000)
                     .Build(),
-                MergeBuilder
-                    .SetMergingStartPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable())
-                    .SetMergingFinishPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+
+                CellBuilder
+                    .SetLocation("I", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+                    .SetValue(accountsReportDto.Average)
                     .Build()
-            )
-            .NoCustomStyle()
-            .Build();
+                )
+            .RowHasNoMerging()
+            .RowHasNoCustomStyle()
+            .Build())
+    .SetTableMergedCells(
+        MergeBuilder
+            .SetMergingStartPoint("C", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("C", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build(),
+        MergeBuilder
+            .SetMergingStartPoint("D", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("D", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build(),
+        MergeBuilder
+            .SetMergingStartPoint("E", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("E", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build(),
+        MergeBuilder
+            .SetMergingStartPoint("F", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("F", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build(),
+        MergeBuilder
+            .SetMergingStartPoint("G", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("G", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build(),
+        MergeBuilder
+            .SetMergingStartPoint("H", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("H", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build(),
+        MergeBuilder
+            .SetMergingStartPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable())
+            .SetMergingFinishPoint("I", tableBlueBg.GetNextVerticalRowNumberAfterTable() + 1)
+            .Build()
+    )
+    .TableHasNoCustomStyle()
+    .Build();     
 ```
 
 **6- Row: Light Green row for report date**
@@ -663,9 +664,8 @@ IRowBuilder rowReportDate = RowBuilder
         .SetMergingStartPoint("D", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
         .SetMergingFinishPoint("F", tableSharingBeforeAfterData.GetNextVerticalRowNumberAfterTable() + 1)
         .Build())
-    .NoCustomStyle()
+    .RowHasNoCustomStyle()
     .Build();
-
 ```
 
 **7- Cell: User name (me!)**
@@ -674,7 +674,7 @@ IRowBuilder rowReportDate = RowBuilder
 ICellBuilder cellUserName = CellBuilder
     .SetLocation("E", rowReportDate.GetNextRowNumberAfterRow() + 1)
     .SetValue("Farshad Davoudi")
-    .SetStyle(new CellStyle
+    .SetCellStyle(new CellStyle
     {
         BackgroundColor = Color.DarkGreen,
         Font = new TextFont
@@ -696,22 +696,18 @@ Then we create our main model by using the Excel sub-sections builders created i
 
 ```csharp
 var excelBuilder = ExcelBuilder
-    .SetGeneratedFileName("Accounts Report")
-    .CreateComplexLayoutExcel()
-    .SetSheets(SheetBuilder
-        .SetName("Sheet1")
-        .SetTable(tableTopHeader)
-        .SetTable(tableCreditsDebits)
-        .SetTable(tableBlueBg)
-        .SetTable(tableSalaries)
-        .SetTable(tableSharingBeforeAfterData)
-        .SetRow(rowReportDate)
-        .SetCell(cellUserName)
-        .NoMoreTablesRowsOrCells()
-        .NoCustomStyle()
-        .Build())
-    .SetSheetsDefaultStyle(new SheetsDefaultStyle { AllSheetsDefaultTextAlign = TextAlign.Center })
-    .Build();
+            .SetGeneratedFileName("Accounts Report")
+            .CreateComplexLayoutExcel()
+            .SetSheets(SheetBuilder
+                .SetName("Sheet1")
+                .SetTables(tableTopHeader, tableCreditsDebits, tableBlueBg, tableSalaries, tableSharingBeforeAfterData)
+                .SetRows(rowReportDate)
+                .SetCells(cellUserName)
+                .NoMoreTablesRowsOrCells()
+                .SheetHasNoCustomStyle()
+                .Build())
+            .SetSheetsDefaultStyle(new SheetsDefaultStyle { AllSheetsDefaultTextAlign = TextAlign.Center })
+            .Build();
 ```
 
 ## *4- Finally Generate Excel using `ExcelWizardService`*

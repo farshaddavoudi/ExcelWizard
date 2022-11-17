@@ -39,7 +39,7 @@ public interface IExpectStyleExcelBuilder
     /// <summary>
     /// No custom default styles for sheet(s) will be set. Styles can be set on each Sheet individually
     /// </summary>
-    IExpectOtherPropsAndBuildExcelBuilder NoDefaultStyle();
+    IExpectOtherPropsAndBuildExcelBuilder SheetsHaveNoDefaultStyle();
 }
 
 public interface IExpectOtherPropsAndBuildExcelBuilder : IExpectBuildExcelBuilder

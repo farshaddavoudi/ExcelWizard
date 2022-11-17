@@ -63,7 +63,7 @@ public class CellBuilder
     /// <summary>
     /// Set Cell Styles including Font, Wrap behaviour, Align and etc
     /// </summary>
-    public CellBuilder SetStyle(CellStyle cellStyle)
+    public CellBuilder SetCellStyle(CellStyle cellStyle)
     {
         Cell.CellStyle = cellStyle;
 

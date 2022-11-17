@@ -139,7 +139,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                         Cell headerCell = CellBuilder
                             .SetLocation(xLocation, yLocation)
                             .SetValue(excelTableColumnAttribute?.HeaderName ?? prop.Name)
-                            .SetStyle(new CellStyle
+                            .SetCellStyle(new CellStyle
                             {
                                 Font = headerFont,
                                 CellTextAlign = GetCellTextAlign(tableDefaultTextAlign,
@@ -164,7 +164,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                         .SetLocation(xLocation, dataYLocation)
                         .SetValue(prop.GetValue(record))
                         .SetContentType(excelTableColumnAttribute?.DataContentType ?? CellContentType.Text)
-                        .SetStyle(new CellStyle
+                        .SetCellStyle(new CellStyle
                         {
                             Font = finalFont,
                             CellTextAlign = GetCellTextAlign(tableDefaultTextAlign,
@@ -248,14 +248,14 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         return this;
     }
 
-    public IExpectBuildMethodInManualTableBuilder SetStyle(TableStyle tableStyle)
+    public IExpectBuildMethodInManualTableBuilder SetTableStyle(TableStyle tableStyle)
     {
         Table.TableStyle = tableStyle;
 
         return this;
     }
 
-    public IExpectBuildMethodInManualTableBuilder NoCustomStyle()
+    public IExpectBuildMethodInManualTableBuilder TableHasNoCustomStyle()
     {
         return this;
     }

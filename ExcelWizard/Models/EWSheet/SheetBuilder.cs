@@ -75,7 +75,7 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectOtherPropsAndBuildSheetBuilder SetStyle(SheetStyle sheetStyle)
+    public IExpectOtherPropsAndBuildSheetBuilder SetSheetStyle(SheetStyle sheetStyle)
     {
         Sheet.SheetStyle = sheetStyle;
 
@@ -84,7 +84,7 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectOtherPropsAndBuildSheetBuilder NoCustomStyle()
+    public IExpectOtherPropsAndBuildSheetBuilder SheetHasNoCustomStyle()
     {
         CanBuild = true;
 

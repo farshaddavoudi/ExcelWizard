@@ -111,7 +111,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         return this;
     }
 
-    public IExpectOtherPropsAndBuildExcelBuilder NoDefaultStyle()
+    public IExpectOtherPropsAndBuildExcelBuilder SheetsHaveNoDefaultStyle()
     {
         return this;
     }
@@ -252,7 +252,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                             Cell headerCell = CellBuilder
                                 .SetLocation(xLocation, yLocation)
                                 .SetValue(excelSheetColumnAttribute?.HeaderName ?? prop.Name)
-                                .SetStyle(new CellStyle
+                                .SetCellStyle(new CellStyle
                                 {
                                     Font = headerFont,
                                     CellTextAlign = GetCellTextAlign(defaultTextAlign,
@@ -287,7 +287,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                             .SetLocation(xLocation, yLocation + 1)
                             .SetValue(prop.GetValue(record))
                             .SetContentType(excelSheetColumnAttribute?.ExcelDataContentType ?? CellContentType.Text)
-                            .SetStyle(new CellStyle
+                            .SetCellStyle(new CellStyle
                             {
                                 Font = finalFont,
                                 CellTextAlign = GetCellTextAlign(defaultTextAlign,
