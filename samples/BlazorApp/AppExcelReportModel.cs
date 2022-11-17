@@ -1,4 +1,6 @@
 ﻿using ExcelWizard.Models;
+using ExcelWizard.Models.EWGridLayout;
+using ExcelWizard.Models.EWStyles;
 using System.Drawing;
 
 namespace BlazorApp;
@@ -8,12 +10,12 @@ namespace BlazorApp;
     SheetDirection = SheetDirection.RightToLeft, FontColor = KnownColor.Red)]
 public class AppExcelReportModel
 {
-    [ExcelColumn(HeaderName = "شناسه", HeaderTextAlign = TextAlign.Right, DataTextAlign = TextAlign.Right, FontColor = KnownColor.Blue)]
+    [ExcelSheetColumn(HeaderName = "شناسه", HeaderTextAlign = TextAlign.Right, DataTextAlign = TextAlign.Right, FontColor = KnownColor.Blue)]
     public int Id { get; set; }
 
-    [ExcelColumn(Ignore = true, HeaderName = "Name", HeaderTextAlign = TextAlign.Left, FontWeight = FontWeight.Bold)]
+    [ExcelSheetColumn(Ignore = true, HeaderName = "Name", HeaderTextAlign = TextAlign.Left, FontWeight = FontWeight.Bold)]
     public string? FullName { get; set; }
 
-    [ExcelColumn(HeaderName = "شماره پرسنلی", HeaderTextAlign = TextAlign.Left, ColumnWidth = 50, FontSize = 15)]
+    [ExcelSheetColumn(HeaderName = "شماره پرسنلی", HeaderTextAlign = TextAlign.Left, ColumnWidth = 50, FontSize = 15)]
     public string? PersonnelCode { get; set; }
 }

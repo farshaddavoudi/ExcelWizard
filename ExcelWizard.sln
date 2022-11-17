@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelWizard", "ExcelWizard\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{5F155EF8-7E32-47D8-ABFE-B45B7B2CADC4}"
 	ProjectSection(SolutionItems) = preProject
-		templates\CompoundExcelTemplate.xlsx = templates\CompoundExcelTemplate.xlsx
+		templates\ComplexExcelTemplate.xlsx = templates\ComplexExcelTemplate.xlsx
 	EndProjectSection
 EndProject
 Global

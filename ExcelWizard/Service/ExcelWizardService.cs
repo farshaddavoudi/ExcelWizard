@@ -2,22 +2,20 @@
 using ClosedXML.Excel;
 using ClosedXML.Report.Utils;
 using ExcelWizard.Models;
+using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWColumn;
+using ExcelWizard.Models.EWRow;
+using ExcelWizard.Models.EWSheet;
+using ExcelWizard.Models.EWStyles;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Border = ExcelWizard.Models.Border;
-using Color = System.Drawing.Color;
-using Table = ExcelWizard.Models.Table;
 
 namespace ExcelWizard.Service;
 
-internal class ExcelWizardService : IExcelWizardService
+public class ExcelWizardService : IExcelWizardService
 {
     private readonly IBlazorDownloadFileService _blazorDownloadFileService;
 
@@ -30,9 +28,11 @@ internal class ExcelWizardService : IExcelWizardService
 
     #endregion
 
-    public GeneratedExcelFile GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
+    public GeneratedExcelFile GenerateExcel(IExcelBuilder excelBuilder)
     {
-        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
+        var excelModel = (ExcelModel)excelBuilder;
+
+        using var xlWorkbook = ClosedXmlEngine(excelModel);
 
         // Save
         using var stream = new MemoryStream();
@@ -41,20 +41,22 @@ internal class ExcelWizardService : IExcelWizardService
 
         var content = stream.ToArray();
 
-        if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
+            excelModel.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
-        return new GeneratedExcelFile { FileName = compoundExcelBuilder.GeneratedFileName, Content = content };
+        return new GeneratedExcelFile { FileName = excelModel.GeneratedFileName, Content = content };
     }
 
-    public string GenerateCompoundExcel(CompoundExcelBuilder compoundExcelBuilder, string savePath)
+    public string GenerateExcel(IExcelBuilder excelBuilder, string savePath)
     {
-        using var xlWorkbook = ClosedXmlEngine(compoundExcelBuilder);
+        var excelModel = (ExcelModel)excelBuilder;
 
-        if (compoundExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace())
-            compoundExcelBuilder.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+        using var xlWorkbook = ClosedXmlEngine(excelModel);
 
-        var saveUrl = $"{savePath}\\{compoundExcelBuilder.GeneratedFileName}.xlsx";
+        if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
+            excelModel.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
+
+        var saveUrl = $"{savePath}\\{excelModel.GeneratedFileName}.xlsx";
 
         // Save
         xlWorkbook.SaveAs(saveUrl);
@@ -62,90 +64,33 @@ internal class ExcelWizardService : IExcelWizardService
         return saveUrl;
     }
 
-    public GeneratedExcelFile GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
+    public async Task<DownloadFileResult> GenerateAndDownloadExcelInBlazor(IExcelBuilder excelBuilder)
     {
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(multiSheetsGridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder);
-    }
-
-    public GeneratedExcelFile GenerateGridLayoutExcel(object singleSheetDataList, string? generatedFileName)
-    {
-        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder
-        {
-            GeneratedFileName = generatedFileName,
-
-            Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
-        };
-
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder);
-    }
-
-    public string GenerateGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder, string savePath)
-    {
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(multiSheetsGridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder, savePath);
-    }
-
-    public string GenerateGridLayoutExcel(object singleSheetDataList, string savePath, string generatedFileName)
-    {
-        var gridLayoutExcelBuilder = new GridLayoutExcelBuilder
-        {
-            GeneratedFileName = generatedFileName,
-
-            Sheets = new List<GridExcelSheet> { new() { DataList = singleSheetDataList } }
-        };
-
-        var compoundExcelBuilder = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelBuilder);
-
-        return GenerateCompoundExcel(compoundExcelBuilder, savePath);
-    }
-
-    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(GridLayoutExcelBuilder multiSheetsGridLayoutExcelBuilder)
-    {
-        var generatedFile = GenerateGridLayoutExcel(multiSheetsGridLayoutExcelBuilder);
+        var generatedFile = GenerateExcel((ExcelModel)excelBuilder);
 
         return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
     }
-
-    public async Task<DownloadFileResult> BlazorDownloadGridLayoutExcel(object singleSheetDataList, string? generatedFileName = null)
-    {
-        var generatedFile = GenerateGridLayoutExcel(singleSheetDataList, generatedFileName);
-
-        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
-    }
-
-    public async Task<DownloadFileResult> BlazorDownloadCompoundExcel(CompoundExcelBuilder compoundExcelBuilder)
-    {
-        var generatedFile = GenerateCompoundExcel(compoundExcelBuilder);
-
-        return await _blazorDownloadFileService.DownloadFile(generatedFile.FileName, generatedFile.Content, TimeSpan.FromMinutes(2), generatedFile.Content?.Length ?? 0, generatedFile.MimeType);
-    }
-
 
     #region Private Methods
 
-    private XLWorkbook ClosedXmlEngine(CompoundExcelBuilder compoundExcelBuilder)
+    private XLWorkbook ClosedXmlEngine(ExcelModel excelModel)
     {
         //-------------------------------------------
         //  Create Workbook (integrated with using statement)
         //-------------------------------------------
         var xlWorkbook = new XLWorkbook
         {
-            RightToLeft = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
-            ColumnWidth = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultColumnWidth,
-            RowHeight = compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultRowHeight
+            RightToLeft = excelModel.SheetsDefaultStyle.AllSheetsDefaultDirection == SheetDirection.RightToLeft,
+            ColumnWidth = excelModel.SheetsDefaultStyle.AllSheetsDefaultColumnWidth,
+            RowHeight = excelModel.SheetsDefaultStyle.AllSheetsDefaultRowHeight
         };
 
         // Check any sheet available
-        if (compoundExcelBuilder.Sheets.Count == 0)
+        if (excelModel.Sheets.Count == 0)
             throw new Exception("No sheet is available to create Excel workbook");
 
         // Check sheet names are unique
-        var sheetNames = compoundExcelBuilder.Sheets
+        var sheetNames = excelModel.Sheets
             .Where(s => s.SheetName.IsNullOrWhiteSpace() is false)
             .Select(s => s.SheetName)
             .ToList();
@@ -158,7 +103,7 @@ internal class ExcelWizardService : IExcelWizardService
         // Auto naming for sheets
 
         int i = 1;
-        foreach (Sheet sheet in compoundExcelBuilder.Sheets)
+        foreach (Sheet sheet in excelModel.Sheets)
         {
             if (sheet.SheetName.IsNullOrWhiteSpace())
             {
@@ -168,7 +113,7 @@ internal class ExcelWizardService : IExcelWizardService
                 {
                     var possibleName = $"Sheet{i}";
 
-                    isNameOk = compoundExcelBuilder.Sheets.Any(s => s.SheetName == possibleName) is false;
+                    isNameOk = excelModel.Sheets.Any(s => s.SheetName == possibleName) is false;
 
                     if (isNameOk)
                         sheet.SheetName = possibleName;
@@ -181,7 +126,7 @@ internal class ExcelWizardService : IExcelWizardService
         //-------------------------------------------
         //  Add Sheets one by one to ClosedXML Workbook instance
         //-------------------------------------------
-        foreach (var sheet in compoundExcelBuilder.Sheets)
+        foreach (var sheet in excelModel.Sheets)
         {
             // Set name
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
@@ -258,7 +203,7 @@ internal class ExcelWizardService : IExcelWizardService
             };
 
             // Set TextAlign
-            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? compoundExcelBuilder.AllSheetsDefaultStyle.AllSheetsDefaultTextAlign;
+            var textAlign = sheet.SheetStyle.SheetDefaultTextAlign ?? excelModel.SheetsDefaultStyle.AllSheetsDefaultTextAlign;
 
             xlSheet.Columns().Style.Alignment.Horizontal = textAlign switch
             {
@@ -272,7 +217,7 @@ internal class ExcelWizardService : IExcelWizardService
             //-------------------------------------------
             //  Columns properties
             //-------------------------------------------
-            foreach (var columnStyle in sheet.SheetColumnsStyle)
+            foreach (var columnStyle in sheet.SheetStyle.ColumnsStyle)
             {
                 // Infer XLAlignment from "ColumnProp"
                 var columnAlignmentHorizontalValue = columnStyle.ColumnTextAlign switch
@@ -321,7 +266,7 @@ internal class ExcelWizardService : IExcelWizardService
 
                 foreach (var tableRow in table.TableRows)
                 {
-                    ConfigureRow(xlSheet, tableRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                    ConfigureRow(xlSheet, tableRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
                 }
 
                 // Config Bg
@@ -361,10 +306,10 @@ internal class ExcelWizardService : IExcelWizardService
                 // Apply table merges here
                 foreach (var mergedCells in table.MergedCellsList)
                 {
-                    var mergedTableRange = xlSheet.Range(mergedCells.MergedBoundaryLocation.FirstCellLocation!.RowNumber,
-                        mergedCells.MergedBoundaryLocation.FirstCellLocation.ColumnNumber,
-                        mergedCells.MergedBoundaryLocation.LastCellLocation!.RowNumber,
-                        mergedCells.MergedBoundaryLocation.LastCellLocation.ColumnNumber).Merge();
+                    var mergedTableRange = xlSheet.Range(mergedCells.MergedBoundaryLocation.StartCellLocation!.RowNumber,
+                        mergedCells.MergedBoundaryLocation.StartCellLocation.ColumnNumber,
+                        mergedCells.MergedBoundaryLocation.FinishCellLocation!.RowNumber,
+                        mergedCells.MergedBoundaryLocation.FinishCellLocation.ColumnNumber).Merge();
 
                     // Config Outside-Border Specified for Merged Cells
                     if (mergedCells.OutsideBorder is not null)
@@ -412,7 +357,7 @@ internal class ExcelWizardService : IExcelWizardService
             //-------------------------------------------
             foreach (var sheetRow in sheet.SheetRows)
             {
-                ConfigureRow(xlSheet, sheetRow, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureRow(xlSheet, sheetRow, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
             }
 
             //-------------------------------------------
@@ -423,231 +368,48 @@ internal class ExcelWizardService : IExcelWizardService
                 if (cell.IsCellVisible is false)
                     continue;
 
-                ConfigureCell(xlSheet, cell, sheet.SheetColumnsStyle, sheet.IsSheetLocked ?? compoundExcelBuilder.AreSheetsLockedByDefault);
+                ConfigureCell(xlSheet, cell, sheet.SheetStyle.ColumnsStyle, sheet.IsSheetLocked ?? excelModel.AreSheetsLockedByDefault);
             }
 
             // Apply sheet merges here
-            foreach (var mergedCells in sheet.MergedCells)
+            foreach (var mergedCells in sheet.MergedCellsList)
             {
-                var rangeToMerge = xlSheet.Range(mergedCells).Cells();
+                var firstCellRow = mergedCells.MergedBoundaryLocation.StartCellLocation!.RowNumber;
+                var firstCellColumn = mergedCells.MergedBoundaryLocation.StartCellLocation.ColumnNumber;
+
+                var lastCellRow = mergedCells.MergedBoundaryLocation.FinishCellLocation!.RowNumber;
+                var lastCellColumn = mergedCells.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber;
+
+                var rangeToMerge = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Cells();
 
                 var value = rangeToMerge.FirstOrDefault(r => r.IsEmpty() is false)?.Value;
 
                 rangeToMerge.First().SetValue(value);
 
-                xlSheet.Range(mergedCells).Merge();
+                var mergedSheetRange = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Merge();
+
+                // Config Outside-Border Specified for Merged Cells
+                if (mergedCells.OutsideBorder is not null)
+                {
+                    XLBorderStyleValues? mergedOutsideBorder = GetXlBorderLineStyle(mergedCells.OutsideBorder!.BorderLineStyle);
+
+                    if (mergedOutsideBorder is not null)
+                    {
+                        mergedSheetRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)mergedOutsideBorder);
+                        mergedSheetRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(mergedCells.OutsideBorder.BorderColor));
+                    }
+                }
+
+                // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
+                mergedSheetRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
+
+                // Set Bg Color
+                if (mergedCells.BackgroundColor is not null)
+                    mergedSheetRange.Style.Fill.BackgroundColor = XLColor.FromColor(mergedCells.BackgroundColor.Value);
             }
         }
 
         return xlWorkbook;
-    }
-
-    private CompoundExcelBuilder ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelBuilder gridLayoutExcelBuilder)
-    {
-        var excelWizardBuilder = new CompoundExcelBuilder();
-
-        if (gridLayoutExcelBuilder.GeneratedFileName.IsNullOrWhiteSpace() is false)
-            excelWizardBuilder.GeneratedFileName = gridLayoutExcelBuilder.GeneratedFileName;
-
-        foreach (var gridExcelSheet in gridLayoutExcelBuilder.Sheets)
-        {
-            gridExcelSheet.ValidateGridExcelSheetInstance();
-
-            if (gridExcelSheet.DataList is IEnumerable records)
-            {
-                var headerRow = new Row();
-
-                var dataRows = new List<Row>();
-
-                // Get Header 
-
-                bool headerCalculated = false;
-
-                int yLocation = 1;
-
-                string? sheetName = null;
-
-                var borderType = LineStyle.Thin;
-
-                var columnsStyle = new List<ColumnStyle>();
-
-                SheetDirection sheetDirection = SheetDirection.LeftToRight;
-
-                bool isSheetLocked = false;
-
-                ProtectionLevel sheetProtectionLevel = new();
-
-                foreach (var record in records)
-                {
-                    // Each record is an entire row of Excel
-
-                    var excelWizardSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
-
-                    sheetName = excelWizardSheetAttribute?.SheetName;
-
-                    sheetDirection = excelWizardSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
-
-                    var defaultFontWeight = excelWizardSheetAttribute?.FontWeight;
-
-                    var defaultFont = new TextFont
-                    {
-                        FontName = excelWizardSheetAttribute?.FontName,
-                        FontSize = excelWizardSheetAttribute?.FontSize == 0 ? null : excelWizardSheetAttribute?.FontSize,
-                        FontColor = Color.FromKnownColor(excelWizardSheetAttribute?.FontColor ?? KnownColor.Black),
-                        IsBold = defaultFontWeight == FontWeight.Bold
-                    };
-
-                    isSheetLocked = excelWizardSheetAttribute?.IsSheetLocked ?? false;
-
-                    var isSheetHardProtected = excelWizardSheetAttribute?.IsSheetHardProtected ?? false;
-
-                    if (isSheetHardProtected)
-                        sheetProtectionLevel.HardProtect = true;
-
-                    borderType = excelWizardSheetAttribute?.BorderType ?? LineStyle.Thin;
-
-                    var defaultTextAlign = excelWizardSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
-
-                    PropertyInfo[] properties = record.GetType().GetProperties();
-
-                    int xLocation = 1;
-
-                    var recordRow = new Row
-                    {
-                        RowStyle = new RowStyle
-                        {
-                            RowHeight = excelWizardSheetAttribute?.DataRowHeight == 0 ? null : excelWizardSheetAttribute?.DataRowHeight,
-                            BackgroundColor = excelWizardSheetAttribute?.DataBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.DataBackgroundColor) : Color.Transparent
-                        }
-                    };
-
-                    // Each loop is a Column
-                    foreach (var prop in properties)
-                    {
-                        var excelWizardColumnAttribute = (ExcelColumnAttribute?)prop.GetCustomAttributes(true).FirstOrDefault(x => x is ExcelColumnAttribute);
-
-                        if (excelWizardColumnAttribute?.Ignore ?? false)
-                            continue;
-
-                        TextAlign GetCellTextAlign(TextAlign defaultAlign, TextAlign? headerOrDataTextAlign)
-                        {
-                            return headerOrDataTextAlign switch
-                            {
-                                TextAlign.Inherit => defaultAlign,
-                                _ => headerOrDataTextAlign ?? defaultAlign
-                            };
-                        }
-
-                        var finalFont = new TextFont
-                        {
-                            FontName = excelWizardColumnAttribute?.FontName ?? defaultFont.FontName,
-                            FontSize = excelWizardColumnAttribute?.FontSize is null || excelWizardColumnAttribute.FontSize == 0 ? defaultFont.FontSize : excelWizardColumnAttribute.FontSize,
-                            FontColor = excelWizardColumnAttribute is null || excelWizardColumnAttribute.FontColor == KnownColor.Transparent
-                            ? defaultFont.FontColor.Value
-                            : Color.FromKnownColor(excelWizardColumnAttribute.FontColor),
-                            IsBold = excelWizardColumnAttribute is null || excelWizardColumnAttribute.FontWeight == FontWeight.Inherit
-                            ? defaultFont.IsBold
-                            : excelWizardColumnAttribute.FontWeight == FontWeight.Bold
-                        };
-
-                        // Header
-                        if (headerCalculated is false)
-                        {
-                            var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
-
-                            headerFont.IsBold = excelWizardColumnAttribute is null || excelWizardColumnAttribute.FontWeight == FontWeight.Inherit
-                                ? defaultFontWeight != FontWeight.Normal
-                                : excelWizardColumnAttribute.FontWeight == FontWeight.Bold;
-
-                            headerRow.RowCells.Add(new Cell(xLocation, yLocation)
-                            {
-                                CellValue = excelWizardColumnAttribute?.HeaderName ?? prop.Name,
-                                CellStyle = new CellStyle
-                                {
-                                    Font = headerFont,
-                                    CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.HeaderTextAlign)
-                                },
-                                CellContentType = CellContentType.Text,
-                            });
-
-                            headerRow.RowStyle.RowHeight = excelWizardSheetAttribute?.HeaderHeight == 0 ? null : excelWizardSheetAttribute?.HeaderHeight;
-
-                            headerRow.RowStyle.BackgroundColor = excelWizardSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelWizardSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
-
-                            headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
-
-                            headerRow.RowStyle.InsideCellsBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
-
-                            // Calculate Columns style
-                            columnsStyle.Add(new ColumnStyle(xLocation)
-                            {
-                                ColumnWidth = new ColumnWidth
-                                {
-                                    Width = excelWizardColumnAttribute?.ColumnWidth == 0 ? null : excelWizardColumnAttribute?.ColumnWidth,
-                                    WidthCalculationType = excelWizardColumnAttribute is null || excelWizardColumnAttribute.ColumnWidth == 0 ? ColumnWidthCalculationType.AdjustToContents : ColumnWidthCalculationType.ExplicitValue
-                                }
-                            });
-                        }
-
-                        // Data
-                        recordRow.RowCells.Add(new Cell(xLocation, yLocation + 1)
-                        {
-                            CellValue = prop.GetValue(record),
-                            CellContentType = excelWizardColumnAttribute?.ExcelDataContentType ?? CellContentType.Text,
-                            CellStyle = new CellStyle
-                            {
-                                Font = finalFont,
-                                CellTextAlign = GetCellTextAlign(defaultTextAlign, excelWizardColumnAttribute?.DataTextAlign)
-                            }
-                        });
-
-                        xLocation++;
-                    }
-
-                    dataRows.Add(recordRow);
-
-                    yLocation++;
-
-                    headerCalculated = true;
-                }
-
-                excelWizardBuilder.Sheets.Add(new Sheet
-                {
-                    SheetName = sheetName,
-
-                    SheetStyle = new SheetStyle { SheetDirection = sheetDirection },
-
-                    IsSheetLocked = isSheetLocked,
-
-                    SheetProtectionLevel = sheetProtectionLevel,
-
-                    // Header Row
-                    SheetRows = new List<Row> { headerRow },
-
-                    // Table Data
-                    SheetTables = new List<Table>
-                    {
-                        new()
-                        {
-                            TableRows = dataRows,
-                            TableStyle= new TableStyle
-                            {
-                                TableOutsideBorder = new Border { BorderLineStyle = borderType }
-                            }
-                        }
-                    },
-
-                    // Columns
-                    SheetColumnsStyle = columnsStyle
-                });
-            }
-            else
-            {
-                throw new Exception("GridExcelSheet object should be IEnumerable");
-            }
-        }
-
-        return excelWizardBuilder;
     }
 
     private void ConfigureCell(IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)
@@ -777,18 +539,6 @@ internal class ExcelWizardService : IExcelWizardService
             ConfigureCell(xlSheet, rowCell, columnsStyleList, isSheetLocked);
         }
 
-        // Configure merged cells in the row
-        foreach (var cellsToMerge in row.MergedCellsList)
-        {
-            var firstCellRow = cellsToMerge.FirstCellLocation!.RowNumber;
-            var firstCellColumn = cellsToMerge.FirstCellLocation.ColumnNumber;
-
-            var lastCellRow = cellsToMerge.LastCellLocation!.RowNumber;
-            var lastCellColumn = cellsToMerge.LastCellLocation!.ColumnNumber;
-
-            xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
-        }
-
         if (row.RowCells.Count != 0)
         {
             var xlRow = xlSheet.Row(row.RowCells.First().CellLocation.RowNumber);
@@ -842,6 +592,37 @@ internal class ExcelWizardService : IExcelWizardService
                     _ => throw new ArgumentOutOfRangeException()
                 };
             }
+        }
+
+        // Configure merged cells in the row
+        foreach (var cellsToMerge in row.MergedCellsList)
+        {
+            var firstCellRow = cellsToMerge.MergedBoundaryLocation.StartCellLocation!.RowNumber;
+            var firstCellColumn = cellsToMerge.MergedBoundaryLocation.StartCellLocation.ColumnNumber;
+
+            var lastCellRow = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.RowNumber;
+            var lastCellColumn = cellsToMerge.MergedBoundaryLocation.FinishCellLocation!.ColumnNumber;
+
+            var mergedRowRange = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Row(1).Merge();
+
+            // Config Outside-Border Specified for Merged Cells
+            if (cellsToMerge.OutsideBorder is not null)
+            {
+                XLBorderStyleValues? mergedOutsideBorder = GetXlBorderLineStyle(cellsToMerge.OutsideBorder!.BorderLineStyle);
+
+                if (mergedOutsideBorder is not null)
+                {
+                    mergedRowRange.Style.Border.SetOutsideBorder((XLBorderStyleValues)mergedOutsideBorder);
+                    mergedRowRange.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cellsToMerge.OutsideBorder.BorderColor));
+                }
+            }
+
+            // Inside-Border (CellsSeparatorBorder) for Merged Cells should be none
+            mergedRowRange.Style.Border.SetInsideBorder(XLBorderStyleValues.None);
+
+            // Set Bg Color
+            if (cellsToMerge.BackgroundColor is not null)
+                mergedRowRange.Style.Fill.BackgroundColor = XLColor.FromColor(cellsToMerge.BackgroundColor.Value);
         }
     }
 
