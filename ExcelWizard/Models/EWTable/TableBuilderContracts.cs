@@ -54,7 +54,7 @@ public interface IExpectMergedCellsStatusInManualProcessTableBuilder
     /// In case we don't have any merge in the Table
     /// </summary>
     /// <returns></returns>
-    IExpectStyleTableBuilder HasNoMergedCells();
+    IExpectStyleTableBuilder TableHasNoMerging();
 }
 
 public interface IExpectStyleTableBuilder
@@ -78,13 +78,13 @@ public interface IExpectMergedCellsStatusInModelTableBuilder
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
     /// <param name="mergeBuilders"> MergeBuilder(s) with Build() method at the end of them </param>
-    IExpectBuildMethodInModelTableBuilder SetMergedCells(params IMergeBuilder[] mergeBuilders);
+    IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(params IMergeBuilder[] mergeBuilders);
 
     /// <summary>
     /// In case we don't have any merge in the Table
     /// </summary>
     /// <returns></returns>
-    IExpectBuildMethodInModelTableBuilder NoMergedCells();
+    IExpectBuildMethodInModelTableBuilder BoundTableHasNoMerging();
 }
 
 public interface IExpectBuildMethodInModelTableBuilder

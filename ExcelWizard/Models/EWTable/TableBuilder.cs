@@ -222,7 +222,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
     public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] rowBuilders)
     {
         if (rowBuilders.Length == 0)
-            throw new ArgumentException("Table instance Rows cannot be an empty list");
+            throw new ArgumentException($"At-least one RowBuilder should be provided for TableBuilder's {nameof(SetRows)} method argument");
 
         Table.TableRows = rowBuilders.Select(r => (Row)r).ToList();
 
@@ -231,15 +231,17 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
 
     public IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] mergeBuilders)
     {
-        if (mergeBuilders.Length > 0)
-            CanBuild = true;
+        if (mergeBuilders.Length == 0)
+            throw new ArgumentException($"At-least one MergeBuilder should be provided for TableBuilder's {nameof(SetTableMergedCells)} method argument");
+
+        CanBuild = true;
 
         Table.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
 
         return this;
     }
 
-    public IExpectStyleTableBuilder HasNoMergedCells()
+    public IExpectStyleTableBuilder TableHasNoMerging()
     {
         CanBuild = true;
 
@@ -258,17 +260,19 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         return this;
     }
 
-    public IExpectBuildMethodInModelTableBuilder SetMergedCells(params IMergeBuilder[] mergeBuilders)
+    public IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(params IMergeBuilder[] mergeBuilders)
     {
-        if (mergeBuilders.Length > 0)
-            CanBuild = true;
+        if (mergeBuilders.Length == 0)
+            throw new ArgumentException($"At-least one MergeBuilder should be provided for TableBuilder's {nameof(SetBoundTableMergedCells)} method argument");
+
+        CanBuild = true;
 
         Table.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
 
         return this;
     }
 
-    public IExpectBuildMethodInModelTableBuilder NoMergedCells()
+    public IExpectBuildMethodInModelTableBuilder BoundTableHasNoMerging()
     {
         CanBuild = true;
 

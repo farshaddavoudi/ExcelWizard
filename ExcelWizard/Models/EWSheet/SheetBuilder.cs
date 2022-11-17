@@ -33,43 +33,31 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         };
     }
 
-    public IExpectSetComponentsSheetBuilder SetTable(ITableBuilder tableBuilder)
+    public IExpectSetComponentsSheetBuilder SetTables(params ITableBuilder[] tableBuilders)
     {
-        Sheet.SheetTables.Add((Table)tableBuilder);
+        if (tableBuilders.Length == 0)
+            throw new ArgumentException("At-least one TableBuilder should be provided for SheetBuilder's SetTables method argument");
 
-        return this;
-    }
-
-    public IExpectSetComponentsSheetBuilder SetTables(params ITableBuilder[] tables)
-    {
-        Sheet.SheetTables.AddRange(tables.Select(t => (Table)t));
-
-        return this;
-    }
-
-    public IExpectSetComponentsSheetBuilder SetRow(IRowBuilder rowBuilder)
-    {
-        Sheet.SheetRows.Add((Row)rowBuilder);
+        Sheet.SheetTables.AddRange(tableBuilders.Select(t => (Table)t));
 
         return this;
     }
 
     public IExpectSetComponentsSheetBuilder SetRows(params IRowBuilder[] rowBuilders)
     {
+        if (rowBuilders.Length == 0)
+            throw new ArgumentException("At-least one RowBuilder should be provided for SheetBuilder's SetRows method argument");
+
         Sheet.SheetRows.AddRange(rowBuilders.Select(r => (Row)r));
-
-        return this;
-    }
-
-    public IExpectSetComponentsSheetBuilder SetCell(ICellBuilder cellBuilder)
-    {
-        Sheet.SheetCells.Add((Cell)cellBuilder);
 
         return this;
     }
 
     public IExpectSetComponentsSheetBuilder SetCells(params ICellBuilder[] cellBuilders)
     {
+        if (cellBuilders.Length == 0)
+            throw new ArgumentException("At-least one CellBuilder should be provided for SheetBuilder's SetCells method argument");
+
         Sheet.SheetCells.AddRange(cellBuilders.Select(c => (Cell)c).ToList());
 
         return this;

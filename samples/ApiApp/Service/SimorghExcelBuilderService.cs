@@ -71,7 +71,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         })
                         .Build()
                     )
-                .NoMergedCells()
+                .RowHasNoMerging()
                 .NoCustomStyle()
                 .Build())
             .SetTableMergedCells(
@@ -90,7 +90,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 CellBuilder.SetLocation("B", 3).SetValue("بدهکار").Build(),
                 CellBuilder.SetLocation("C", 3).SetValue("بستانکار").Build()
                 )
-            .NoMergedCells()
+            .RowHasNoMerging()
             .SetStyle(new RowStyle
             {
                 BackgroundColor = Color.Gray
@@ -107,11 +107,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder.SetLocation("B", 4).SetValue(item.Debit).SetContentType(CellContentType.Currency).Build(),
                         CellBuilder.SetLocation("C", 4).SetValue(item.Credit).SetContentType(CellContentType.Currency).Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .NoCustomStyle()
                     .Build()
             ).ToArray())
-            .HasNoMergedCells()
+            .TableHasNoMerging()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
@@ -126,7 +126,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 CellBuilder.SetLocation("B", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بدهکار").Build(),
                 CellBuilder.SetLocation("C", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بستانکار").Build()
             )
-            .NoMergedCells()
+            .RowHasNoMerging()
             .SetStyle(new RowStyle
             {
                 BackgroundColor = Color.Gray
@@ -154,11 +154,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetContentType(CellContentType.Currency)
                             .Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .NoCustomStyle()
                     .Build()
             ).ToArray())
-            .HasNoMergedCells()
+            .TableHasNoMerging()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
@@ -204,7 +204,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             })
                             .Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
@@ -238,7 +238,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             }
                             ).Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .SetStyle(new RowStyle { RowHeight = 20 })
                     .Build()
                 )
@@ -277,11 +277,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder.SetLocation("B", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + index)
                             .SetValue(account.Code).Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .NoCustomStyle()
                     .Build()
             ).ToArray())
-            .HasNoMergedCells()
+            .TableHasNoMerging()
             .SetStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
@@ -316,7 +316,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder.SetLocation("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
                             .SetValue(504000).Build()
                         )
-                    .NoMergedCells()
+                    .RowHasNoMerging()
                     .NoCustomStyle()
                     .Build()
                 )
