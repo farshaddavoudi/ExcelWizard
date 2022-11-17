@@ -52,12 +52,12 @@ public interface IExpectStyleRowBuilder
     /// <summary>
     /// Set Row Styles including Bg, Font, Height, Borders and etc
     /// </summary>
-    IExpectBuildMethodRowBuilder SetStyle(RowStyle rowStyle);
+    IExpectBuildMethodRowBuilder SetRowStyle(RowStyle rowStyle);
 
     /// <summary>
     /// No custom styles for the row
     /// </summary>
-    IExpectBuildMethodRowBuilder NoCustomStyle();
+    IExpectBuildMethodRowBuilder RowHasNoCustomStyle();
 }
 
 public interface IExpectBuildMethodRowBuilder

@@ -45,12 +45,12 @@ public interface IExpectStyleSheetBuilder
     /// <summary>
     /// Set Sheet style options like Direction, TextAlign, ColumnsDefaultWith, RowsDefaultHeight and etc. Also Columns style can be configured here
     /// </summary>
-    IExpectOtherPropsAndBuildSheetBuilder SetStyle(SheetStyle sheetStyle);
+    IExpectOtherPropsAndBuildSheetBuilder SetSheetStyle(SheetStyle sheetStyle);
 
     /// <summary>
     /// No custom styles for the Sheet, neither for the Sheet itself nor for its Columns
     /// </summary>
-    IExpectOtherPropsAndBuildSheetBuilder NoCustomStyle();
+    IExpectOtherPropsAndBuildSheetBuilder SheetHasNoCustomStyle();
 }
 
 public interface IExpectOtherPropsAndBuildSheetBuilder

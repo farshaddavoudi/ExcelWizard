@@ -62,12 +62,12 @@ public interface IExpectStyleTableBuilder
     /// <summary>
     /// Set Table Styles e.g. OutsideBorder, etc
     /// </summary>
-    IExpectBuildMethodInManualTableBuilder SetStyle(TableStyle tableStyle);
+    IExpectBuildMethodInManualTableBuilder SetTableStyle(TableStyle tableStyle);
 
     /// <summary>
     /// No custom styles for the table
     /// </summary>
-    IExpectBuildMethodInManualTableBuilder NoCustomStyle();
+    IExpectBuildMethodInManualTableBuilder TableHasNoCustomStyle();
 }
 
 public interface IExpectMergedCellsStatusInModelTableBuilder

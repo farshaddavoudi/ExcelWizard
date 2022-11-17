@@ -65,14 +65,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     CellBuilder
                         .SetLocation("A", 1)
                         .SetValue("گزارش تست")
-                        .SetStyle(new CellStyle
+                        .SetCellStyle(new CellStyle
                         {
                             CellTextAlign = TextAlign.Center
                         })
                         .Build()
                     )
                 .RowHasNoMerging()
-                .NoCustomStyle()
+                .RowHasNoCustomStyle()
                 .Build())
             .SetTableMergedCells(
                 MergeBuilder
@@ -80,7 +80,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 .SetMergingFinishPoint("H", 2)
                 .Build()
                 )
-            .NoCustomStyle()
+            .TableHasNoCustomStyle()
             .Build();
 
         // Gray bg row (کد حساب - بدهکار - بستانکار) - First table Header
@@ -91,7 +91,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 CellBuilder.SetLocation("C", 3).SetValue("بستانکار").Build()
                 )
             .RowHasNoMerging()
-            .SetStyle(new RowStyle
+            .SetRowStyle(new RowStyle
             {
                 BackgroundColor = Color.Gray
             })
@@ -108,11 +108,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder.SetLocation("C", 4).SetValue(item.Credit).SetContentType(CellContentType.Currency).Build()
                         )
                     .RowHasNoMerging()
-                    .NoCustomStyle()
+                    .RowHasNoCustomStyle()
                     .Build()
             ).ToArray())
             .TableHasNoMerging()
-            .SetStyle(new TableStyle
+            .SetTableStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
@@ -127,7 +127,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                 CellBuilder.SetLocation("C", table1St.GetNextVerticalRowNumberAfterTable()).SetValue("بستانکار").Build()
             )
             .RowHasNoMerging()
-            .SetStyle(new RowStyle
+            .SetRowStyle(new RowStyle
             {
                 BackgroundColor = Color.Gray
             })
@@ -155,11 +155,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .Build()
                         )
                     .RowHasNoMerging()
-                    .NoCustomStyle()
+                    .RowHasNoCustomStyle()
                     .Build()
             ).ToArray())
             .TableHasNoMerging()
-            .SetStyle(new TableStyle
+            .SetTableStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick }
@@ -197,7 +197,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                         CellBuilder.SetLocation("K", table2Nd.GetNextVerticalRowNumberAfterTable()).Build(),
                         CellBuilder.SetLocation("L", table2Nd.GetNextVerticalRowNumberAfterTable())
                             .SetValue("میانگین")
-                            .SetStyle(new CellStyle
+                            .SetCellStyle(new CellStyle
                             {
                                 BackgroundColor = Color.White,
                                 Font = new TextFont { FontColor = Color.Black }
@@ -205,7 +205,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .Build()
                         )
                     .RowHasNoMerging()
-                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .SetRowStyle(new RowStyle { RowHeight = 20 })
                     .Build(),
 
                 RowBuilder
@@ -232,14 +232,14 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .Build(),
                         CellBuilder
                             .SetLocation("L", table2Nd.GetNextVerticalRowNumberAfterTable() + 1)
-                            .SetStyle(new CellStyle
+                            .SetCellStyle(new CellStyle
                             {
                                 BackgroundColor = Color.White
                             }
                             ).Build()
                         )
                     .RowHasNoMerging()
-                    .SetStyle(new RowStyle { RowHeight = 20 })
+                    .SetRowStyle(new RowStyle { RowHeight = 20 })
                     .Build()
                 )
             .SetTableMergedCells(
@@ -259,7 +259,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .SetMergingStartPoint("F", table2Nd.GetNextVerticalRowNumberAfterTable())
                     .SetMergingFinishPoint("H", table2Nd.GetNextVerticalRowNumberAfterTable())
                     .Build())
-            .SetStyle(new TableStyle
+            .SetTableStyle(new TableStyle
             {
                 BackgroundColor = Color.Blue,
                 Font = new TextFont { FontColor = Color.White }
@@ -278,11 +278,11 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetValue(account.Code).Build()
                         )
                     .RowHasNoMerging()
-                    .NoCustomStyle()
+                    .RowHasNoCustomStyle()
                     .Build()
             ).ToArray())
             .TableHasNoMerging()
-            .SetStyle(new TableStyle
+            .SetTableStyle(new TableStyle
             {
                 TableOutsideBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black },
                 InsideCellsBorder = new Border { BorderLineStyle = LineStyle.Thick, BorderColor = Color.Black }
@@ -317,7 +317,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                             .SetValue(504000).Build()
                         )
                     .RowHasNoMerging()
-                    .NoCustomStyle()
+                    .RowHasNoCustomStyle()
                     .Build()
                 )
             .SetTableMergedCells(
@@ -361,7 +361,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .SetMergingStartPoint("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable())
                     .SetMergingFinishPoint("L", tableBottomBlueHeader.GetNextVerticalRowNumberAfterTable() + 1)
                     .Build())
-            .SetStyle(new TableStyle { TableTextAlign = TextAlign.Center })
+            .SetTableStyle(new TableStyle { TableTextAlign = TextAlign.Center })
             .Build();
 
         return ExcelBuilder
@@ -379,7 +379,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     )
                 .SetRows(rowFirstTableHeader, rowSecondTableHeader)
                 .NoMoreTablesRowsOrCells()
-                .NoCustomStyle()
+                .SheetHasNoCustomStyle()
                 .Build())
             .SetSheetsDefaultStyle(new SheetsDefaultStyle
             {
