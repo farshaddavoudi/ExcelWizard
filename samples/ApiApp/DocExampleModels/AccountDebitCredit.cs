@@ -27,3 +27,5 @@ public class AccountDebitCredit
     [ExcelTableColumn(DataContentType = CellContentType.Currency, Ignore = false)]
     public decimal Credit { get; set; }
 }
+
+
