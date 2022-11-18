@@ -42,6 +42,8 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
 
         bool hasHeader = true;
 
+        List<MergedCells> tableHeaderMerges = new();
+
         int yLocation = tableStartPoint.RowNumber;
 
         var borderType = LineStyle.Thin;
@@ -59,6 +61,8 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                 var excelTableAttribute = record.GetType().GetCustomAttribute<ExcelTableAttribute>();
 
                 hasHeader = excelTableAttribute.HasHeader;
+
+                var headerOccupyingRowsNo = excelTableAttribute.HeaderOccupyingRowsNo;
 
                 var tableDefaultFontWeight = excelTableAttribute.FontWeight;
 
@@ -150,15 +154,31 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
 
                         headerRow.RowCells.Add(headerCell);
 
-                        headerRow.RowStyle.BackgroundColor = excelTableAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelTableAttribute.HeaderBackgroundColor) : Color.Transparent;
+                        var headerBgColor = excelTableAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelTableAttribute.HeaderBackgroundColor) : Color.Transparent;
+
+                        headerRow.RowStyle.BackgroundColor = headerBgColor;
 
                         headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
 
                         headerRow.RowStyle.InsideCellsBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+
+                        if (headerOccupyingRowsNo > 1)
+                        {
+                            tableHeaderMerges.Add(new MergedCells
+                            {
+                                BackgroundColor = headerBgColor,
+
+                                MergedBoundaryLocation = new MergedBoundaryLocation
+                                {
+                                    StartCellLocation = new CellLocation(xLocation, tableStartPoint.RowNumber),
+                                    FinishCellLocation = new CellLocation(xLocation, tableStartPoint.RowNumber + headerOccupyingRowsNo - 1)
+                                }
+                            });
+                        }
                     }
 
                     // Data
-                    int dataYLocation = hasHeader ? yLocation + 1 : yLocation;
+                    int dataYLocation = hasHeader ? yLocation + headerOccupyingRowsNo : yLocation;
 
                     var dataCell = CellBuilder
                         .SetLocation(xLocation, dataYLocation)
@@ -203,7 +223,8 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                 {
                     TableOutsideBorder = outsideBorder,
                     InsideCellsBorder = insideBorder
-                }
+                },
+                MergedCellsList = tableHeaderMerges
             }
         };
     }
