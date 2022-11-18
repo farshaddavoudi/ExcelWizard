@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<Version>3.0.3</Version>
+		<Version>3.0.4</Version>
 		<LangVersion>latest</LangVersion>
 		<NoWarn>$(NoWarn);NU1701;1702;1591;NU1602;CS8609;CS8610;CS8619;CS8632</NoWarn>
 		<Nullable>enable</Nullable>

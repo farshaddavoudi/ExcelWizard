@@ -16,6 +16,11 @@ public class ExcelTableAttribute : Attribute
     public bool HasHeader { get; set; } = true;
 
     /// <summary>
+    /// How many rows does the Header occupy. It will be merged automatically
+    /// </summary>
+    public int HeaderOccupyingRowsNo { get; set; } = 1;
+
+    /// <summary>
     /// Table header background color. Will be ignored if HasHeader is set to false
     /// </summary>
     public KnownColor HeaderBackgroundColor { get; set; } = KnownColor.Transparent;
