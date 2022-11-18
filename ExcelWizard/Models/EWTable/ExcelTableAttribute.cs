@@ -26,6 +26,16 @@ public class ExcelTableAttribute : Attribute
     public KnownColor HeaderBackgroundColor { get; set; } = KnownColor.Transparent;
 
     /// <summary>
+    /// Table header font color. Will be ignored if HasHeader is set to false
+    /// </summary>
+    public KnownColor HeaderFontColor { get; set; } = KnownColor.Black;
+
+    /// <summary>
+    /// Table header font weight. Will be ignored if HasHeader is set to false
+    /// </summary>
+    public FontWeight HeaderFontWeight { get; set; } = FontWeight.Inherit;
+
+    /// <summary>
     /// Table Cells TextAlign
     /// </summary>
     public TextAlign TextAlign { get; set; } = TextAlign.Inherit;

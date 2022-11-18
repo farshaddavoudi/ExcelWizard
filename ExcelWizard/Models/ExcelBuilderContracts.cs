@@ -24,9 +24,11 @@ public interface IExpectGeneratingExcelTypeExcelBuilder
 public interface IExpectSheetsExcelBuilder
 {
     /// <summary>
-    /// Add one or more Sheets to Excel
+    /// Add one or more sheets to the Excel. It is required as Excel definition cannot be without Sheet(s).
     /// </summary>
-    IExpectStyleExcelBuilder SetSheets(params ISheetBuilder[] sheets);
+    /// <param name="sheetBuilder"> SheetBuilder with Build() method at the end </param>
+    /// <param name="sheetBuilders"> SheetBuilder(s) with Build() method at the end of them </param>
+    IExpectStyleExcelBuilder SetSheets(ISheetBuilder sheetBuilder, params ISheetBuilder[] sheetBuilders);
 }
 
 public interface IExpectStyleExcelBuilder

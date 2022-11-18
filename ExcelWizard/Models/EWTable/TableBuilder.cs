@@ -132,12 +132,16 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                             ? tableDefaultFontWeight != FontWeight.Normal
                             : excelTableColumnAttribute.FontWeight == FontWeight.Bold;
 
+                        var headerFontColor = excelTableAttribute?.HeaderFontColor != null ? Color.FromKnownColor(excelTableAttribute.HeaderFontColor) : Color.Empty;
+
+                        var headerFontWeight = excelTableAttribute?.HeaderFontWeight != null ? excelTableAttribute.FontWeight : FontWeight.Inherit;
+
                         var headerFont = new TextFont
                         {
-                            FontColor = finalFont.FontColor,
+                            FontColor = headerFontColor == Color.Empty ? finalFont.FontColor : headerFontColor,
                             FontName = finalFont.FontName,
                             FontSize = finalFont.FontSize,
-                            IsBold = isBold
+                            IsBold = headerFontWeight == FontWeight.Inherit ? isBold : headerFontWeight == FontWeight.Bold
                         };
 
                         Cell headerCell = CellBuilder
