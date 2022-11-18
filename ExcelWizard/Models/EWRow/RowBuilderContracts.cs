@@ -1,5 +1,6 @@
 ﻿using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWMerge;
+using System.Collections.Generic;
 
 namespace ExcelWizard.Models.EWRow;
 
@@ -37,8 +38,17 @@ public interface IExpectMergedCellsStatusRowBuilder
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
+    /// <param name="mergeBuilder"> MergeBuilder with Build() method at the end </param>
     /// <param name="mergeBuilders"> MergeBuilder(s) with Build() method at the end of them </param>
-    IExpectStyleRowBuilder SetRowMergedCells(params IMergeBuilder[] mergeBuilders);
+    IExpectStyleRowBuilder SetRowMergedCells(IMergeBuilder mergeBuilder, params IMergeBuilder[] mergeBuilders);
+
+    /// <summary>
+    /// Define Location of Merged Cells in the current Row. The property is collection, in case
+    /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
+    /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
+    /// </summary>
+    /// <param name="mergeBuilders"> MergeBuilders with Build() method at the end of them </param>
+    IExpectStyleRowBuilder SetRowMergedCells(List<IMergeBuilder> mergeBuilders);
 
     /// <summary>
     /// In case we don't have any merge in the Row

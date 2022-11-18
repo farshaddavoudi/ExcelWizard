@@ -3,6 +3,7 @@ using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWTable;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ExcelWizard.Models.EWSheet;
@@ -33,31 +34,49 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         };
     }
 
-    public IExpectSetComponentsSheetBuilder SetTables(params ITableBuilder[] tableBuilders)
+    public IExpectSetComponentsSheetBuilder SetTables(ITableBuilder tableBuilder, params ITableBuilder[] tableBuilders)
     {
-        if (tableBuilders.Length == 0)
-            throw new ArgumentException("At-least one TableBuilder should be provided for SheetBuilder's SetTables method argument");
+        ITableBuilder[] tables = new[] { tableBuilder }.Concat(tableBuilders).ToArray();
 
+        Sheet.SheetTables.AddRange(tables.Select(t => (Table)t));
+
+        return this;
+    }
+
+    public IExpectSetComponentsSheetBuilder SetTables(List<ITableBuilder> tableBuilders)
+    {
         Sheet.SheetTables.AddRange(tableBuilders.Select(t => (Table)t));
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetRows(params IRowBuilder[] rowBuilders)
+    public IExpectSetComponentsSheetBuilder SetRows(IRowBuilder rowBuilder, params IRowBuilder[] rowBuilders)
     {
-        if (rowBuilders.Length == 0)
-            throw new ArgumentException("At-least one RowBuilder should be provided for SheetBuilder's SetRows method argument");
+        IRowBuilder[] rows = new[] { rowBuilder }.Concat(rowBuilders).ToArray();
 
+        Sheet.SheetRows.AddRange(rows.Select(r => (Row)r));
+
+        return this;
+    }
+
+    public IExpectSetComponentsSheetBuilder SetRows(List<IRowBuilder> rowBuilders)
+    {
         Sheet.SheetRows.AddRange(rowBuilders.Select(r => (Row)r));
 
         return this;
     }
 
-    public IExpectSetComponentsSheetBuilder SetCells(params ICellBuilder[] cellBuilders)
+    public IExpectSetComponentsSheetBuilder SetCells(ICellBuilder cellBuilder, params ICellBuilder[] cellBuilders)
     {
-        if (cellBuilders.Length == 0)
-            throw new ArgumentException("At-least one CellBuilder should be provided for SheetBuilder's SetCells method argument");
+        ICellBuilder[] cells = new[] { cellBuilder }.Concat(cellBuilders).ToArray();
 
+        Sheet.SheetCells.AddRange(cells.Select(c => (Cell)c).ToList());
+
+        return this;
+    }
+
+    public IExpectSetComponentsSheetBuilder SetCells(List<ICellBuilder> cellBuilders)
+    {
         Sheet.SheetCells.AddRange(cellBuilders.Select(c => (Cell)c).ToList());
 
         return this;

@@ -110,7 +110,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .RowHasNoMerging()
                     .RowHasNoCustomStyle()
                     .Build()
-            ).ToArray())
+            ).ToList())
             .TableHasNoMerging()
             .SetTableStyle(new TableStyle
             {
@@ -157,7 +157,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .RowHasNoMerging()
                     .RowHasNoCustomStyle()
                     .Build()
-            ).ToArray())
+            ).ToList())
             .TableHasNoMerging()
             .SetTableStyle(new TableStyle
             {
@@ -280,7 +280,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
                     .RowHasNoMerging()
                     .RowHasNoCustomStyle()
                     .Build()
-            ).ToArray())
+            ).ToList())
             .TableHasNoMerging()
             .SetTableStyle(new TableStyle
             {

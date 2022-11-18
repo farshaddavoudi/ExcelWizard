@@ -219,21 +219,35 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         };
     }
 
-    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] rowBuilders)
+    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(IRowBuilder rowBuilder, params IRowBuilder[] rowBuilders)
     {
-        if (rowBuilders.Length == 0)
-            throw new ArgumentException($"At-least one RowBuilder should be provided for TableBuilder's {nameof(SetRows)} method argument");
+        IRowBuilder[] rows = new[] { rowBuilder }.Concat(rowBuilders).ToArray();
 
+        Table.TableRows = rows.Select(r => (Row)r).ToList();
+
+        return this;
+    }
+
+    public IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(List<IRowBuilder> rowBuilders)
+    {
         Table.TableRows = rowBuilders.Select(r => (Row)r).ToList();
 
         return this;
     }
 
-    public IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] mergeBuilders)
+    public IExpectStyleTableBuilder SetTableMergedCells(IMergeBuilder mergeBuilder, params IMergeBuilder[] mergeBuilders)
     {
-        if (mergeBuilders.Length == 0)
-            throw new ArgumentException($"At-least one MergeBuilder should be provided for TableBuilder's {nameof(SetTableMergedCells)} method argument");
+        IMergeBuilder[] merges = new[] { mergeBuilder }.Concat(mergeBuilders).ToArray();
 
+        CanBuild = true;
+
+        Table.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
+
+        return this;
+    }
+
+    public IExpectStyleTableBuilder SetTableMergedCells(List<IMergeBuilder> mergeBuilders)
+    {
         CanBuild = true;
 
         Table.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
@@ -260,11 +274,19 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
         return this;
     }
 
-    public IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(params IMergeBuilder[] mergeBuilders)
+    public IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(IMergeBuilder mergeBuilder, params IMergeBuilder[] mergeBuilders)
     {
-        if (mergeBuilders.Length == 0)
-            throw new ArgumentException($"At-least one MergeBuilder should be provided for TableBuilder's {nameof(SetBoundTableMergedCells)} method argument");
+        IMergeBuilder[] merges = new[] { mergeBuilder }.Concat(mergeBuilders).ToArray();
 
+        CanBuild = true;
+
+        Table.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
+
+        return this;
+    }
+
+    public IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(List<IMergeBuilder> mergeBuilders)
+    {
         CanBuild = true;
 
         Table.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();
