@@ -1,6 +1,7 @@
 ﻿using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
+using System.Collections.Generic;
 
 namespace ExcelWizard.Models.EWTable;
 
@@ -36,8 +37,15 @@ public interface IExpectRowsTableBuilder
     /// <summary>
     /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
     /// </summary>
+    /// <param name="rowBuilder"> RowBuilder with Build() method at the end </param>
     /// <param name="rowBuilders"> RowBuilder(s) with Build() method at the end of them </param>
-    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(params IRowBuilder[] rowBuilders);
+    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(IRowBuilder rowBuilder, params IRowBuilder[] rowBuilders);
+
+    /// <summary>
+    /// Each Table contains one or more Row(s). It is required as Table definition cannot be without Rows.
+    /// </summary>
+    /// <param name="rowBuilders"> RowBuilders with Build() method at the end of them </param>
+    IExpectMergedCellsStatusInManualProcessTableBuilder SetRows(List<IRowBuilder> rowBuilders);
 }
 
 public interface IExpectMergedCellsStatusInManualProcessTableBuilder
@@ -47,8 +55,17 @@ public interface IExpectMergedCellsStatusInManualProcessTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
+    /// <param name="mergeBuilder"> MergeBuilder with Build() method at the end </param>
     /// <param name="mergeBuilders"> MergeBuilder(s) with Build() method at the end of them </param>
-    IExpectStyleTableBuilder SetTableMergedCells(params IMergeBuilder[] mergeBuilders);
+    IExpectStyleTableBuilder SetTableMergedCells(IMergeBuilder mergeBuilder, params IMergeBuilder[] mergeBuilders);
+
+    /// <summary>
+    /// Define of Merged Cells in the current Table. The property is collection, in case
+    /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
+    /// should place into the Locations of the current Table, otherwise an error will throw.
+    /// </summary>
+    /// <param name="mergeBuilders"> MergeBuilders with Build() method at the end of them </param>
+    IExpectStyleTableBuilder SetTableMergedCells(List<IMergeBuilder> mergeBuilders);
 
     /// <summary>
     /// In case we don't have any merge in the Table
@@ -77,8 +94,17 @@ public interface IExpectMergedCellsStatusInModelTableBuilder
     /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
     /// should place into the Locations of the current Table, otherwise an error will throw.
     /// </summary>
+    /// <param name="mergeBuilder"> MergeBuilder with Build() method at the end </param>
     /// <param name="mergeBuilders"> MergeBuilder(s) with Build() method at the end of them </param>
-    IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(params IMergeBuilder[] mergeBuilders);
+    IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(IMergeBuilder mergeBuilder, params IMergeBuilder[] mergeBuilders);
+
+    /// <summary>
+    /// Define of Merged Cells in the current Table. The property is collection, in case
+    /// we have multiple merged-cells definitions in different locations of the Table. Notice that the Merged Cells
+    /// should place into the Locations of the current Table, otherwise an error will throw.
+    /// </summary>
+    /// <param name="mergeBuilders"> MergeBuilders with Build() method at the end of them </param>
+    IExpectBuildMethodInModelTableBuilder SetBoundTableMergedCells(List<IMergeBuilder> mergeBuilders);
 
     /// <summary>
     /// In case we don't have any merge in the Table

@@ -1,6 +1,7 @@
 ﻿using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWMerge;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ExcelWizard.Models.EWRow;
@@ -15,12 +16,27 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IExpectBuildMethod
     /// <summary>
     /// Each Row contains one or more Cell(s). It is required as Row definition cannot be without Cells.
     /// </summary>
+    /// <param name="cellBuilder"> CellBuilder with Build() method at the end  </param>
     /// <param name="cellBuilders"> CellBuilder(s) with Build() method at the end of them </param>
-    public static IExpectMergedCellsStatusRowBuilder SetCells(params ICellBuilder[] cellBuilders)
+    public static IExpectMergedCellsStatusRowBuilder SetCells(ICellBuilder cellBuilder, params ICellBuilder[] cellBuilders)
     {
-        if (cellBuilders.Length == 0)
-            throw new ArgumentException("At-least one CellBuilder should be provided for RowBuilder's SetCells method argument");
+        ICellBuilder[] cells = new[] { cellBuilder }.Concat(cellBuilders).ToArray();
 
+        return new RowBuilder
+        {
+            Row = new Row
+            {
+                RowCells = cells.Select(c => (Cell)c).ToList()
+            }
+        };
+    }
+
+    /// <summary>
+    /// Each Row contains one or more Cell(s). It is required as Row definition cannot be without Cells.
+    /// </summary>
+    /// <param name="cellBuilders"> CellBuilders with Build() method at the end of them </param>
+    public static IExpectMergedCellsStatusRowBuilder SetCells(List<ICellBuilder> cellBuilders)
+    {
         return new RowBuilder
         {
             Row = new Row
@@ -36,11 +52,19 @@ public class RowBuilder : IExpectMergedCellsStatusRowBuilder, IExpectBuildMethod
     /// we have multiple merged-cells definitions in different locations of the Row. Notice that the Merged-Cells
     /// RowNumber should match with the Row RowNumber itself, otherwise an error will throw.
     /// </summary>
-    public IExpectStyleRowBuilder SetRowMergedCells(params IMergeBuilder[] mergeBuilders)
+    public IExpectStyleRowBuilder SetRowMergedCells(IMergeBuilder mergeBuilder, params IMergeBuilder[] mergeBuilders)
     {
-        if (mergeBuilders.Length == 0)
-            throw new ArgumentException($"At-least one MergeBuilder should be provided for RowBuilder's {nameof(SetRowMergedCells)} method argument");
+        IMergeBuilder[] merges = new[] { mergeBuilder }.Concat(mergeBuilders).ToArray();
 
+        CanBuild = true;
+
+        Row.MergedCellsList = merges.Select(m => (MergedCells)m).ToList();
+
+        return this;
+    }
+
+    public IExpectStyleRowBuilder SetRowMergedCells(List<IMergeBuilder> mergeBuilders)
+    {
         CanBuild = true;
 
         Row.MergedCellsList = mergeBuilders.Select(m => (MergedCells)m).ToList();

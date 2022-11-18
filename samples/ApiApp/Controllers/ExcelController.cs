@@ -294,7 +294,7 @@ public class ExcelController : ControllerBase
                     .RowHasNoMerging()
                     .RowHasNoCustomStyle()
                     .Build()
-            ).ToArray())
+            ).ToList())
             .TableHasNoMerging()
             .SetTableStyle(new TableStyle
             {

@@ -2,6 +2,7 @@
 using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWTable;
+using System.Collections.Generic;
 
 namespace ExcelWizard.Models.EWSheet;
 
@@ -16,22 +17,46 @@ public interface IExpectSetComponentsSheetBuilder
     /// Insert one or more Table(s) data into the Sheet.
     /// Each Table is consist of some Rows and Cells with more style options to configure easily
     /// </summary>
+    /// <param name="tableBuilder"> TableBuilder with Build() method at the end </param>
     /// <param name="tableBuilders"> TableBuilder(s) with Build() method at the end of them </param>
-    IExpectSetComponentsSheetBuilder SetTables(params ITableBuilder[] tableBuilders);
+    IExpectSetComponentsSheetBuilder SetTables(ITableBuilder tableBuilder, params ITableBuilder[] tableBuilders);
+
+    /// <summary>
+    /// Insert one or more Table(s) data into the Sheet.
+    /// Each Table is consist of some Rows and Cells with more style options to configure easily
+    /// </summary>
+    /// <param name="tableBuilders"> TableBuilders with Build() method at the end of them </param>
+    IExpectSetComponentsSheetBuilder SetTables(List<ITableBuilder> tableBuilders);
 
     /// <summary>
     /// Insert one or more Row(s) records into the Sheet.
     /// Each Row is consist of some Cells with more style options to configure easily
     /// </summary>
+    /// <param name="rowBuilder"> RowBuilder with Build() method at the end </param>
     /// <param name="rowBuilders"> RowBuilder(s) with Build() method at the end of them </param>
-    IExpectSetComponentsSheetBuilder SetRows(params IRowBuilder[] rowBuilders);
+    IExpectSetComponentsSheetBuilder SetRows(IRowBuilder rowBuilder, params IRowBuilder[] rowBuilders);
+
+    /// <summary>
+    /// Insert one or more Row(s) records into the Sheet.
+    /// Each Row is consist of some Cells with more style options to configure easily
+    /// </summary>
+    /// <param name="rowBuilders"> RowBuilders with Build() method at the end of them </param>
+    IExpectSetComponentsSheetBuilder SetRows(List<IRowBuilder> rowBuilders);
 
     /// <summary>
     /// Insert one or more Cell(s) items directly into the Sheet.
     /// All data can be inserted with this property, but using  Tables and Rows add more options to configure style and functionality of generated Sheet.
     /// </summary>
+    /// <param name="cellBuilder"> CellBuilder with Build() method at the end </param>
     /// <param name="cellBuilders"> CellBuilder(s) with Build() method at the end of them </param>
-    IExpectSetComponentsSheetBuilder SetCells(params ICellBuilder[] cellBuilders);
+    IExpectSetComponentsSheetBuilder SetCells(ICellBuilder cellBuilder, params ICellBuilder[] cellBuilders);
+
+    /// <summary>
+    /// Insert one or more Cell(s) items directly into the Sheet.
+    /// All data can be inserted with this property, but using  Tables and Rows add more options to configure style and functionality of generated Sheet.
+    /// </summary>
+    /// <param name="cellBuilders"> CellBuilder with Build() method at the end of them </param>
+    IExpectSetComponentsSheetBuilder SetCells(List<ICellBuilder> cellBuilders);
 
     /// <summary>
     /// Finish composing Sheet with smaller components i.e. Table(s), Row(s) and Cell(s)
