@@ -6,6 +6,8 @@ using System.Drawing;
 namespace ApiApp.DocExampleModels;
 
 [ExcelTable(HeaderBackgroundColor = KnownColor.LightGray,
+    HeaderFontColor = KnownColor.Red,
+    HeaderFontWeight = FontWeight.Normal,
     //HeaderOccupyingRowsNo = 3,
     InsideCellsBorderStyle = LineStyle.Thick,
     InsideCellsBorderColor = KnownColor.Black,
