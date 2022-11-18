@@ -60,27 +60,27 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
 
                 var excelTableAttribute = record.GetType().GetCustomAttribute<ExcelTableAttribute>();
 
-                hasHeader = excelTableAttribute.HasHeader;
+                hasHeader = excelTableAttribute?.HasHeader ?? true;
 
-                var headerOccupyingRowsNo = excelTableAttribute.HeaderOccupyingRowsNo;
+                var headerOccupyingRowsNo = excelTableAttribute?.HeaderOccupyingRowsNo ?? 1;
 
-                var tableDefaultFontWeight = excelTableAttribute.FontWeight;
+                var tableDefaultFontWeight = excelTableAttribute?.FontWeight;
 
                 var tableDefaultFont = new TextFont
                 {
-                    FontName = excelTableAttribute.FontName,
-                    FontSize = excelTableAttribute.FontSize == 0 ? null : excelTableAttribute.FontSize,
-                    FontColor = Color.FromKnownColor(excelTableAttribute.FontColor),
+                    FontName = excelTableAttribute?.FontName,
+                    FontSize = excelTableAttribute?.FontSize == 0 ? null : excelTableAttribute?.FontSize,
+                    FontColor = Color.FromKnownColor(excelTableAttribute?.FontColor ?? KnownColor.Black),
                     IsBold = tableDefaultFontWeight == FontWeight.Bold
                 };
 
-                outsideBorder = new Border(excelTableAttribute.OutsideBorderStyle,
-                    Color.FromKnownColor(excelTableAttribute.OutsideBorderColor));
+                outsideBorder = new Border(excelTableAttribute?.OutsideBorderStyle ?? LineStyle.Thin,
+                    Color.FromKnownColor(excelTableAttribute?.OutsideBorderColor ?? KnownColor.LightGray));
 
-                insideBorder = new Border(excelTableAttribute.InsideCellsBorderStyle,
-                    Color.FromKnownColor(excelTableAttribute.InsideCellsBorderColor));
+                insideBorder = new Border(excelTableAttribute?.InsideCellsBorderStyle ?? LineStyle.Thin,
+                    Color.FromKnownColor(excelTableAttribute?.InsideCellsBorderColor ?? KnownColor.LightGray));
 
-                var tableDefaultTextAlign = excelTableAttribute.TextAlign;
+                TextAlign tableDefaultTextAlign = excelTableAttribute?.TextAlign ?? TextAlign.Inherit;
 
                 PropertyInfo[] properties = record.GetType().GetProperties();
 
@@ -90,7 +90,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                 {
                     RowStyle = new RowStyle
                     {
-                        BackgroundColor = Color.FromKnownColor(excelTableAttribute.DataBackgroundColor)
+                        BackgroundColor = Color.FromKnownColor(excelTableAttribute?.DataBackgroundColor ?? KnownColor.Transparent)
                     }
                 };
 
