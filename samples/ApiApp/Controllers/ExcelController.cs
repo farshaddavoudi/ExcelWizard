@@ -3,6 +3,7 @@ using ApiApp.Service;
 using ApiApp.SimorghReportModels;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWExcel;
 using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWSheet;
@@ -459,7 +460,7 @@ public class ExcelController : ControllerBase
         var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Users")
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingAModelToBind(myUsers)
+            .WithOneSheetUsingModelBinding(myUsers)
             .Build();
 
         GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);

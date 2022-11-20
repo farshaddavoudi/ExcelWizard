@@ -1,6 +1,7 @@
 ﻿using ApiApp.SimorghReportModels;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWCell;
+using ExcelWizard.Models.EWExcel;
 using ExcelWizard.Models.EWMerge;
 using ExcelWizard.Models.EWRow;
 using ExcelWizard.Models.EWSheet;
