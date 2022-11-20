@@ -14,7 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
-namespace ExcelWizard.Models;
+namespace ExcelWizard.Models.EWExcel;
 
 public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheetsExcelBuilder
     , IExpectStyleExcelBuilder, IExpectOtherPropsAndBuildExcelBuilder, IExpectBuildExcelBuilder
@@ -48,7 +48,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         return this;
     }
 
-    public IExpectBuildExcelBuilder WithOneSheetUsingAModelToBind(object bindingListModel)
+    public IExpectBuildExcelBuilder WithOneSheetUsingModelBinding(object bindingListModel)
     {
         CanBuild = true;
 
@@ -64,11 +64,30 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         return this;
     }
 
-    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelListToBind(List<object> listOfBindingListModel)
+    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<object> listOfBindingListModel)
     {
         CanBuild = true;
 
         List<GridExcelSheet> gridSheets = listOfBindingListModel.Select(l => new GridExcelSheet { DataList = l }).ToList();
+
+        GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel
+        {
+            GeneratedFileName = ExcelModel.GeneratedFileName,
+
+            Sheets = gridSheets
+        };
+
+        ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel);
+
+        return this;
+    }
+
+    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<BindingSheet> bindingSheets)
+    {
+        CanBuild = true;
+
+        List<GridExcelSheet> gridSheets = bindingSheets.Select(bs => new GridExcelSheet
+        { SheetName = bs.SheetName, DataList = bs.BindingListModel }).ToList();
 
         GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel
         {
@@ -172,7 +191,9 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
 
                     var excelSheetAttribute = record.GetType().GetCustomAttribute<ExcelSheetAttribute>();
 
-                    sheetName = excelSheetAttribute?.SheetName;
+                    sheetName = string.IsNullOrWhiteSpace(gridExcelSheet.SheetName)
+                        ? excelSheetAttribute?.SheetName
+                        : gridExcelSheet.SheetName;
 
                     sheetDirection = excelSheetAttribute?.SheetDirection ?? SheetDirection.LeftToRight;
 

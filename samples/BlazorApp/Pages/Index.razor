@@ -2,6 +2,7 @@
 @using ExcelWizard.Service
 @using BlazorDownloadFile
 @using ExcelWizard.Models
+@using ExcelWizard.Models.EWExcel
 
 <PageTitle>Index</PageTitle>
 
@@ -30,7 +31,7 @@ Welcome to your new app.
         var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("my-custom-report")
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingAModelToBind(fetchDataFromApi)
+            .WithOneSheetUsingModelBinding(fetchDataFromApi)
             .Build();
 
         return ExcelWizardService.GenerateAndDownloadExcelInBlazor(excelBuilder);

@@ -1,4 +1,5 @@
-﻿using ExcelWizard.Models.EWSheet;
+﻿using ExcelWizard.Models.EWExcel;
+using ExcelWizard.Models.EWSheet;
 using System.Collections.Generic;
 
 namespace ExcelWizard.Models;
@@ -63,14 +64,21 @@ public interface IExpectGridLayoutExcelBuilder
     /// Generate Simple Single Sheet Grid layout Excel file from special model configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
     /// </summary>
     /// <param name="bindingListModel"> List of data (should be something like List{Person}()) </param>
-    IExpectBuildExcelBuilder WithOneSheetUsingAModelToBind(object bindingListModel);
+    IExpectBuildExcelBuilder WithOneSheetUsingModelBinding(object bindingListModel);
 
     /// <summary>
-    /// Generate Grid layout Excel having multiple Sheets from special model configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
+    /// Generate Grid layout Excel having multiple Sheets from different model types configured options with [ExcelSheet] and [ExcelSheetColumn] attributes.
+    /// Here Sheet name will be get from model [ExcelSheet] attribute.
     /// </summary>
-    /// <param name="listOfBindingListModel"></param>
-    /// <returns> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </returns>
-    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelListToBind(List<object> listOfBindingListModel);
+    /// <param name="listOfBindingListModel"> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </param>
+    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<object> listOfBindingListModel);
+
+    /// <summary>
+    /// Generate Grid layout Excel having multiple Sheets from same model types configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
+    /// Here Sheet names can be get from argument and not from model attribute.
+    /// </summary>
+    /// <param name="bindingSheets"> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </param>
+    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<BindingSheet> bindingSheets);
 
     /// <summary>
     /// Generate Grid layout Excel in usual way by create Sheets manually step by step and without model binding
