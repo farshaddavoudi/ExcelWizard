@@ -71,6 +71,11 @@ public class ExcelSheetAttribute : Attribute
     public LineStyle BorderType { get; set; } = LineStyle.Thin;
 
     /// <summary>
+    /// All Borders Color
+    /// </summary>
+    public KnownColor BorderColor { get; set; } = KnownColor.LightGray;
+
+    /// <summary>
     /// Are Sheet Cells Locked? Meaning you cannot edit/delete Cells data but the Sheet can still be formatted
     /// </summary>
     public bool IsSheetLocked { get; set; }

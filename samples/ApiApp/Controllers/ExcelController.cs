@@ -463,13 +463,13 @@ public class ExcelController : ControllerBase
             .WithOneSheetUsingModelBinding(myUsers)
             .Build();
 
-        GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);
+        //GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);
 
         // Below will create Excel file in specified path and return the full path as string
         // The last param is generated file name
         string fullPathAsString = _excelWizardService.GenerateExcel(excelBuilder, @"C:\GeneratedExcelSamples");
 
-        return Ok(generatedExcelFile);
+        return Ok(fullPathAsString);
     }
 
     [HttpGet("export-simorgh-report-complex-layout-excel")]

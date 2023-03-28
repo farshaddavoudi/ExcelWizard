@@ -7,7 +7,7 @@ namespace ApiApp;
 
 [ExcelSheet(SheetName = "MyUsers", DefaultTextAlign = TextAlign.Center, HeaderBackgroundColor = KnownColor.LightBlue, HeaderHeight = 40,
     BorderType = LineStyle.DashDotDot, DataBackgroundColor = KnownColor.Bisque, DataRowHeight = 25, IsSheetLocked = true,
-    SheetDirection = SheetDirection.RightToLeft, FontColor = KnownColor.Red)]
+    SheetDirection = SheetDirection.RightToLeft, FontColor = KnownColor.Red, BorderColor = KnownColor.Black)]
 public class User
 {
     [ExcelSheetColumn(HeaderName = "UserId", HeaderTextAlign = TextAlign.Right, DataTextAlign = TextAlign.Right, FontColor = KnownColor.Blue)]

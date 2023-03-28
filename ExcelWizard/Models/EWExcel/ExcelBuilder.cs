@@ -177,6 +177,8 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
 
                 var borderType = LineStyle.Thin;
 
+                var borderColor = Color.FromKnownColor(KnownColor.LightGray);
+
                 var columnsStyle = new List<ColumnStyle>();
 
                 SheetDirection sheetDirection = SheetDirection.LeftToRight;
@@ -215,6 +217,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                         sheetProtectionLevel.HardProtect = true;
 
                     borderType = excelSheetAttribute?.BorderType ?? LineStyle.Thin;
+                    borderColor = Color.FromKnownColor(excelSheetAttribute?.BorderColor ?? KnownColor.LightGray);
 
                     var defaultTextAlign = excelSheetAttribute?.DefaultTextAlign ?? TextAlign.Center;
 
@@ -287,9 +290,9 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
 
                             headerRow.RowStyle.BackgroundColor = excelSheetAttribute?.HeaderBackgroundColor != null ? Color.FromKnownColor(excelSheetAttribute.HeaderBackgroundColor) : Color.Transparent;
 
-                            headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+                            headerRow.RowStyle.RowOutsideBorder = new Border { BorderColor = borderColor, BorderLineStyle = borderType };
 
-                            headerRow.RowStyle.InsideCellsBorder = new Border { BorderColor = Color.Black, BorderLineStyle = borderType };
+                            headerRow.RowStyle.InsideCellsBorder = new Border { BorderColor = borderColor, BorderLineStyle = borderType };
 
                             // Calculate Columns style
                             columnsStyle.Add(new ColumnStyle(xLocation)
@@ -348,7 +351,8 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                             TableRows = dataRows,
                             TableStyle= new TableStyle
                             {
-                                TableOutsideBorder = new Border { BorderLineStyle = borderType }
+                                TableOutsideBorder = new Border { BorderLineStyle = borderType, BorderColor = borderColor },
+                                InsideCellsBorder = new Border { BorderLineStyle = borderType, BorderColor = borderColor }
                             }
                         }
                     }
