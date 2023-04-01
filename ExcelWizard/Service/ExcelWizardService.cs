@@ -132,55 +132,59 @@ public class ExcelWizardService : IExcelWizardService
             var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
 
             // Set protection level
-            var protection = xlSheet.Protect(sheet.SheetProtectionLevel.Password);
 
-            var atLeastOneItemAdded = false;
-
-            // Local function to add to flag
-            XLSheetProtectionElements AddToFlag(XLSheetProtectionElements allowedElements, XLSheetProtectionElements toAdd)
+            if (sheet.IsSheetProtected)
             {
-                atLeastOneItemAdded = true;
+                var protection = xlSheet.Protect(sheet.SheetProtectionLevel.Password);
 
-                return allowedElements | toAdd;
+                var atLeastOneItemAdded = false;
+
+                // Local function to add to flag
+                XLSheetProtectionElements AddToFlag(XLSheetProtectionElements allowedElements, XLSheetProtectionElements toAdd)
+                {
+                    atLeastOneItemAdded = true;
+
+                    return allowedElements | toAdd;
+                }
+
+                XLSheetProtectionElements allowedElements = XLSheetProtectionElements.None;
+
+                if (sheet.SheetProtectionLevel.DeleteColumns && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.DeleteColumns);
+                if (sheet.SheetProtectionLevel.EditObjects && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.EditObjects);
+                if (sheet.SheetProtectionLevel.FormatCells && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatCells);
+                if (sheet.SheetProtectionLevel.FormatColumns && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatColumns);
+                if (sheet.SheetProtectionLevel.FormatRows && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatRows);
+                if (sheet.SheetProtectionLevel.InsertColumns && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertColumns);
+                if (sheet.SheetProtectionLevel.InsertHyperLinks && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertHyperlinks);
+                if (sheet.SheetProtectionLevel.InsertRows && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertRows);
+                if (sheet.SheetProtectionLevel.SelectLockedCells && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.SelectLockedCells);
+                if (sheet.SheetProtectionLevel.DeleteRows && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.DeleteRows);
+                if (sheet.SheetProtectionLevel.EditScenarios && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.EditScenarios);
+                if (sheet.SheetProtectionLevel.SelectUnlockedCells && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.SelectUnlockedCells);
+                if (sheet.SheetProtectionLevel.Sort && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.Sort);
+                if (sheet.SheetProtectionLevel.UseAutoFilter && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.AutoFilter);
+                if (sheet.SheetProtectionLevel.UsePivotTableReports && !sheet.SheetProtectionLevel.HardProtect)
+                    allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.PivotTables);
+
+                if (atLeastOneItemAdded)
+                    protection.AllowedElements = allowedElements;
+                else
+                    protection.AllowNone();
             }
-
-            XLSheetProtectionElements allowedElements = XLSheetProtectionElements.None;
-
-            if (sheet.SheetProtectionLevel.DeleteColumns && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.DeleteColumns);
-            if (sheet.SheetProtectionLevel.EditObjects && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.EditObjects);
-            if (sheet.SheetProtectionLevel.FormatCells && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatCells);
-            if (sheet.SheetProtectionLevel.FormatColumns && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatColumns);
-            if (sheet.SheetProtectionLevel.FormatRows && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.FormatRows);
-            if (sheet.SheetProtectionLevel.InsertColumns && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertColumns);
-            if (sheet.SheetProtectionLevel.InsertHyperLinks && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertHyperlinks);
-            if (sheet.SheetProtectionLevel.InsertRows && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.InsertRows);
-            if (sheet.SheetProtectionLevel.SelectLockedCells && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.SelectLockedCells);
-            if (sheet.SheetProtectionLevel.DeleteRows && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.DeleteRows);
-            if (sheet.SheetProtectionLevel.EditScenarios && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.EditScenarios);
-            if (sheet.SheetProtectionLevel.SelectUnlockedCells && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.SelectUnlockedCells);
-            if (sheet.SheetProtectionLevel.Sort && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.Sort);
-            if (sheet.SheetProtectionLevel.UseAutoFilter && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.AutoFilter);
-            if (sheet.SheetProtectionLevel.UsePivotTableReports && !sheet.SheetProtectionLevel.HardProtect)
-                allowedElements = AddToFlag(allowedElements, XLSheetProtectionElements.PivotTables);
-
-            if (atLeastOneItemAdded)
-                protection.AllowedElements = allowedElements;
-            else
-                protection.AllowNone();
 
             // Set direction
             if (sheet.SheetStyle.SheetDirection is not null)
@@ -435,10 +439,10 @@ public class ExcelWizardService : IExcelWizardService
                 cellValue = Convert.ToDecimal(cellValue).ToString("N0");
                 break;
 
-            case CellContentType.MiladiDate:
+            case CellContentType.GregorianDateTime:
                 xlDataType = XLDataType.DateTime;
                 if (cellValue is not DateTime)
-                    throw new Exception("Cell with MiladiDate CellType should be DateTime type");
+                    throw new Exception("Cell with GregorianDateTime CellType should be DateTime type");
                 break;
 
             case CellContentType.Text:

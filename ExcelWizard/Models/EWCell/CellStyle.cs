@@ -26,5 +26,4 @@ public class CellStyle
     /// Set outside border of a table. Default is without border.
     /// </summary>
     public Border? CellBorder { get; set; }
-
 }

@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{
 		templates\ComplexExcelTemplate.xlsx = templates\ComplexExcelTemplate.xlsx
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelWizard.Tests", "ExcelWizard.Tests\ExcelWizard.Tests.csproj", "{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABF861FA-5D72-491E-8CB9-77791BA6DB8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

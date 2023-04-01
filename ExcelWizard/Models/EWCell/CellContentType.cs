@@ -5,7 +5,7 @@ public enum CellContentType
     General,
     Number,
     Currency,
-    MiladiDate,
+    GregorianDateTime,
     Text,
     Percentage,
     Formula

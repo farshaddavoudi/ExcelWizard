@@ -12,12 +12,12 @@ public class FakeBlazorDownloadFileService : IBlazorDownloadFileService
 {
     public ValueTask AddBuffer(string bytesBase64)
     {
-        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+        throw new InvalidOperationException("You can only invoke this method in Blazor context");
     }
 
     public ValueTask AddBuffer(string bytesBase64, CancellationToken cancellationToken)
     {
-        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+        throw new InvalidOperationException("You can invoke this method in Blazor context");
     }
 
     public ValueTask AddBuffer(string bytesBase64, TimeSpan timeOut)
