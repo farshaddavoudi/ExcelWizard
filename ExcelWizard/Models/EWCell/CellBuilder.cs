@@ -42,7 +42,7 @@ public class CellBuilder
     /// Set an arbitrary property to distinguish the Cells. For example can be the db Id (which are not suppose to be shown in the Excel)
     /// </summary>
     /// <param name="identifier">Cell unique identifier</param>
-    public CellBuilder SetIdentifier(string identifier)
+    public CellBuilder SetIdentifier(string? identifier)
     {
         Cell.CellIdentifier = identifier;
 
@@ -74,7 +74,7 @@ public class CellBuilder
     /// Show / Hide Cell Content in Generated Excel
     /// </summary>
     /// <param name="isVisible"></param>
-    public CellBuilder SetVisibility(bool isVisible)
+    public CellBuilder SetContentVisibility(bool isVisible)
     {
         Cell.IsCellVisible = isVisible;
 

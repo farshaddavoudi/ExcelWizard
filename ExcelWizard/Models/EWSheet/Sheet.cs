@@ -47,6 +47,11 @@ public class Sheet : ISheetBuilder
     public bool? IsSheetLocked { get; internal set; }
 
     /// <summary>
+    /// All features are accessible. No limitation will apply
+    /// </summary>
+    public bool IsSheetProtected { get; internal set; }
+
+    /// <summary>
     /// Set Sheet protection level
     /// </summary>
     public ProtectionLevel SheetProtectionLevel { get; internal set; } = new();

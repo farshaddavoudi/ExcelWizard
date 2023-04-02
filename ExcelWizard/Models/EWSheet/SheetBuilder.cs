@@ -9,7 +9,7 @@ using System.Linq;
 namespace ExcelWizard.Models.EWSheet;
 
 public class SheetBuilder : IExpectSetComponentsSheetBuilder,
-    IExpectStyleSheetBuilder, IExpectOtherPropsAndBuildSheetBuilder
+    IExpectStyleSheetBuilder, IExpectOtherPropsAndBuildSheetBuilder, IExpectProtectionLevelSheetBuilder
 {
     private SheetBuilder() { }
 
@@ -110,7 +110,7 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectOtherPropsAndBuildSheetBuilder SetLockedStatus(bool isLocked)
+    public IExpectOtherPropsAndBuildSheetBuilder SetSheetLocked(bool isLocked)
     {
         Sheet.IsSheetLocked = isLocked;
 
@@ -120,6 +120,13 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
     public IExpectOtherPropsAndBuildSheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel)
     {
         Sheet.SheetProtectionLevel = protectionLevel;
+
+        return this;
+    }
+
+    public IExpectProtectionLevelSheetBuilder SetSheetProtected()
+    {
+        Sheet.IsSheetProtected = true;
 
         return this;
     }

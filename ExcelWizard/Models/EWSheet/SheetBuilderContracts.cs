@@ -83,12 +83,12 @@ public interface IExpectOtherPropsAndBuildSheetBuilder
     /// <summary>
     /// Will override the ExcelBuilder AreSheetsLockedByDefault value. Default will inherit
     /// </summary>
-    IExpectOtherPropsAndBuildSheetBuilder SetLockedStatus(bool isLocked);
+    IExpectOtherPropsAndBuildSheetBuilder SetSheetLocked(bool isLocked);
 
     /// <summary>
-    /// Set Sheet protection level
+    /// Set Sheet protection status
     /// </summary>
-    IExpectOtherPropsAndBuildSheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel);
+    IExpectProtectionLevelSheetBuilder SetSheetProtected();
 
     /// <summary>
     /// Merged Cells in the Sheet.
@@ -98,4 +98,12 @@ public interface IExpectOtherPropsAndBuildSheetBuilder
     IExpectOtherPropsAndBuildSheetBuilder SetMergedCells(params IMergeBuilder[] mergeBuilders);
 
     ISheetBuilder Build();
+}
+
+public interface IExpectProtectionLevelSheetBuilder
+{
+    /// <summary>
+    /// Set Sheet protection level
+    /// </summary>
+    IExpectOtherPropsAndBuildSheetBuilder SetProtectionLevel(ProtectionLevel protectionLevel);
 }

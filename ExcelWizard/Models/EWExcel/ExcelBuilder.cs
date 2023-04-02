@@ -185,6 +185,8 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
 
                 bool isSheetLocked = false;
 
+                bool isSheetProtected = false;
+
                 ProtectionLevel sheetProtectionLevel = new();
 
                 foreach (var record in records)
@@ -214,7 +216,10 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                     var isSheetHardProtected = excelSheetAttribute?.IsSheetHardProtected ?? false;
 
                     if (isSheetHardProtected)
+                    {
+                        isSheetProtected = true;
                         sheetProtectionLevel.HardProtect = true;
+                    }
 
                     borderType = excelSheetAttribute?.BorderType ?? LineStyle.Thin;
                     borderColor = Color.FromKnownColor(excelSheetAttribute?.BorderColor ?? KnownColor.LightGray);
@@ -337,6 +342,8 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                     SheetStyle = new SheetStyle { SheetDirection = sheetDirection, ColumnsStyle = columnsStyle },
 
                     IsSheetLocked = isSheetLocked,
+
+                    IsSheetProtected = isSheetProtected,
 
                     SheetProtectionLevel = sheetProtectionLevel,
 
