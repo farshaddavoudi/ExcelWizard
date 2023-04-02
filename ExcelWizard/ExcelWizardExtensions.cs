@@ -53,6 +53,9 @@ public static class ExcelWizardExtensions
     /// </summary>
     public static int GetCellColumnNumberByCellColumnLetter(this string cellColumnLetter)
     {
+        if (string.IsNullOrWhiteSpace(cellColumnLetter))
+            throw new ArgumentNullException(nameof(cellColumnLetter));
+
         int retVal = 0;
         string col = cellColumnLetter.ToUpper();
         for (int iChar = col.Length - 1; iChar >= 0; iChar--)

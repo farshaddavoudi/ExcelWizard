@@ -98,7 +98,7 @@ public class CellBuilderTests
     }
 
     [Fact]
-    public void SetCellContentVisibility_WhenGivenIsVisibleFalse_ShouldSetCellIsContentVisibleTrue()
+    public void SetCellContentVisibility_WhenContentVisibilityIsNotSet_ShouldSetIsContentVisible()
     {
         // Act
         Cell cell = CellBuilder
@@ -110,7 +110,7 @@ public class CellBuilderTests
     }
 
     [Fact]
-    public void SetCellContentVisibility_WhenContentVisibilityIsNotSet_ShouldSetIsContentVisible()
+    public void SetCellContentVisibility_WhenGivenIsVisibleFalse_ShouldSetCellIsContentVisibleTrue()
     {
         var isVisible = false;
 
