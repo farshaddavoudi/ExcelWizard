@@ -23,7 +23,7 @@ public class ColumnStyle
     /// </summary>
     public ColumnWidth? ColumnWidth { get; set; } = null;
 
-    public TextAlign ColumnTextAlign { get; set; } = TextAlign.Right; //Default RTL direction
+    public TextAlign ColumnTextAlign { get; set; } = TextAlign.Center; //Default LTR direction
 
     public bool IsColumnHidden { get; set; } = false;
 
