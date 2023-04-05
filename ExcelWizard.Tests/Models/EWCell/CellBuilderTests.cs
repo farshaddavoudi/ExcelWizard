@@ -117,7 +117,7 @@ public class CellBuilderTests
         // Act
         Cell cell = CellBuilder
             .SetLocation(It.IsAny<int>(), It.IsAny<int>())
-            .SetContentVisibility(isVisible)
+            .SetCellContentHidden(isVisible)
             .Build();
 
         // Assert

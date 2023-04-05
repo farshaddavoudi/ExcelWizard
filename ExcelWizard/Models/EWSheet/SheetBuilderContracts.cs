@@ -88,7 +88,7 @@ public interface IExpectOtherPropsAndBuildSheetBuilder
     /// <summary>
     /// Set Sheet protection status
     /// </summary>
-    IExpectProtectionLevelSheetBuilder SetSheetProtected();
+    IExpectProtectionLevelSheetBuilder SetSheetProtected(bool isProtected = true);
 
     /// <summary>
     /// Merged Cells in the Sheet.

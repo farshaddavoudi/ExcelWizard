@@ -73,10 +73,10 @@ public class CellBuilder
     /// <summary>
     /// Show / Hide Cell Content in Generated Excel
     /// </summary>
-    /// <param name="isVisible"></param>
-    public CellBuilder SetContentVisibility(bool isVisible)
+    /// <param name="isHidden"></param>
+    public CellBuilder SetCellContentHidden(bool isHidden = true)
     {
-        Cell.IsCellVisible = isVisible;
+        Cell.IsCellVisible = !isHidden;
 
         return this;
     }
@@ -84,7 +84,7 @@ public class CellBuilder
     /// <summary>
     /// Will override the IsSheetLocked property of Sheet model if set to a value. Default will inherit
     /// </summary>
-    public CellBuilder SetLockStatus(bool isLocked)
+    public CellBuilder SetCellLocked(bool isLocked = true)
     {
         Cell.IsCellLocked = isLocked;
 

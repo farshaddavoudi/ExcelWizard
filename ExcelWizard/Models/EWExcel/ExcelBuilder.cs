@@ -32,7 +32,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
     public static IExpectGeneratingExcelTypeExcelBuilder SetGeneratedFileName(string? fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName))
-            throw new ArgumentException("Generated file name cannot be empty");
+            throw new ArgumentNullException(nameof(fileName), "Excel file name cannot be empty");
 
         return new ExcelBuilder
         {
@@ -148,7 +148,6 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
 
         return ExcelModel;
     }
-
 
     private ExcelModel ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelModel gridLayoutExcelModel)
     {

@@ -110,7 +110,7 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectOtherPropsAndBuildSheetBuilder SetSheetLocked(bool isLocked)
+    public IExpectOtherPropsAndBuildSheetBuilder SetSheetLocked(bool isLocked = true)
     {
         Sheet.IsSheetLocked = isLocked;
 
@@ -124,9 +124,9 @@ public class SheetBuilder : IExpectSetComponentsSheetBuilder,
         return this;
     }
 
-    public IExpectProtectionLevelSheetBuilder SetSheetProtected()
+    public IExpectProtectionLevelSheetBuilder SetSheetProtected(bool isProtected = true)
     {
-        Sheet.IsSheetProtected = true;
+        Sheet.IsSheetProtected = isProtected;
 
         return this;
     }
