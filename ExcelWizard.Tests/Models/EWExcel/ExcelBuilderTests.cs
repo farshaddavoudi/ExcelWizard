@@ -1,4 +1,5 @@
-﻿using ExcelWizard.Models;
+﻿using Bogus;
+using ExcelWizard.Models;
 using ExcelWizard.Models.EWExcel;
 using ExcelWizard.Models.EWSheet;
 
@@ -29,7 +30,7 @@ public class ExcelBuilderTests
         // Arrange
         var sheetBuilder = Mock.Of<Sheet>();
 
-        var givenName = "New-Generated-Excel";
+        var givenName = new Faker().System.FileName();
 
         // Act
         var excelBuilder = ExcelBuilder.SetGeneratedFileName(givenName)
@@ -50,33 +51,16 @@ public class ExcelBuilderTests
     public void WithOneSheetUsingModelBinding_WhenGivenABindingListModel_ShouldReturnCorrectExcelModelWithOneSheet()
     {
         // Arrange
-        var students = new List<Student>
-        {
-            new()
-            {
-                Id = 1,
-                FullName = "Farshad Davoudi",
-                Nationality = "Germany",
-                StudentCode = "St32"
-            },
-            new()
-            {
-                Id = 2,
-                FullName = "Somaye Ebrahimi",
-                Nationality = "Iran",
-                StudentCode = "St34"
-            },
-            new()
-            {
-                Id = 3,
-                FullName = "Leonardo Decaprio",
-                Nationality = "US",
-                StudentCode = "St36"
-            }
-        };
+        var studentFaker = new Faker<Student>()
+            .RuleFor(x => x.Id, x => x.Random.Int(1, 20))
+            .RuleFor(x => x.FullName, x => x.Name.FullName())
+            .RuleFor(x => x.Nationality, x => x.Address.Country())
+            .RuleFor(x => x.StudentCode, x => x.Random.String(10, 15));
+
+        var students = studentFaker.Generate(4);
 
         // Act
-        var excelBuilder = ExcelBuilder.SetGeneratedFileName("excel-name")
+        var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
             .CreateGridLayoutExcel()
             .WithOneSheetUsingModelBinding(students)
             .Build();
@@ -95,58 +79,18 @@ public class ExcelBuilderTests
     public void WithMultipleSheetsUsingModelBinding_WhenGivenListOfTwoBindingListModel_ShouldReturnCorrectExcelModelWithTwoSheets()
     {
         // Arrange
-        var classAStudents = new List<Student>
-        {
-            new()
-            {
-                Id = 1,
-                FullName = "Farshad Davoudi",
-                Nationality = "Germany",
-                StudentCode = "St32"
-            },
-            new()
-            {
-                Id = 2,
-                FullName = "Somaye Ebrahimi",
-                Nationality = "Iran",
-                StudentCode = "St34"
-            },
-            new()
-            {
-                Id = 3,
-                FullName = "Leonardo Decaprio",
-                Nationality = "US",
-                StudentCode = "St36"
-            }
-        };
+        var studentFaker = new Faker<Student>()
+            .RuleFor(x => x.Id, x => x.Random.Int(1, 20))
+            .RuleFor(x => x.FullName, x => x.Name.FullName())
+            .RuleFor(x => x.Nationality, x => x.Address.Country())
+            .RuleFor(x => x.StudentCode, x => x.Random.String(10, 15));
 
-        var classBStudents = new List<Student>
-        {
-            new()
-            {
-                Id = 11,
-                FullName = "Farshad Davoudi2",
-                Nationality = "Germany2",
-                StudentCode = "St322"
-            },
-            new()
-            {
-                Id = 22,
-                FullName = "Somaye Ebrahimi2",
-                Nationality = "Iran2",
-                StudentCode = "St342"
-            },
-            new()
-            {
-                Id = 33,
-                FullName = "Leonardo Decaprio2",
-                Nationality = "US2",
-                StudentCode = "St362"
-            }
-        };
+        var classAStudents = studentFaker.Generate(5);
 
-        var firstSheetName = "Class A";
-        var secondSheetName = "Class B";
+        var classBStudents = studentFaker.Generate(4);
+
+        var firstSheetName = new Faker().Name.JobArea();
+        var secondSheetName = new Faker().Name.JobArea();
 
         var sheets = new List<BindingSheet>
         {
@@ -155,7 +99,7 @@ public class ExcelBuilderTests
         };
 
         // Act
-        var excelBuilder = ExcelBuilder.SetGeneratedFileName("excel-name")
+        var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
             .CreateGridLayoutExcel()
             .WithMultipleSheetsUsingModelBinding(sheets)
             .SheetsHaveNoDefaultStyle()
@@ -179,7 +123,7 @@ public class ExcelBuilderTests
         var sheet = Mock.Of<Sheet>();
 
         // Act
-        var excelBuilder = ExcelBuilder.SetGeneratedFileName("excel-name")
+        var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
             .CreateComplexLayoutExcel()
             .SetSheets(sheet)
             .SheetsHaveNoDefaultStyle()
@@ -200,7 +144,7 @@ public class ExcelBuilderTests
         var sheet3 = Mock.Of<Sheet>();
 
         // Act
-        var excelBuilder = ExcelBuilder.SetGeneratedFileName("excel-name")
+        var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
             .CreateComplexLayoutExcel()
             .SetSheets(sheet1, sheet2, sheet3)
             .SheetsHaveNoDefaultStyle()
