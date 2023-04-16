@@ -48,7 +48,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         return this;
     }
 
-    public IExpectBuildExcelBuilder WithOneSheetUsingModelBinding(object bindingListModel)
+    public IExpectBuildExcelBuilder WithOneSheetUsingModelBinding<T>(List<T> bindingModel)
     {
         CanBuild = true;
 
@@ -56,7 +56,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         {
             GeneratedFileName = ExcelModel.GeneratedFileName,
 
-            Sheets = new List<GridExcelSheet> { new() { DataList = bindingListModel } }
+            Sheets = new List<GridExcelSheet> { new() { DataList = bindingModel } }
         };
 
         ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel);

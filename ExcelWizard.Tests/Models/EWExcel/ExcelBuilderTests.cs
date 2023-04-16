@@ -30,10 +30,10 @@ public class ExcelBuilderTests
         // Arrange
         var sheetBuilder = Mock.Of<Sheet>();
 
-        var givenName = new Faker().System.FileName();
+        var givenFileName = new Faker().System.FileName();
 
         // Act
-        var excelBuilder = ExcelBuilder.SetGeneratedFileName(givenName)
+        var excelBuilder = ExcelBuilder.SetGeneratedFileName(givenFileName)
             .CreateComplexLayoutExcel()
             .SetSheets(sheetBuilder)
             .SheetsHaveNoDefaultStyle()
@@ -44,7 +44,7 @@ public class ExcelBuilderTests
         // Assert
         excelModel.Should().NotBeNull();
 
-        excelModel.GeneratedFileName.Should().Be(givenName);
+        excelModel.GeneratedFileName.Should().Be(givenFileName);
     }
 
     [Fact]

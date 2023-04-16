@@ -26,6 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Models\EWCell\" />
+    <Folder Include="Models\EWGridLayout\" />
+    <Folder Include="Models\EWMerge\" />
     <Folder Include="Service\" />
   </ItemGroup>
 

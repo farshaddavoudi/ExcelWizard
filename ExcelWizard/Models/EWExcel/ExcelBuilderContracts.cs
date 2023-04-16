@@ -63,8 +63,8 @@ public interface IExpectGridLayoutExcelBuilder
     /// <summary>
     /// Generate Simple Single Sheet Grid layout Excel file from special model configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
     /// </summary>
-    /// <param name="bindingListModel"> List of data (should be something like List{Person}()) </param>
-    IExpectBuildExcelBuilder WithOneSheetUsingModelBinding(object bindingListModel);
+    /// <param name="bindingModel"> List of data (should be something like List{Person}()) </param>
+    IExpectBuildExcelBuilder WithOneSheetUsingModelBinding<T>(List<T> bindingModel);
 
     /// <summary>
     /// Generate Grid layout Excel having multiple Sheets from different model types configured options with [ExcelSheet] and [ExcelSheetColumn] attributes.
