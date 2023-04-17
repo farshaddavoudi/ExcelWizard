@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8C405FC4-D38B-493C-94B1-43005080B037}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Clean.bat = Clean.bat
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -36,7 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{
 		templates\ComplexExcelTemplate.xlsx = templates\ComplexExcelTemplate.xlsx
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelWizard.Tests", "ExcelWizard.Tests\ExcelWizard.Tests.csproj", "{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelWizard.Tests", "ExcelWizard.Tests\ExcelWizard.Tests.csproj", "{0BFE5D3A-D0D4-492E-A28B-09A7B6621FEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

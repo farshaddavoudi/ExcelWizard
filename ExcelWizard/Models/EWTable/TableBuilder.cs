@@ -23,15 +23,10 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
     /// <summary>
     /// Automatically construct the Table using a model data and attributes. Attributes to configure are [ExcelTable] and [ExcelTableColumn]
     /// </summary>
-    /// <param name="bindingListModel">The model instance which should be list of an item. The type should be configured by attributes for some styles and other configs </param>
+    /// <param name="dataBinding">The model instance which should be list of an item. The type should be configured by attributes for some styles and other configs </param>
     /// <param name="tableStartPoint"> The start location of the table. The end point will be calculated dynamically </param>
-    public static IExpectMergedCellsStatusInModelTableBuilder CreateUsingAModelToBind(object bindingListModel, CellLocation tableStartPoint)
+    public static IExpectMergedCellsStatusInModelTableBuilder CreateWithDataBinding<T>(List<T> dataBinding, CellLocation tableStartPoint)
     {
-        var isObjectDataList = bindingListModel is IEnumerable;
-
-        if (isObjectDataList is false)
-            throw new InvalidOperationException("Provided data for table is not a valid data list");
-
         var headerRow = new Row();
 
         var dataRows = new List<Row>();
@@ -52,7 +47,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
 
         Border insideBorder = new();
 
-        if (bindingListModel is IEnumerable records)
+        if (dataBinding is IEnumerable records)
         {
             foreach (var record in records)
             {
@@ -236,7 +231,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
     /// <summary>
     /// Manually build the Table defining its properties and styles step by step
     /// </summary>
-    public static IExpectRowsTableBuilder CreateStepByStepManually()
+    public static IExpectRowsTableBuilder CreateWithoutDataBinding()
     {
         return new TableBuilder
         {

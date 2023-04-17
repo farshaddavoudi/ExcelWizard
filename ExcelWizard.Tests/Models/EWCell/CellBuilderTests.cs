@@ -110,14 +110,12 @@ public class CellBuilderTests
     }
 
     [Fact]
-    public void SetCellContentVisibility_WhenGivenIsVisibleFalse_ShouldSetCellIsContentVisibleTrue()
+    public void SetCellContentVisibilityHidden_WhenInvokedWithoutParameter_ShouldIsCellVisibleBeFalse()
     {
-        var isVisible = false;
-
         // Act
         Cell cell = CellBuilder
             .SetLocation(It.IsAny<int>(), It.IsAny<int>())
-            .SetCellContentHidden(isVisible)
+            .SetCellContentVisibilityHidden()
             .Build();
 
         // Assert

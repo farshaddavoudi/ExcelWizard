@@ -1,4 +1,4 @@
-﻿using ExcelWizard.Models.EWExcel;
+﻿using ExcelWizard.Models.EWGridLayout;
 using ExcelWizard.Models.EWSheet;
 using System.Collections.Generic;
 
@@ -6,13 +6,12 @@ namespace ExcelWizard.Models;
 
 public interface IExcelBuilder
 {
-
 }
 
 public interface IExpectGeneratingExcelTypeExcelBuilder
 {
     /// <summary>
-    /// Generate simple Grid layout Excel file with the option of simply using a model bind and configure Excel with attributes
+    /// Generate simple Grid layout Excel file. You have the choice of using data binding
     /// </summary>
     IExpectGridLayoutExcelBuilder CreateGridLayoutExcel();
 
@@ -61,28 +60,48 @@ public interface IExpectBuildExcelBuilder
 public interface IExpectGridLayoutExcelBuilder
 {
     /// <summary>
-    /// Generate Simple Single Sheet Grid layout Excel file from special model configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
-    /// </summary>
-    /// <param name="bindingModel"> List of data (should be something like List{Person}()) </param>
-    IExpectBuildExcelBuilder WithOneSheetUsingModelBinding<T>(List<T> bindingModel);
-
-    /// <summary>
-    /// Generate Grid layout Excel having multiple Sheets from different model types configured options with [ExcelSheet] and [ExcelSheetColumn] attributes.
-    /// Here Sheet name will be get from model [ExcelSheet] attribute.
-    /// </summary>
-    /// <param name="listOfBindingListModel"> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </param>
-    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<object> listOfBindingListModel);
-
-    /// <summary>
-    /// Generate Grid layout Excel having multiple Sheets from same model types configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
-    /// Here Sheet names can be get from argument and not from model attribute.
-    /// </summary>
-    /// <param name="bindingSheets"> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </param>
-    IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<BindingSheet> bindingSheets);
-
-    /// <summary>
-    /// Generate Grid layout Excel in usual way by create Sheets manually step by step and without model binding
+    /// Generate grid layout Excel using data binding, meaning we have a model which is configured with [ExcelSheet] and [ExcelSheetColumn] attributes
     /// </summary>
     /// <returns></returns>
-    IExpectSheetsExcelBuilder ManuallyWithoutModelBinding();
+    IExpectDataBoundGridLayoutExcelBuilder WithDataBinding();
+
+    /// <summary>
+    /// Generate grid layout Excel in usual way by create Sheets manually step by step and without data binding
+    /// </summary>
+    /// <returns></returns>
+    IExpectSheetsExcelBuilder WithoutDataBinding();
+}
+
+public interface IExpectDataBoundGridLayoutExcelBuilder
+{
+    /// <summary>
+    /// Add a sheet to Excel easily by binding a model as Excel data as well as configure it via attributes used in the model. Can be invoked multiple times for each Sheet
+    /// </summary>
+    /// <typeparam name="T">Type of the model supposed to be bound</typeparam>
+    /// <param name="boundData">List of records supposed to bound to Excel, e.g. Persons, Phones, etc</param>
+    /// <param name="sheetName">Name of the bound Sheet. If not set, the Sheet name will be gotten from SheetName property of [ExcelSheet] attribute</param>
+    /// <returns></returns>
+    IExpectAndAnotherSheetOrStyleExcelBuilder AddBoundSheet<T>(List<T> boundData, string? sheetName = default);
+
+    /// <summary>
+    /// Generate Grid layout Excel having multiple Sheets from same or different model types configured options with [ExcelSheet] and [ExcelSheetColumn] attributes
+    /// </summary>
+    /// <param name="boundSheets"> List of data list. e.g. object list of Persons, Phones, Universities, etc which each will be mapped to a Sheet </param>
+    IExpectStyleExcelBuilder AddBoundSheets(List<BoundSheet> boundSheets);
+}
+
+public interface IExpectAnotherBoundSheetExcelBuilder
+{
+    /// <summary>
+    /// Add a sheet to Excel easily by binding a model as Excel data as well as configure it via attributes used in the model. Can be invoked multiple times for each Sheet
+    /// </summary>
+    /// <typeparam name="T">Type of the model supposed to be bound</typeparam>
+    /// <param name="boundData">List of records supposed to bound to Excel, e.g. Persons, Phones, etc</param>
+    /// <param name="sheetName">Name of the bound Sheet. If not set, the Sheet name will be gotten from SheetName property of [ExcelSheet] attribute</param>
+    /// <returns></returns>
+    IExpectAndAnotherSheetOrStyleExcelBuilder AddAnotherBoundSheet<T>(List<T> boundData, string? sheetName = default);
+}
+
+public interface IExpectAndAnotherSheetOrStyleExcelBuilder : IExpectAnotherBoundSheetExcelBuilder, IExpectStyleExcelBuilder, IExpectBuildExcelBuilder
+{
 }

@@ -60,7 +60,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Table: Excel Header 
         var tableHeader = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(RowBuilder
                 .SetCells(
                     CellBuilder
@@ -100,7 +100,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // First table with header of (کد حساب - بدهکار - بستانکار)
         var table1St = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(
@@ -136,7 +136,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Second table with header of (کد حساب - بدهکار - بستانکار)
         var table2Nd = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(voucherStatement.VoucherStatementItem.Select((item, index) =>
                 RowBuilder
                     .SetCells(
@@ -176,7 +176,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
         // And a Vertical Merge for showing sum (K17:K18) 
         // And a Vertical Merge for Average (L17:L18)
         var tableBottomBlueHeader = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(
                 RowBuilder
                     .SetCells(
@@ -269,7 +269,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Table with Salaries data with thick borders
         var tableSalaries = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(voucherStatement.Accounts.Select((account, index) =>
                 RowBuilder
                     .SetCells(
@@ -292,7 +292,7 @@ public class SimorghExcelBuilderService : ISimorghExcelBuilderService
 
         // Last table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(
                 RowBuilder
                     .SetCells(

@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using ExcelWizard.Service
 @using BlazorDownloadFile
-@using ExcelWizard.Models
 @using ExcelWizard.Models.EWExcel
 
 <PageTitle>Index</PageTitle>
@@ -23,15 +22,18 @@ Welcome to your new app.
     {
         var fetchDataFromApi = new List<AppExcelReportModel>
         { 
-            new() { Id = 1, FullName = "کریس رونالدو ", PersonnelCode = "980923" },
-            new() { Id = 2, FullName = "روبرتو کارلس", PersonnelCode = "991126" },
-            new() { Id = 3, FullName = "مارسل دسایی", PersonnelCode = "941126" }
+            new() { Id = 1, FullName = "Cristiano Ronaldo", PersonnelCode = "980923" },
+            new() { Id = 2, FullName = "Roberto Carlos", PersonnelCode = "991126" },
+            new() { Id = 3, FullName = "Batistutta", PersonnelCode = "941126" }
         };
 
         var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("my-custom-report")
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingModelBinding(fetchDataFromApi)
+            .WithDataBinding()
+            .AddBoundSheet(fetchDataFromApi)
+            .AddAnotherBoundSheet(fetchDataFromApi, "custom-1")
+            .AddAnotherBoundSheet(fetchDataFromApi, "custom-2")
             .Build();
 
         return ExcelWizardService.GenerateAndDownloadExcelInBlazor(excelBuilder);

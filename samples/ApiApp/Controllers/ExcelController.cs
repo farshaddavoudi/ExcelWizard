@@ -109,7 +109,7 @@ public class ExcelController : ControllerBase
         //2.1- Table: Top Header
 
         var tableTopHeader = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(RowBuilder
                 .SetCells(
                     CellBuilder.SetLocation("A", 1)
@@ -136,7 +136,7 @@ public class ExcelController : ControllerBase
 
         //2.* New Concept of Model binding
         ITableBuilder tableCreditsDebits = TableBuilder
-            .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
+            .CreateWithDataBinding(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
             .BoundTableHasNoMerging()
             .Build();
 
@@ -196,7 +196,7 @@ public class ExcelController : ControllerBase
         //2.4- Table: Blue bg (+yellow at the end) table
 
         var tableBlueBg = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(RowBuilder
                     .SetCells(
                         CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
@@ -283,7 +283,7 @@ public class ExcelController : ControllerBase
 
         //2.5- Table: with Salaries data with thin borders
         var tableSalaries = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
                 RowBuilder
                     .SetCells(
@@ -307,7 +307,7 @@ public class ExcelController : ControllerBase
         //2.6- Table:  Sharing info
         // Table with sharing before/after data
         var tableSharingBeforeAfterData = TableBuilder
-            .CreateStepByStepManually()
+            .CreateWithoutDataBinding()
             .SetRows(RowBuilder
                     .SetCells(
                         CellBuilder
@@ -460,7 +460,9 @@ public class ExcelController : ControllerBase
         var excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Users")
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingModelBinding(myUsers)
+            .WithDataBinding()
+            .AddBoundSheet(myUsers)
+            .AddAnotherBoundSheet(myUsers, "Users2")
             .Build();
 
         //GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);

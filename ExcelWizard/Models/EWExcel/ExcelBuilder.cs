@@ -18,7 +18,8 @@ namespace ExcelWizard.Models.EWExcel;
 
 public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheetsExcelBuilder
     , IExpectStyleExcelBuilder, IExpectOtherPropsAndBuildExcelBuilder, IExpectBuildExcelBuilder
-    , IExpectGridLayoutExcelBuilder
+    , IExpectGridLayoutExcelBuilder, IExpectDataBoundGridLayoutExcelBuilder,
+    IExpectAndAnotherSheetOrStyleExcelBuilder, IExpectAnotherBoundSheetExcelBuilder
 {
     private ExcelBuilder() { }
 
@@ -48,60 +49,45 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         return this;
     }
 
-    public IExpectBuildExcelBuilder WithOneSheetUsingModelBinding<T>(List<T> bindingModel)
+    public IExpectStyleExcelBuilder AddBoundSheets(List<BoundSheet> boundSheets)
     {
         CanBuild = true;
 
-        var gridLayoutExcelModel = new GridLayoutExcelModel
-        {
-            GeneratedFileName = ExcelModel.GeneratedFileName,
+        List<BoundSheet> gridSheets = boundSheets
+            .Select(bs => new BoundSheet(bs.BoundData, bs.SheetName))
+            .ToList();
 
-            Sheets = new List<GridExcelSheet> { new() { DataList = bindingModel } }
-        };
+        GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel(ExcelModel.GeneratedFileName, gridSheets);
 
         ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel);
 
         return this;
     }
 
-    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<object> listOfBindingListModel)
+    public IExpectDataBoundGridLayoutExcelBuilder WithDataBinding()
+    {
+        return this;
+    }
+
+    public IExpectAndAnotherSheetOrStyleExcelBuilder AddBoundSheet<T>(List<T> boundData, string? sheetName = default)
     {
         CanBuild = true;
 
-        List<GridExcelSheet> gridSheets = listOfBindingListModel.Select(l => new GridExcelSheet { DataList = l }).ToList();
+        BoundSheet gridSheet = new(boundData, sheetName);
 
-        GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel
-        {
-            GeneratedFileName = ExcelModel.GeneratedFileName,
+        GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel(ExcelModel.GeneratedFileName, new List<BoundSheet> { gridSheet });
 
-            Sheets = gridSheets
-        };
-
-        ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel);
+        ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel, ExcelModel);
 
         return this;
     }
 
-    public IExpectStyleExcelBuilder WithMultipleSheetsUsingModelBinding(List<BindingSheet> bindingSheets)
+    public IExpectAndAnotherSheetOrStyleExcelBuilder AddAnotherBoundSheet<T>(List<T> boundData, string? sheetName = default)
     {
-        CanBuild = true;
-
-        List<GridExcelSheet> gridSheets = bindingSheets.Select(bs => new GridExcelSheet
-        { SheetName = bs.SheetName, DataList = bs.BindingListModel }).ToList();
-
-        GridLayoutExcelModel gridLayoutExcelModel = new GridLayoutExcelModel
-        {
-            GeneratedFileName = ExcelModel.GeneratedFileName,
-
-            Sheets = gridSheets
-        };
-
-        ExcelModel = ConvertEasyGridExcelBuilderToExcelWizardBuilder(gridLayoutExcelModel);
-
-        return this;
+        return AddBoundSheet(boundData, sheetName);
     }
 
-    public IExpectSheetsExcelBuilder ManuallyWithoutModelBinding()
+    public IExpectSheetsExcelBuilder WithoutDataBinding()
     {
         return this;
     }
@@ -149,18 +135,18 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
         return ExcelModel;
     }
 
-    private ExcelModel ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelModel gridLayoutExcelModel)
+    private ExcelModel ConvertEasyGridExcelBuilderToExcelWizardBuilder(GridLayoutExcelModel gridLayoutExcelModel, ExcelModel? currentExcelModel = null)
     {
-        var excelWizardBuilder = new ExcelModel();
+        var excelWizardBuilder = currentExcelModel ?? new ExcelModel();
 
         if (gridLayoutExcelModel.GeneratedFileName.IsNullOrWhiteSpace() is false)
             excelWizardBuilder.GeneratedFileName = gridLayoutExcelModel.GeneratedFileName;
 
         foreach (var gridExcelSheet in gridLayoutExcelModel.Sheets)
         {
-            gridExcelSheet.ValidateGridExcelSheetInstance();
+            gridExcelSheet.ValidateBoundSheetInstance();
 
-            if (gridExcelSheet.DataList is IEnumerable records)
+            if (gridExcelSheet.BoundData is IEnumerable records)
             {
                 var headerRow = new Row();
 
@@ -366,7 +352,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
             }
             else
             {
-                throw new Exception("GridExcelSheet object should be IEnumerable");
+                throw new ArgumentException("BoundSheet object should be IEnumerable");
             }
         }
 

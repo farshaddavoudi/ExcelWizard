@@ -74,7 +74,7 @@ public class CellBuilder
     /// Show / Hide Cell Content in Generated Excel
     /// </summary>
     /// <param name="isHidden"></param>
-    public CellBuilder SetCellContentHidden(bool isHidden = true)
+    public CellBuilder SetCellContentVisibilityHidden(bool isHidden = true)
     {
         Cell.IsCellVisible = !isHidden;
 

@@ -1,7 +1,9 @@
 ﻿using Bogus;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWExcel;
+using ExcelWizard.Models.EWGridLayout;
 using ExcelWizard.Models.EWSheet;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace ExcelWizard.Tests.Models.EWExcel;
 
@@ -48,7 +50,7 @@ public class ExcelBuilderTests
     }
 
     [Fact]
-    public void WithOneSheetUsingModelBinding_WhenGivenABindingListModel_ShouldReturnCorrectExcelModelWithOneSheet()
+    public void AddBoundSheet_WhenGivenABindingListModel_ShouldReturnCorrectExcelModelWithOneSheet()
     {
         // Arrange
         var studentFaker = new Faker<Student>()
@@ -62,7 +64,8 @@ public class ExcelBuilderTests
         // Act
         var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingModelBinding(students)
+            .WithDataBinding()
+            .AddBoundSheet(students)
             .Build();
 
         var excelModel = (ExcelModel)excelBuilder;
@@ -76,7 +79,7 @@ public class ExcelBuilderTests
     }
 
     [Fact]
-    public void WithMultipleSheetsUsingModelBinding_WhenGivenListOfTwoBindingListModel_ShouldReturnCorrectExcelModelWithTwoSheets()
+    public void AddAnotherBoundSheet_WhenGivenAnotherBoundSheet_ShouldReturnCorrectExcelModelWithTwoSheets()
     {
         // Arrange
         var studentFaker = new Faker<Student>()
@@ -92,16 +95,12 @@ public class ExcelBuilderTests
         var firstSheetName = new Faker().Name.JobArea();
         var secondSheetName = new Faker().Name.JobArea();
 
-        var sheets = new List<BindingSheet>
-        {
-            new(classAStudents, firstSheetName),
-            new(classBStudents, secondSheetName)
-        };
-
         // Act
         var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
             .CreateGridLayoutExcel()
-            .WithMultipleSheetsUsingModelBinding(sheets)
+            .WithDataBinding()
+            .AddBoundSheet(classAStudents, firstSheetName)
+            .AddAnotherBoundSheet(classBStudents, secondSheetName)
             .SheetsHaveNoDefaultStyle()
             .Build();
 
@@ -114,6 +113,84 @@ public class ExcelBuilderTests
 
         excelModel.Sheets.First().SheetName.Should().Be(firstSheetName);
         excelModel.Sheets.Last().SheetName.Should().Be(secondSheetName);
+    }
+
+    [Fact]
+    public void AddBoundSheets_WhenGivenTwoBoundSheets_ShouldReturnCorrectExcelModelWithTwoSheets()
+    {
+        // Arrange
+        var studentFaker = new Faker<Student>()
+            .RuleFor(x => x.Id, x => x.Random.Int(1, 20))
+            .RuleFor(x => x.FullName, x => x.Name.FullName())
+            .RuleFor(x => x.Nationality, x => x.Address.Country())
+            .RuleFor(x => x.StudentCode, x => x.Random.String(10, 15));
+
+        var classAStudents = studentFaker.Generate(5);
+
+        var classBStudents = studentFaker.Generate(4);
+
+        var firstSheetName = new Faker().Name.JobArea();
+        var secondSheetName = new Faker().Name.JobArea();
+
+        var boundSheets = new List<BoundSheet>
+        {
+            new(classAStudents, firstSheetName),
+            new(classBStudents, secondSheetName)
+        };
+
+        // Act
+        var excelBuilder = ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
+            .CreateGridLayoutExcel()
+            .WithDataBinding()
+            .AddBoundSheets(boundSheets)
+            .SheetsHaveNoDefaultStyle()
+            .Build();
+
+        var excelModel = (ExcelModel)excelBuilder;
+
+        // Assert
+        excelModel.Should().NotBeNull();
+
+        excelModel.Sheets.Should().HaveCount(2);
+
+        excelModel.Sheets.First().SheetName.Should().Be(firstSheetName);
+        excelModel.Sheets.Last().SheetName.Should().Be(secondSheetName);
+    }
+
+    [Fact]
+    public void AddBoundSheets_WhenGivenASheetWithNotIEnumerableBoundData_ShouldThrow()
+    {
+        // Arrange
+        var studentFaker = new Faker<Student>()
+            .RuleFor(x => x.Id, x => x.Random.Int(1, 20))
+            .RuleFor(x => x.FullName, x => x.Name.FullName())
+            .RuleFor(x => x.Nationality, x => x.Address.Country())
+            .RuleFor(x => x.StudentCode, x => x.Random.String(10, 15));
+
+        var classAStudents = studentFaker.Generate(5);
+
+        var classBStudents = new Student();
+
+        var firstSheetName = new Faker().Name.JobArea();
+        var secondSheetName = new Faker().Name.JobArea();
+
+        var boundSheets = new List<BoundSheet>
+        {
+            new(classAStudents, firstSheetName),
+            new(classBStudents, secondSheetName)
+        };
+
+        // Act
+        var act = () => ExcelBuilder.SetGeneratedFileName(new Faker().System.FileName())
+            .CreateGridLayoutExcel()
+            .WithDataBinding()
+            .AddBoundSheets(boundSheets)
+            .SheetsHaveNoDefaultStyle()
+            .Build();
+
+
+        // Assert
+        act.Should().Throw<ValidationException>().WithMessage("Object provided for Sheet binding should be a collection of records*");
     }
 
     [Fact]

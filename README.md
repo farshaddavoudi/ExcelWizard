@@ -5,7 +5,7 @@
 Using ExcelWizard, you can easily generate Excel file in a very simple and straightforward way, even without any previous Excel knowledge. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorFileDownload packages.
 
 ## Version >= 3.0.0 Breakthrough Changes
-#### The package has completely rewritten with advanced *builder design pattern* to be more user friendly and easier to use and extremely less complex with some added new features like easily and dynamically create Table component using model binding.
+#### The package has completely rewritten with advanced *builder design pattern* to be more user friendly and easier to use and extremely less complex with some added new features like easily and dynamically create Table component using data binding.
 
 # How to Use
 1. You can install the package via the nuget package manager just search for *ExcelWizard*. You can also install via powershell using the following command.
@@ -127,7 +127,7 @@ In IndexPage.razor:
 # Concepts
 
 #### The Excel you want to export can be in two layout types; *Grid-Layout* and *Complex-Layout*. 
-The reason behind this seperation is the much easier process of generating Excel for Grid-Layout comparing to Complex-Layout because of ability to be created with model binding in this type which is pretty easy. 
+The reason behind this seperation is the much easier process of generating Excel for Grid-Layout comparing to Complex-Layout because of ability to be created with data binding in this type which is pretty easy. 
 
 1. **Grid-Layout** like data; meaning you have a list of data (again like `myUsers`) and you want to easily export it to Excel. The Excel would be 
 relatively simple, having a table-like layout, a header, and data. The first examples in the doc were from this type.
@@ -388,7 +388,7 @@ The methods are well commented and more importantly, they are chained in logical
 **1- Table: Top Header**
 ```csharp
 var tableTopHeader = TableBuilder
-    .CreateStepByStepManually()
+    .CreateWithoutDataBinding()
     .SetRows(RowBuilder
         .SetCells(
             CellBuilder.SetLocation("A", 1)
@@ -414,10 +414,10 @@ var tableTopHeader = TableBuilder
     .Build();
 ```
 
-**2- Table: Credits Debits table with new concept of model binding**
+**2- Table: Credits Debits table with new concept of data binding**
 ```csharp
 ITableBuilder tableCreditsDebits = TableBuilder
-    .CreateUsingAModelToBind(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
+    .CreateWithDataBinding(accountsReportDto.AccountDebitCreditList, new CellLocation("A", 3))
     .BoundTableHasNoMerging()
     .Build();
 ```
@@ -451,7 +451,7 @@ public class AccountDebitCredit
 **3- Table: Blue bg (+yellow at the end) table**. It is a fat table by the way!
 ```csharp
 var tableBlueBg = TableBuilder
-    .CreateStepByStepManually()
+    .CreateWithoutDataBinding()
     .SetRows(RowBuilder
             .SetCells(
                 CellBuilder.SetLocation("A", tableCreditsDebits.GetNextVerticalRowNumberAfterTable())
@@ -541,7 +541,7 @@ var tableBlueBg = TableBuilder
 ```csharp
 //2.5- Table: with Salaries data with thin borders
 var tableSalaries = TableBuilder
-    .CreateStepByStepManually()
+    .CreateWithoutDataBinding()
     .SetRows(accountsReportDto.AccountSalaryCodes.Select((account, index) =>
         RowBuilder
             .SetCells(
@@ -566,7 +566,7 @@ var tableSalaries = TableBuilder
 Table with sharing before/after data
 ```csharp
 var tableSharingBeforeAfterData = TableBuilder
-    .CreateStepByStepManually()
+    .CreateWithoutDataBinding()
     .SetRows(RowBuilder
             .SetCells(
                 CellBuilder

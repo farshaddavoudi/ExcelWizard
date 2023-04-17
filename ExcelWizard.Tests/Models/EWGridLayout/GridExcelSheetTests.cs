@@ -8,17 +8,13 @@ namespace ExcelWizard.Tests.Models.EWGridLayout;
 public class GridExcelSheetTests
 {
     [Fact]
-    public void ValidateGridExcelSheetInstance_GivenNotIEnumerableDataList_ShouldThrowValidationException()
+    public void ValidateBoundSheetInstance_GivenNotIEnumerableBoundData_ShouldThrowValidationException()
     {
         // Arrange
-        var gridExcelSheet = new GridExcelSheet
-        {
-            SheetName = new Faker().System.FileName(),
-            DataList = new Student()
-        };
+        var boundSheet = new BoundSheet(new Student(), new Faker().System.FileName());
 
         // Act
-        var action = () => gridExcelSheet.ValidateGridExcelSheetInstance();
+        var action = () => boundSheet.ValidateBoundSheetInstance();
 
         // Assert
         action.Should().Throw<ValidationException>().WithMessage("Object provided for Sheet binding should be a collection of records*");
