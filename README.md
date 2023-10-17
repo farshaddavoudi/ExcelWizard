@@ -81,7 +81,7 @@ public class UserController : ControllerBase
         IExcelBuilder excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Users")
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingAModelToBind(myUsers)
+            .WithOneSheetUsingModelBinding(myUsers)
             .Build();
 
         GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);
