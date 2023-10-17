@@ -58,7 +58,7 @@ public class UserController : ControllerBase
     // Inject the IExcelWizardService Service 
     private IExcelWizardService _excelWizardService;
 
-    public ExcelController(IExcelWizardService excelWizardService)
+    public UserController(IExcelWizardService excelWizardService)
     {
         _excelWizardService = excelWizardService;
     }
