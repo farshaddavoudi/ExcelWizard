@@ -58,7 +58,7 @@ public class UserController : ControllerBase
     // Inject the IExcelWizardService Service 
     private IExcelWizardService _excelWizardService;
 
-    public ExcelController(IExcelWizardService excelWizardService)
+    public UserController(IExcelWizardService excelWizardService)
     {
         _excelWizardService = excelWizardService;
     }
@@ -81,7 +81,7 @@ public class UserController : ControllerBase
         IExcelBuilder excelBuilder = ExcelBuilder
             .SetGeneratedFileName("Users")
             .CreateGridLayoutExcel()
-            .WithOneSheetUsingAModelToBind(myUsers)
+            .WithOneSheetUsingModelBinding(myUsers)
             .Build();
 
         GeneratedExcelFile generatedExcelFile = _excelWizardService.GenerateExcel(excelBuilder);
