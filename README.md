@@ -758,3 +758,7 @@ dotnet build ExcelWizard.sln -c Release --no-restore
 ```
 
 The integration tests save generated workbooks in memory, reopen them with ClosedXML, and verify their values, styles, wrapping, row heights, metadata, protection, merging, and borders.
+
+## Releasing
+
+Merging a pull request from `develop` into `main` builds, tests, and publishes the package to NuGet.org using OIDC Trusted Publishing. See [Releasing ExcelWizard](docs/RELEASING.md) for the trigger safeguards and one-time NuGet.org policy configuration.
