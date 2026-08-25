@@ -5,15 +5,30 @@ namespace ExcelWizard.Models;
 
 public class CellStyle
 {
+    private bool _wrapText;
+
     /// <summary>
     /// Set Font for the Cell. It will override the Table and Row Fonts. Default inherit
     /// </summary>
     public TextFont? Font { get; set; }
 
     /// <summary>
-    /// Set Wordwrap for the Cell content. Default is false
+    /// Set text wrapping for the Cell content. Default is false.
     /// </summary>
-    public bool Wordwrap { get; set; }
+    public bool WrapText
+    {
+        get => _wrapText;
+        set => _wrapText = value;
+    }
+
+    /// <summary>
+    /// Compatibility alias for <see cref="WrapText"/>.
+    /// </summary>
+    public bool Wordwrap
+    {
+        get => WrapText;
+        set => WrapText = value;
+    }
 
     public TextAlign? CellTextAlign { get; set; }
 

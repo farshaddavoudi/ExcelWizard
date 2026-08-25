@@ -1,5 +1,4 @@
-﻿using ClosedXML.Report.Utils;
-using ExcelWizard.Models.EWCell;
+﻿using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWColumn;
 using ExcelWizard.Models.EWGridLayout;
 using ExcelWizard.Models.EWRow;
@@ -154,7 +153,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
     {
         var excelWizardBuilder = new ExcelModel();
 
-        if (gridLayoutExcelModel.GeneratedFileName.IsNullOrWhiteSpace() is false)
+        if (string.IsNullOrWhiteSpace(gridLayoutExcelModel.GeneratedFileName) is false)
             excelWizardBuilder.GeneratedFileName = gridLayoutExcelModel.GeneratedFileName;
 
         foreach (var gridExcelSheet in gridLayoutExcelModel.Sheets)
@@ -271,7 +270,8 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                         // Header
                         if (isHeaderAlreadyCalculated is false)
                         {
-                            var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont));
+                            var headerFont = JsonSerializer.Deserialize<TextFont>(JsonSerializer.Serialize(finalFont))
+                                ?? new TextFont();
 
                             headerFont.IsBold = excelSheetColumnAttribute is null || excelSheetColumnAttribute.FontWeight == FontWeight.Inherit
                                 ? defaultFontWeight != FontWeight.Normal
@@ -318,6 +318,7 @@ public class ExcelBuilder : IExpectGeneratingExcelTypeExcelBuilder, IExpectSheet
                             .SetCellStyle(new CellStyle
                             {
                                 Font = finalFont,
+                                WrapText = excelSheetColumnAttribute?.WrapText ?? false,
                                 CellTextAlign = GetCellTextAlign(defaultTextAlign,
                                     excelSheetColumnAttribute?.DataTextAlign)
                             })

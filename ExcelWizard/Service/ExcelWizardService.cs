@@ -1,6 +1,5 @@
 ﻿using BlazorDownloadFile;
 using ClosedXML.Excel;
-using ClosedXML.Report.Utils;
 using ExcelWizard.Models;
 using ExcelWizard.Models.EWCell;
 using ExcelWizard.Models.EWColumn;
@@ -9,6 +8,7 @@ using ExcelWizard.Models.EWSheet;
 using ExcelWizard.Models.EWStyles;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,7 +41,7 @@ public class ExcelWizardService : IExcelWizardService
 
         var content = stream.ToArray();
 
-        if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
+        if (string.IsNullOrWhiteSpace(excelModel.GeneratedFileName))
             excelModel.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
         return new GeneratedExcelFile { FileName = excelModel.GeneratedFileName, Content = content };
@@ -53,7 +53,7 @@ public class ExcelWizardService : IExcelWizardService
 
         using var xlWorkbook = ClosedXmlEngine(excelModel);
 
-        if (excelModel.GeneratedFileName.IsNullOrWhiteSpace())
+        if (string.IsNullOrWhiteSpace(excelModel.GeneratedFileName))
             excelModel.GeneratedFileName = $"ExcelWizard_{DateTime.Now:yyyy-MM-dd HH-mm-ss}";
 
         var saveUrl = $"{savePath}\\{excelModel.GeneratedFileName}.xlsx";
@@ -91,7 +91,7 @@ public class ExcelWizardService : IExcelWizardService
 
         // Check sheet names are unique
         var sheetNames = excelModel.Sheets
-            .Where(s => s.SheetName.IsNullOrWhiteSpace() is false)
+            .Where(s => string.IsNullOrWhiteSpace(s.SheetName) is false)
             .Select(s => s.SheetName)
             .ToList();
 
@@ -105,7 +105,7 @@ public class ExcelWizardService : IExcelWizardService
         int i = 1;
         foreach (Sheet sheet in excelModel.Sheets)
         {
-            if (sheet.SheetName.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(sheet.SheetName))
             {
                 var isNameOk = false;
 
@@ -129,7 +129,7 @@ public class ExcelWizardService : IExcelWizardService
         foreach (var sheet in excelModel.Sheets)
         {
             // Set name
-            var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName);
+            var xlSheet = xlWorkbook.Worksheets.Add(sheet.SheetName!);
 
             // Set protection level
 
@@ -286,7 +286,7 @@ public class ExcelWizardService : IExcelWizardService
                 if (table.TableStyle.Font?.IsBold is not null)
                     tableRange.Style.Font.SetBold(table.TableStyle.Font.IsBold.Value);
 
-                if (table.TableStyle.Font?.FontName.IsNullOrWhiteSpace() is false)
+                if (string.IsNullOrWhiteSpace(table.TableStyle.Font?.FontName) is false)
                     tableRange.Style.Font.SetFontName(table.TableStyle.Font.FontName);
 
                 // Config Outside-Border
@@ -388,7 +388,7 @@ public class ExcelWizardService : IExcelWizardService
 
                 var value = rangeToMerge.FirstOrDefault(r => r.IsEmpty() is false)?.Value;
 
-                rangeToMerge.First().SetValue(value);
+                rangeToMerge.First().SetValue(value ?? default);
 
                 var mergedSheetRange = xlSheet.Range(firstCellRow, firstCellColumn, lastCellRow, lastCellColumn).Merge();
 
@@ -418,43 +418,6 @@ public class ExcelWizardService : IExcelWizardService
 
     private void ConfigureCell(IXLWorksheet xlSheet, Cell cell, List<ColumnStyle> columnProps, bool isSheetLocked)
     {
-        // Infer XLDataType and value from "cell" CellType
-        XLDataType? xlDataType;
-        object? cellValue = cell.CellValue;
-        switch (cell.CellContentType)
-        {
-            case CellContentType.Number:
-                xlDataType = XLDataType.Number;
-                break;
-
-            case CellContentType.Percentage:
-                xlDataType = XLDataType.Text;
-                cellValue = $"{cellValue}%";
-                break;
-
-            case CellContentType.Currency:
-                xlDataType = XLDataType.Number;
-                if (IsNumber(cellValue) is false)
-                    throw new Exception("Cell with Currency CellType should be Number type");
-                cellValue = Convert.ToDecimal(cellValue).ToString("N0");
-                break;
-
-            case CellContentType.GregorianDateTime:
-                xlDataType = XLDataType.DateTime;
-                if (cellValue is not DateTime)
-                    throw new Exception("Cell with GregorianDateTime CellType should be DateTime type");
-                break;
-
-            case CellContentType.Text:
-            case CellContentType.Formula:
-                xlDataType = XLDataType.Text;
-                break;
-
-            default: // = CellType.General
-                xlDataType = null;
-                break;
-        }
-
         // Infer XLAlignment from "cell"
         XLAlignmentHorizontalValues? cellAlignmentHorizontalValue = cell.CellStyle.CellTextAlign switch
         {
@@ -487,15 +450,15 @@ public class ExcelWizardService : IExcelWizardService
         //-------------------------------------------
         var locationCell = xlSheet.Cell(cell.CellLocation.RowNumber, cell.CellLocation.ColumnNumber);
 
-        if (xlDataType is not null)
-            locationCell.SetDataType((XLDataType)xlDataType);
-
         if (cell.CellContentType == CellContentType.Formula)
-            locationCell.SetFormulaA1(cellValue?.ToString());
+            locationCell.FormulaA1 = cell.CellValue?.ToString();
         else
-            locationCell.SetValue(cellValue);
+            locationCell.SetValue(GetClosedXmlCellValue(cell));
 
-        locationCell.Style.Alignment.SetWrapText(cell.CellStyle.Wordwrap);
+        if (cell.CellContentType == CellContentType.Currency)
+            locationCell.Style.NumberFormat.Format = "#,##0";
+
+        locationCell.Style.Alignment.SetWrapText(cell.CellStyle.WrapText);
 
         locationCell.Style.Protection.Locked = (bool)isLocked;
 
@@ -515,33 +478,26 @@ public class ExcelWizardService : IExcelWizardService
         if (cell.CellStyle.Font?.IsBold is not null)
             locationCell.Style.Font.SetBold(cell.CellStyle.Font.IsBold.Value);
 
-        if (cell.CellStyle.Font?.FontName.IsNullOrWhiteSpace() is false)
+        if (string.IsNullOrWhiteSpace(cell.CellStyle.Font?.FontName) is false)
             locationCell.Style.Font.SetFontName(cell.CellStyle.Font.FontName);
 
         if (cell.CellStyle.BackgroundColor is not null)
             locationCell.Style.Fill.SetBackgroundColor(XLColor.FromColor(cell.CellStyle.BackgroundColor.Value));
 
         // Set Border
-        XLBorderStyleValues? cellBorder = GetXlBorderLineStyle(cell.CellStyle.CellBorder?.BorderLineStyle);
+        var cellBorderStyle = cell.CellStyle.CellBorder;
+        XLBorderStyleValues? cellBorder = GetXlBorderLineStyle(cellBorderStyle?.BorderLineStyle);
 
-        if (cellBorder is not null)
+        if (cellBorder is not null && cellBorderStyle is not null)
         {
-            locationCell.Style.Border.SetOutsideBorder((XLBorderStyleValues)cell.CellStyle.CellBorder!.BorderLineStyle);
-            locationCell.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cell.CellStyle.CellBorder.BorderColor));
+            locationCell.Style.Border.SetOutsideBorder(cellBorder.Value);
+            locationCell.Style.Border.SetOutsideBorderColor(XLColor.FromColor(cellBorderStyle.BorderColor));
         }
     }
 
     private void ConfigureRow(IXLWorksheet xlSheet, Row row, List<ColumnStyle> columnsStyleList, bool isSheetLocked)
     {
         row.ValidateRowInstance();
-
-        foreach (var rowCell in row.RowCells)
-        {
-            if (rowCell.IsCellVisible is false)
-                continue;
-
-            ConfigureCell(xlSheet, rowCell, columnsStyleList, isSheetLocked);
-        }
 
         if (row.RowCells.Count != 0)
         {
@@ -563,7 +519,7 @@ public class ExcelWizardService : IExcelWizardService
             if (row.RowStyle.Font?.IsBold is not null)
                 xlRowRange.Style.Font.SetBold(row.RowStyle.Font.IsBold.Value);
 
-            if (row.RowStyle.Font?.FontName.IsNullOrWhiteSpace() is false)
+            if (string.IsNullOrWhiteSpace(row.RowStyle.Font?.FontName) is false)
                 xlRowRange.Style.Font.SetFontName(row.RowStyle.Font.FontName);
 
             if (row.RowStyle.BackgroundColor is not null)
@@ -595,6 +551,25 @@ public class ExcelWizardService : IExcelWizardService
                     TextAlign.Right => XLAlignmentHorizontalValues.Right,
                     _ => throw new ArgumentOutOfRangeException()
                 };
+            }
+
+            // Cell styles have the highest precedence, so apply them after row-level styles.
+            foreach (var rowCell in row.RowCells)
+            {
+                if (rowCell.IsCellVisible is false)
+                    continue;
+
+                ConfigureCell(xlSheet, rowCell, columnsStyleList, isSheetLocked);
+            }
+
+            if (row.RowStyle.RowHeight is null)
+            {
+                var wrappedCells = row.RowCells
+                    .Where(cell => cell.IsCellVisible && cell.CellStyle.WrapText)
+                    .ToList();
+
+                if (wrappedCells.Count > 0)
+                    AdjustWrappedRowHeight(xlSheet, xlRow, wrappedCells);
             }
         }
 
@@ -662,6 +637,74 @@ public class ExcelWizardService : IExcelWizardService
                || value is float
                || value is double
                || value is decimal;
+    }
+
+    private XLCellValue GetClosedXmlCellValue(Cell cell)
+    {
+        var value = cell.CellValue;
+
+        return cell.CellContentType switch
+        {
+            CellContentType.Number => GetNumberCellValue(value),
+            CellContentType.Percentage => $"{value}%",
+            CellContentType.Currency when IsNumber(value) => Convert.ToDouble(
+                decimal.Round(Convert.ToDecimal(value, CultureInfo.CurrentCulture), 0),
+                CultureInfo.CurrentCulture),
+            CellContentType.Currency => throw new Exception("Cell with Currency CellType should be Number type"),
+            CellContentType.GregorianDateTime when value is DateTime dateTime => dateTime,
+            CellContentType.GregorianDateTime => throw new Exception("Cell with GregorianDateTime CellType should be DateTime type"),
+            CellContentType.Text when value is not null => value.ToString() ?? string.Empty,
+            CellContentType.Text => default,
+            _ when value is not null => XLCellValue.FromObject(value, CultureInfo.CurrentCulture),
+            _ => default
+        };
+    }
+
+    private static XLCellValue GetNumberCellValue(object? value)
+    {
+        if (value is null)
+            return default;
+
+        if (value is sbyte or byte or short or ushort or int or uint or long or ulong or float or double or decimal)
+            return XLCellValue.FromObject(value, CultureInfo.CurrentCulture);
+
+        if (double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out var number))
+            return number;
+
+        throw new Exception("Cell with Number CellType should be Number type");
+    }
+
+    private static void AdjustWrappedRowHeight(IXLWorksheet xlSheet, IXLRow xlRow, List<Cell> wrappedCells)
+    {
+        var wrappedColumnNumbers = wrappedCells
+            .Select(cell => cell.CellLocation.ColumnNumber)
+            .ToList();
+
+        xlRow.AdjustToContents(wrappedColumnNumbers.Min(), wrappedColumnNumbers.Max());
+
+        const double defaultFontSize = 11;
+        const double maximumExcelRowHeight = 409.5;
+
+        var estimatedHeight = wrappedCells.Max(cell =>
+        {
+            var text = Convert.ToString(cell.CellValue, CultureInfo.CurrentCulture) ?? string.Empty;
+
+            if (text.Length == 0)
+                return xlSheet.RowHeight;
+
+            var columnNumber = cell.CellLocation.ColumnNumber;
+            var columnWidth = Math.Max(1, xlSheet.Column(columnNumber).Width);
+            var lineCount = text
+                .Replace("\r", string.Empty)
+                .Split('\n')
+                .Sum(line => Math.Max(1, (int)Math.Ceiling(line.Replace("\t", "    ").Length / columnWidth)));
+            var fontSize = xlSheet.Cell(cell.CellLocation.RowNumber, columnNumber).Style.Font.FontSize;
+            var fontScale = Math.Max(1, fontSize / defaultFontSize);
+
+            return xlSheet.RowHeight * lineCount * fontScale;
+        });
+
+        xlRow.Height = Math.Min(maximumExcelRowHeight, Math.Max(xlRow.Height, estimatedHeight));
     }
 
     #endregion

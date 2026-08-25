@@ -4,6 +4,18 @@
 
 Using ExcelWizard, you can easily generate Excel file in a very simple and straightforward way, even without any previous Excel knowledge. In addition, make the generated Excel file directly downloadable from Browser without any hassle in case of using Blazor application. The package is a wrapper for ClosedXML and BlazorDownloadFile packages.
 
+## What's new in 3.1.0
+
+- Wrap long or multiline cell text from grid attributes, table attributes, and manually built cells.
+- Automatically expand wrapped rows so all lines are visible, while respecting explicitly configured row heights.
+- Updated the core dependencies, test infrastructure, and sample applications.
+
+See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
+
+## Compatibility
+
+ExcelWizard 3.1.0 continues to target .NET Standard 2.1, so updating the package does not require consumers to move to a new target framework. The repository's sample and test applications use .NET 10. The package uses ClosedXML 0.105.1 and BlazorDownloadFile 2.4.0.2.
+
 ## Version >= 3.0.0 Breakthrough Changes
 #### The package has completely rewritten with advanced *builder design pattern* to be more user friendly and easier to use and extremely less complex with some added new features like easily and dynamically create Table component using model binding.
 
@@ -252,11 +264,20 @@ public class User
     public string? PersonnelCode { get; set; }
 
     public string? Nationality { get; set; }
+
+    [ExcelSheetColumn(HeaderName = "Comment", ColumnWidth = 35, WrapText = true)]
+    public string? Comment { get; set; }
     
     [ExcelSheetColumn(Ignore = true)]
     public string? Age { get; set; }
 }
 ```
+
+### Wrap long text in a grid
+
+Set `WrapText = true` on an `ExcelSheetColumn` when a column contains comments, paragraphs, explicit line breaks, or other long text. Wrapping applies to the data cells in that column; it does not modify the stored text or wrap the header.
+
+When `ExcelSheet.DataRowHeight` is not set, ExcelWizard automatically increases the height of rows containing wrapped text so every line is visible. An explicit `DataRowHeight` takes precedence. Giving comment columns a practical `ColumnWidth`, as shown above, produces more predictable wrapping.
 
 The Result:
 <img src="https://github.com/farshaddavoudi/ExcelWizard/blob/main/screenshots/Screenshot-2.png" />
@@ -445,8 +466,13 @@ public class AccountDebitCredit
 
     [ExcelTableColumn(DataContentType = CellContentType.Currency, Ignore = false)]
     public decimal Credit { get; set; }
+
+    [ExcelTableColumn(HeaderName = "Comment", WrapText = true)]
+    public string? Comment { get; set; }
 }
 ```
+
+`ExcelTableColumn.WrapText` has the same data-cell behavior for model-bound tables. Rows are automatically expanded unless the table's `RowStyle.RowHeight` supplies an explicit height.
 
 **3- Table: Blue bg (+yellow at the end) table**. It is a fat table by the way!
 ```csharp
@@ -677,6 +703,7 @@ ICellBuilder cellUserName = CellBuilder
     .SetCellStyle(new CellStyle
     {
         BackgroundColor = Color.DarkGreen,
+        WrapText = true,
         Font = new TextFont
         {
             FontColor = Color.White
@@ -689,6 +716,8 @@ ICellBuilder cellUserName = CellBuilder
     })
     .Build();
 ```
+
+Use `CellStyle.WrapText` for manually built cells and rows. The existing `CellStyle.Wordwrap` property remains available as a compatible alias and controls the same setting.
 
 ## *3- Create `IExcelBuilder`*
 
@@ -717,3 +746,15 @@ At last, we create our gorgeous Excel! by injecting `IExcelWizardService` and us
 ```csharp
 return Ok(_excelWizardService.GenerateExcel(excelBuilder, @"C:\GeneratedExcelSamples"));
 ```
+
+## Build and test
+
+Install the .NET 10 SDK, then run the complete unit and generated-workbook integration test suites:
+
+```bash
+dotnet restore ExcelWizard.sln
+dotnet test ExcelWizard.sln -c Release --no-restore
+dotnet build ExcelWizard.sln -c Release --no-restore
+```
+
+The integration tests save generated workbooks in memory, reopen them with ClosedXML, and verify their values, styles, wrapping, row heights, metadata, protection, merging, and borders.
