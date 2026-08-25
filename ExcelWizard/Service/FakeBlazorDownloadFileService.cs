@@ -296,4 +296,98 @@ public class FakeBlazorDownloadFileService : IBlazorDownloadFileService
     {
         throw new InvalidOperationException("You cannot invoke method in not Blazor context");
     }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, string bytesBase64, int bufferSize,
+        string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, string bytesBase64, CancellationToken cancellationToken,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, string bytesBase64, TimeSpan timeOut,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, byte[] bytes, int bufferSize,
+        string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, byte[] bytes, CancellationToken cancellationToken,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, byte[] bytes, TimeSpan timeOut,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, IEnumerable<byte> bytes, int bufferSize,
+        string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, IEnumerable<byte> bytes, CancellationToken cancellationToken,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, IEnumerable<byte> bytes, TimeSpan timeOut,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, Stream stream, int bufferSize,
+        string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, Stream stream,
+        CancellationToken cancellationTokenBytesRead, CancellationToken cancellationTokenJavaScriptInterop,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFile(string fileName, Stream stream,
+        CancellationToken cancellationTokenBytesRead, TimeSpan timeOutJavaScriptInterop,
+        int bufferSize, string contentType, Func<double, Task> progress)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFileFromText(string fileName, string plainText, Encoding encoding,
+        int bufferSize, string contentType, Func<double, Task> progress, bool encoderShouldEmitIdentifier)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFileFromText(string fileName, string plainText, Encoding encoding,
+        CancellationToken cancellationToken, int bufferSize, string contentType, Func<double, Task> progress,
+        bool encoderShouldEmitIdentifier)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
+
+    public ValueTask<DownloadFileResult> DownloadFileFromText(string fileName, string plainText, Encoding encoding,
+        TimeSpan timeOut, int bufferSize, string contentType, Func<double, Task> progress,
+        bool encoderShouldEmitIdentifier)
+    {
+        throw new InvalidOperationException("You cannot invoke method in not Blazor context");
+    }
 }

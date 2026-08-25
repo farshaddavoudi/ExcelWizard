@@ -191,6 +191,7 @@ public class TableBuilder : IExpectRowsTableBuilder, IExpectMergedCellsStatusInM
                         .SetCellStyle(new CellStyle
                         {
                             Font = finalFont,
+                            WrapText = excelTableColumnAttribute?.WrapText ?? false,
                             CellTextAlign = GetCellTextAlign(tableDefaultTextAlign,
                                 excelTableColumnAttribute?.DataTextAlign)
                         })

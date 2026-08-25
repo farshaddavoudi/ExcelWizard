@@ -31,6 +31,11 @@ public class ExcelSheetColumnAttribute : Attribute
     public TextAlign DataTextAlign { get; set; } = TextAlign.Inherit;
 
     /// <summary>
+    /// Wrap data cell text within the column width. Default is false.
+    /// </summary>
+    public bool WrapText { get; set; }
+
+    /// <summary>
     ///  Excel Data Type. Default is Text type
     /// </summary>
     public CellContentType ExcelDataContentType { get; set; } = CellContentType.Text;
